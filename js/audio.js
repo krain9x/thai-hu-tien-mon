@@ -23,6 +23,7 @@ class MurimAudio {
 
     this.pools = new Map();
     this.lastPlayed = new Map();
+    this.isPageHidden = !!(typeof document !== 'undefined' && document.hidden);
 
     try {
       const saved = JSON.parse(localStorage.getItem('tienmon_audio_cfg_v1') || '{}');
@@ -33,6 +34,7 @@ class MurimAudio {
     } catch (_) {}
 
     const unlock = () => {
+      if (this.isPageHidden) return;
       this.ensureAudioContext();
       if (this.unlocked) return;
       this.unlocked = true;
@@ -43,8 +45,48 @@ class MurimAudio {
     window.addEventListener('pointerdown', unlock, { passive: true });
     window.addEventListener('keydown', unlock, { passive: true });
 
+    // Mobile & Tab Background Guard: mute/pause ALL BGM, SFX & WebAudio immediately when hidden/locked!
+    const syncVis = (forceHide = false) => {
+      const hide = forceHide || !!(typeof document !== 'undefined' && document.hidden);
+      this.setBackgroundSuspended(hide);
+    };
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => syncVis(false));
+    }
+    window.addEventListener('pagehide', () => syncVis(true));
+    window.addEventListener('pageshow', () => syncVis(false));
+
     // Smooth ducking restore loop
-    setInterval(() => this.updateBgmDucking(), 80);
+    setInterval(() => {
+      if (!this.isPageHidden) this.updateBgmDucking();
+    }, 80);
+  }
+
+  setBackgroundSuspended(hidden) {
+    this.isPageHidden = !!hidden;
+    if (this.isPageHidden) {
+      if (this.currentBgm) {
+        try { this.currentBgm.pause(); } catch (_) {}
+      }
+      for (const pool of this.pools.values()) {
+        for (const a of pool) {
+          try { if (!a.paused) a.pause(); } catch (_) {}
+        }
+      }
+      this.stopVoice();
+      if (this.actx && this.actx.state === 'running') {
+        this.actx.suspend().catch(() => {});
+      }
+    } else if (this.unlocked) {
+      if (this.actx && this.actx.state === 'suspended') {
+        this.actx.resume().catch(() => {});
+      }
+      if (this.currentBgm) {
+        this.currentBgm.play().catch(() => {});
+      } else if (this.currentBgmName) {
+        this.playBgm(this.currentBgmName, true);
+      }
+    }
   }
 
   ensureAudioContext() {
@@ -172,7 +214,7 @@ class MurimAudio {
       try { this.currentBgm.pause(); } catch (_) {}
       this.currentBgm = null;
     }
-    if (!this.unlocked || !name) return;
+    if (!this.unlocked || !name || this.isPageHidden) return;
     const audio = new Audio(this.resolveBgmSrc(name));
     audio.loop = true;
     audio.volume = this.bgmVol;
@@ -181,7 +223,7 @@ class MurimAudio {
   }
 
   playSfx(name, volMul = 1.0, minGapMs = 45) {
-    if (!this.unlocked || this.sfxVol <= 0.01 || !name) return;
+    if (!this.unlocked || this.sfxVol <= 0.01 || !name || this.isPageHidden) return;
     const now = performance.now();
     const prev = this.lastPlayed.get(name) || 0;
     if (now - prev < minGapMs) return;
@@ -240,7 +282,7 @@ class MurimAudio {
   }
 
   playVoice(name, minGapMs = 650) {
-    if (!this.unlocked || !this.voiceOn || this.voiceVol <= 0.02 || !name) return;
+    if (!this.unlocked || !this.voiceOn || this.voiceVol <= 0.02 || !name || this.isPageHidden) return;
     this.ensureAudioContext();
     const key = `vo_${name}`;
     const now = performance.now();

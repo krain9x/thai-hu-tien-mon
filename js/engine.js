@@ -713,7 +713,16 @@ class MurimEngine {
     } catch (_) {}
   }
 
-  // ==================== BẾ QUAN NGOẠI TUYẾN (OFFLINE HARVEST) + EXPORT/IMPORT SAVE ====================
+  // ==================== BẾ QUAN NGOẠI TUYẾN (ỦY THÁC TREO MÁY ĐẦY ĐỦ) + EXPORT/IMPORT SAVE ====================
+  getMaxOfflineHours() {
+    const st = this.state || {};
+    const awayCfg = (this.data.game && this.data.game.away) || { capHours: 12 };
+    let hrs = Math.max(12, awayCfg.capHours || 12);
+    if ((st.vipLv || 0) >= 1) hrs += 4;
+    if (st.noAds || (st.passDaysLeft || 0) > 0) hrs += 8;
+    return Math.min(24, hrs);
+  }
+
   computeOfflineReward() {
     const st = this.state;
     if (!st || !st.prologueDone) return null;
@@ -722,30 +731,72 @@ class MurimEngine {
     const elapsedSec = Math.floor((Date.now() - prev) / 1000);
     const minSec = Math.min(180, awayCfg.minSec || 180);
     if (elapsedSec < minSec) return null;
-    const capSec = Math.max(8, awayCfg.capHours || 12) * 3600;
+    const capHours = this.getMaxOfflineHours();
+    const capSec = capHours * 3600;
     const effSec = Math.min(capSec, elapsedSec);
     const mins = effSec / 60;
+    const hours = effSec / 3600;
     const stageGrow = Math.pow(1.09, Math.max(0, (st.stage || 1) - 1));
     const petMul = this.getPetDropMul();
-    const coin = Math.max(25, Math.round(mins * 22 * stageGrow * petMul));
-    const xp = Math.max(15, Math.round(mins * 12 * stageGrow));
-    const herb = Math.max(2, Math.round(mins * 0.45 * petMul));
-    const core = Math.max(1, Math.round(mins * 0.25 * petMul));
-    return { sec: effSec, coin, xp, herb, core };
+    const vipBonus = 1 + Math.min(1.0, (st.vipLv || 0) * 0.08);
+    const kills = Math.max(12, Math.round(mins * 4.5));
+    const coin = Math.max(25, Math.round(mins * 24 * stageGrow * petMul * vipBonus));
+    const xp = Math.max(15, Math.round(mins * 14 * stageGrow * vipBonus));
+    const herb = Math.max(2, Math.round(mins * 0.50 * petMul));
+    const core = Math.max(1, Math.round(mins * 0.28 * petMul));
+    const essence = Math.max(1, Math.round(mins * 0.22 * petMul));
+    const scroll = Math.floor(hours * 1.2);
+    const pill = Math.floor(hours * 0.6);
+    const gems = Math.min(18, Math.floor(hours * 1.5));
+    const gearCount = Math.min(4, Math.floor(hours / 2));
+    return { sec: effSec, capHours, kills, coin, xp, herb, core, essence, scroll, pill, gems, gearCount };
   }
 
   claimOfflineReward(doubled = false) {
     const rw = this.computeOfflineReward();
     if (!rw) return null;
-    const mul = doubled ? 2 : 1;
-    this.state.coin += rw.coin * mul;
-    this.state.xp += rw.xp * mul;
-    this.state.herb = (this.state.herb || 0) + rw.herb * mul;
-    this.state.core = (this.state.core || 0) + rw.core * mul;
-    this.state.lastSaveAt = Date.now();
-    this.state.lastTickMs = Date.now();
+    const st = this.state;
+    const freeX2 = (st.vipLv || 0) >= 1 || !!st.noAds || (st.passDaysLeft || 0) > 0;
+    let mul = 1;
+    if (doubled) {
+      if (freeX2) {
+        mul = 2;
+      } else if ((st.jade || 0) >= 20) {
+        st.jade -= 20;
+        mul = 2;
+      } else {
+        this.toast('Cần 20 Tiên Ngọc (hoặc VIP 1 / Đặc Quyền) để Bế Quan ×2 — đã nhận mức thường!');
+      }
+    }
+    st.coin += rw.coin * mul;
+    st.xp += rw.xp * mul;
+    st.herb = (st.herb || 0) + rw.herb * mul;
+    st.core = (st.core || 0) + rw.core * mul;
+    st.essence = (st.essence || 0) + (rw.essence || 0) * mul;
+    if (rw.scroll > 0) st.scroll = (st.scroll || 0) + rw.scroll * mul;
+    if (rw.pill > 0) st.pill = (st.pill || 0) + rw.pill * mul;
+
+    // Distribute Linh Châu Ngũ Hành Lv.1 & Tier-matched Gear drops!
+    const gemCount = (rw.gems || 0) * mul;
+    if (gemCount > 0) {
+      if (!st.gems) st.gems = { kim: [0,0,0,0,0], moc: [0,0,0,0,0], thuy: [0,0,0,0,0], hoa: [0,0,0,0,0], tho: [0,0,0,0,0] };
+      const gKeys = ['kim', 'moc', 'thuy', 'hoa', 'tho'];
+      for (let i = 0; i < gemCount; i++) {
+        const k = gKeys[Math.floor(Math.random() * gKeys.length)];
+        if (!st.gems[k]) st.gems[k] = [0, 0, 0, 0, 0];
+        st.gems[k][0]++;
+      }
+    }
+    const gDrops = (rw.gearCount || 0) * (mul > 1 ? 1 : 1);
+    const dropTier = Math.min(5, 1 + Math.floor((st.stage || 1) / 12));
+    for (let i = 0; i < gDrops; i++) {
+      this.grantRandomGearDrop(dropTier, '🧘 Bế Quan Ủy Thác');
+    }
+
+    st.lastSaveAt = Date.now();
+    st.lastTickMs = Date.now();
     this.audio.playSfx('recruit_gold');
-    this.toast(`🧘 Bế Quan Thu Hoạch: +${(rw.coin * mul).toLocaleString()} Linh Thạch, +${(rw.xp * mul).toLocaleString()} Tu Vi, +${rw.herb * mul} Linh Thảo, +${rw.core * mul} Yêu Đan!`);
+    this.toast(`🧘 Ủy Thác (${rw.kills} Yêu Thú): +${(rw.coin * mul).toLocaleString()} Thạch, +${(rw.xp * mul).toLocaleString()} Tu Vi, +${(rw.essence || 0) * mul} Tinh Thạch${gemCount ? `, +${gemCount} Linh Châu` : ''}!`);
     this.saveState();
     if (this.onUiDirty) this.onUiDirty();
     return rw;

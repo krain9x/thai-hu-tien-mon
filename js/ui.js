@@ -3518,28 +3518,55 @@
       startPrologueOpening();
     } else {
       engine.checkAutoStoryTriggers();
-      // Bế Quan Ngoại Tuyến (Offline Cultivation Harvest if away >= 3 mins!)
-      const offRw = engine.computeOfflineReward();
-      if (offRw) {
-        const hrs = Math.floor(offRw.sec / 3600);
-        const mins = Math.floor((offRw.sec % 3600) / 60);
-        const timeStr = hrs > 0 ? `${hrs} giờ ${mins} phút` : `${mins} phút`;
-        playStorySequence({
-          title: `🧘 Bế Quan Ngoại Tuyến · Thu Hoạch (${timeStr})`,
-          lines: [{
-            who: 'Thanh Linh Nhi · Chấp Sự Tiên Môn',
-            fig: 'npc_thanhlinh',
-            text: `Mừng Tông Chủ xuất quan! Trong ${timeStr} bế quan vừa qua, đệ tử sơn môn đã tụ linh & thu hoạch được:\n• +${fmt(offRw.coin)} Linh Thạch · +${fmt(offRw.xp)} Tu Vi\n• +${offRw.herb} Linh Thảo · +${offRw.core} Yêu Đan`
-          }],
-          choices: [
-            { label: '✨ Bế Quan Viên Mãn (Nhận ×2)', onPick: () => engine.claimOfflineReward(true) },
-            { label: 'Thu Hoạch Bình Thường', onPick: () => engine.claimOfflineReward(false) }
-          ]
-        });
-      }
+      // Bế Quan Ngoại Tuyến / Ủy Thác Treo Máy (if away >= 3 mins!)
+      checkAndShowOfflinePopup();
     }
     updateHud();
   }
+
+  function checkAndShowOfflinePopup() {
+    if (!gameEntered || storyOpen) return;
+    const offRw = engine.computeOfflineReward();
+    if (!offRw) return;
+    const st = engine.state || {};
+    const hrs = Math.floor(offRw.sec / 3600);
+    const mins = Math.floor((offRw.sec % 3600) / 60);
+    const timeStr = hrs > 0 ? `${hrs} giờ ${mins} phút` : `${mins} phút`;
+    const freeX2 = (st.vipLv || 0) >= 1 || !!st.noAds || (st.passDaysLeft || 0) > 0;
+    const extraLines = [
+      `• Tiêu diệt giả lập: ~${fmt(offRw.kills)} Yêu Thú (Trần ${offRw.capHours}h)`,
+      `• +${fmt(offRw.coin)} Linh Thạch · +${fmt(offRw.xp)} Tu Vi · +${offRw.essence} Tinh Thạch`,
+      `• +${offRw.herb} Linh Thảo · +${offRw.core} Yêu Đan${offRw.scroll ? ` · +${offRw.scroll} Ngọc Giản` : ''}${offRw.pill ? ` · +${offRw.pill} Đan Đột Phá` : ''}`,
+      ...(offRw.gems || offRw.gearCount ? [`• Kho báu rơi thêm: ${offRw.gems ? `+${offRw.gems} Linh Châu Lv.1` : ''}${offRw.gems && offRw.gearCount ? ' & ' : ''}${offRw.gearCount ? `+${offRw.gearCount} Trang Bị Ngẫu Nhiên` : ''}`] : [])
+    ].join('\n');
+    playStorySequence({
+      title: `🧘 Ủy Thác Bế Quan · Thu Hoạch (${timeStr})`,
+      lines: [{
+        who: 'Thanh Linh Nhi · Chấp Sự Tiên Môn',
+        fig: 'npc_thanhlinh',
+        text: `Mừng Tông Chủ trở lại! Trong ${timeStr} rời mạng, đệ tử đã tự động săn quái ủy thác và thu về:\n${extraLines}`
+      }],
+      choices: [
+        { label: freeX2 ? '✨ Bế Quan Viên Mãn (Miễn Phí ×2!)' : '✨ Bế Quan Viên Mãn (×2 · 20 Ngọc)', onPick: () => engine.claimOfflineReward(true) },
+        { label: 'Thu Hoạch Bình Thường', onPick: () => engine.claimOfflineReward(false) }
+      ]
+    });
+  }
+
+  // Save state cleanly & detect background return on Mobile/Tab switch!
+  const onAppHide = () => {
+    if (engine && engine.state && engine.state.prologueDone) {
+      engine.saveState();
+    }
+  };
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      onAppHide();
+    } else if (gameEntered) {
+      checkAndShowOfflinePopup();
+    }
+  });
+  window.addEventListener('pagehide', onAppHide);
   document.getElementById('btn-enter-game').onclick = (e) => { e.stopPropagation(); enterGameFromFrontDoor(); };
   const btnNewGameFd = document.getElementById('btn-new-game-fd');
   if (btnNewGameFd) {
@@ -3563,6 +3590,11 @@
     let lastTime = performance.now();
     let hudAcc = 0;
     function frame(now) {
+      if (document.hidden) {
+        lastTime = now;
+        requestAnimationFrame(frame);
+        return;
+      }
       const dt = Math.min(0.1, (now - lastTime) * 0.001);
       lastTime = now;
       // Pause combat & world progression while on Title Screen or reading Story Cutscenes
