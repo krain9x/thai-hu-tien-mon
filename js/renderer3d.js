@@ -233,7 +233,13 @@ class MurimRenderer3D {
     this.preload2DIcons();
     this.setupTownDrag();
     this.resize();
-    window.addEventListener('resize', () => this.resize());
+    const onWinResize = () => {
+      this.resize();
+      setTimeout(() => this.resize(), 120);
+    };
+    window.addEventListener('resize', onWinResize);
+    window.addEventListener('orientationchange', onWinResize);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onWinResize);
   }
 
   preload2DIcons() {
@@ -2885,7 +2891,10 @@ class MurimRenderer3D {
   // --- Camera & Projection Matrices ---
   computeCameraMatrices(dt) {
     const aspect = this.width / Math.max(1, this.height);
-    const fovDeg = this.mode === 'town' ? 30.0 : 32.0;
+    const isPortrait = aspect < 0.92;
+    const baseFov = this.mode === 'town' ? 30.0 : 32.0;
+    const fovDeg = isPortrait ? (baseFov + Math.min(18.0, (0.95 - aspect) * 28.0)) : baseFov;
+    const portDistMul = isPortrait ? Math.min(1.42, 1.0 + (0.95 - aspect) * 0.55) : 1.0;
     const fov = fovDeg * Math.PI / 180;
     const near = 0.8, far = 950.0;
     const f = 1.0 / Math.tan(fov / 2);
@@ -2922,7 +2931,7 @@ class MurimRenderer3D {
         tz += (Math.random() - 0.5) * s;
         if (this.shakeTime <= 0) this.shakeMag = 0;
       }
-      const zoomMul = 1.0 - this.camZoomPulse * 0.14;
+      const zoomMul = (1.0 - this.camZoomPulse * 0.14) * portDistMul;
       ex = tx;
       ey = ty + 11.4 * zoomMul;
       ez = tz - 16.2 * zoomMul;
@@ -3348,6 +3357,11 @@ class MurimRenderer3D {
 
   render(game, dt) {
     if (!this.gl) return;
+    // Prevent stretched/distorted 3D characters in iOS WebClip/Standalone when viewport settles late
+    const cRect = this.glCanvas.getBoundingClientRect();
+    if (cRect.width > 10 && cRect.height > 10 && (Math.abs(Math.floor(cRect.width) - this.width) > 2 || Math.abs(Math.floor(cRect.height) - this.height) > 2)) {
+      this.resize();
+    }
     const gl = this.gl;
     const now = performance.now() * 0.001;
 
