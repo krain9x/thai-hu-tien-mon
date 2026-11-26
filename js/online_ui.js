@@ -34,7 +34,7 @@
 
   let online = null;
   let chatChannel = 'world';
-  let chatCollapsed = false;
+  let chatCollapsed = (window.innerWidth <= 768);
   let lbSort = 'power';
 
   function esc(s) {
@@ -1160,6 +1160,10 @@
     const chatToggle = document.getElementById('lc-toggle-btn');
     const chatBody = document.getElementById('lc-body-wrap');
     if (chatToggle && chatBody) {
+      if (chatCollapsed) {
+        chatBody.classList.add('hidden');
+        chatToggle.textContent = '💬 Mở Chat';
+      }
       chatToggle.onclick = () => {
         chatCollapsed = !chatCollapsed;
         chatBody.classList.toggle('hidden', chatCollapsed);

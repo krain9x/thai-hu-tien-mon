@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>GM Dashboard · Thái Hư Tiên Môn Online</title>
+  <link rel="icon" type="image/png" href="assets/img/Logo_tienmon.png" />
+  <style>
+    :root { --bg:#0d141a; --card:#141f28; --card2:#1a2834; --line:#284052; --txt:#edf4f7; --sub:#9bb4c2; --jade:#3ae0b0; --gold:#ffd257; --red:#ff5d6c; }
+    * { box-sizing:border-box; touch-action:manipulation; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--txt); min-height:100dvh; }
+    a { color:var(--jade); text-decoration:none; }
+    .gm-wrap { max-width:1180px; margin:0 auto; padding:14px; }
+    .gm-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:14px; margin-bottom:12px; }
+    .gm-title { font-size:18px; font-weight:900; color:var(--gold); display:flex; align-items:center; gap:10px; }
+    .gm-badge { font-size:11px; padding:3px 9px; border-radius:20px; background:rgba(58,224,176,0.16); color:var(--jade); border:1px solid rgba(58,224,176,0.4); font-weight:800; }
+    .gm-stats { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:12px; }
+    .gm-stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+    .gm-stat .k { font-size:11.5px; color:var(--sub); font-weight:700; }
+    .gm-stat .v { font-size:22px; font-weight:900; margin-top:4px; color:var(--jade); }
+    .gm-tabs { display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:10px; -webkit-overflow-scrolling:touch; }
+    .gm-tab { white-space:nowrap; padding:9px 14px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--sub); font-weight:800; font-size:13px; cursor:pointer; }
+    .gm-tab.active { background:#1d4e43; border-color:var(--jade); color:#fff; }
+    .gm-panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; }
+    .gm-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+    .gm-inp, .gm-sel { background:#0b1116; border:1px solid var(--line); color:var(--txt); border-radius:9px; padding:9px 11px; font-size:14px; min-width:0; }
+    .gm-btn { border:1px solid #3c697a; background:#1c3240; color:#fff; border-radius:9px; padding:9px 13px; font-weight:800; font-size:13px; cursor:pointer; white-space:nowrap; }
+    .gm-btn.jade { background:#1c6e55; border-color:var(--jade); }
+    .gm-btn.gold { background:#7a5508; border-color:var(--gold); color:#fff7d6; }
+    .gm-btn.red { background:#6e1d29; border-color:var(--red); }
+    .gm-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .gm-tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:10px; border:1px solid var(--line); }
+    table { width:100%; border-collapse:collapse; font-size:13px; min-width:660px; }
+    th, td { padding:9px 10px; text-align:left; border-bottom:1px solid var(--line); }
+    th { background:var(--card2); color:var(--sub); font-size:11.5px; text-transform:uppercase; }
+    tr:hover td { background:rgba(255,255,255,0.03); }
+    .gm-box-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .gm-subcard { background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:12px; }
+    .gm-login-box { max-width:410px; margin:7vh auto; background:var(--card); border:1.5px solid var(--gold); border-radius:16px; padding:22px; }
+    .gm-toast { position:fixed; bottom:18px; right:18px; background:#15362f; border:1.5px solid var(--jade); color:#fff; padding:10px 16px; border-radius:10px; font-weight:800; z-index:999; box-shadow:0 8px 28px rgba(0,0,0,0.5); }
+    .hidden { display:none !important; }
+    @media (max-width: 768px) {
+      .gm-wrap { padding:10px; }
+      .gm-stats { grid-template-columns:repeat(2, 1fr); }
+      .gm-box-grid { grid-template-columns:1fr; }
+      .gm-title { font-size:16px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="gm-login-view" class="gm-login-box hidden">
+    <h2 style="margin:0 0 6px;color:var(--gold);">🏛 GM Admin · Thái Hư Tiên Môn</h2>
+    <div style="font-size:12.5px;color:var(--sub);margin-bottom:14px;">Đăng nhập tài khoản Admin (vd <b>krain9x</b>) để quản lý server, bơm quà, duyệt nạp thẻ &amp; tạo Giftcode.</div>
+    <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;">Tên Đạo Hiệu Admin</label>
+    <input id="gm-user" class="gm-inp" style="width:100%;margin-bottom:10px;" value="krain9x" />
+    <label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px;">Mật Khẩu</label>
+    <input id="gm-pass" type="password" class="gm-inp" style="width:100%;margin-bottom:12px;" placeholder="••••••" />
+    <div id="gm-login-err" style="color:var(--red);font-size:12.5px;margin-bottom:8px;" class="hidden"></div>
+    <div style="display:flex;gap:8px;">
+      <button id="btn-gm-login" class="gm-btn jade" style="flex:1;">🔓 Đăng Nhập Quản Trị</button>
+      <a href="index.html" class="gm-btn">↩ Về Game</a>
+    </div>
+  </div>
+
+  <div id="gm-app-view" class="gm-wrap hidden">
+    <div class="gm-head">
+      <div class="gm-title">
+        <span>⚖ Bảng Điều Khiển GM · Thái Hư Tiên Môn</span>
+        <span id="gm-mode-badge" class="gm-badge">...</span>
+      </div>
+      <div class="gm-row" style="margin:0;">
+        <span id="gm-admin-who" style="font-size:12.5px;color:var(--sub);font-weight:700;"></span>
+        <button id="btn-gm-refresh" class="gm-btn">🔄 Tải Lại</button>
+        <a href="index.html" class="gm-btn jade">🎮 Vào Game</a>
+        <button id="btn-gm-logout" class="gm-btn red">Thoát</button>
+      </div>
+    </div>
+
+    <div class="gm-stats" id="gm-stats-row"></div>
+
+    <div class="gm-tabs">
+      <button class="gm-tab active" data-gtab="players">👥 Người Chơi &amp; Bơm Quà</button>
+      <button class="gm-tab" data-gtab="orders">💳 Duyệt Nạp &amp; VIP</button>
+      <button class="gm-tab" data-gtab="codes">🎫 Giftcode &amp; 📢 Thông Báo</button>
+      <button class="gm-tab" data-gtab="world">🐉 Boss, Co-op &amp; Chat</button>
+    </div>
+
+    <div class="gm-panel" id="gm-panel-body">⏳ Đang tải dữ liệu máy chủ...</div>
+  </div>
+
+  <div id="gm-toast-box" class="gm-toast hidden"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase_config.js?v=44"></script>
+  <script src="js/admin.js?v=44"></script>
+</body>
+</html>

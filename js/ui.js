@@ -3222,9 +3222,10 @@
           <div class="item-row-title">🏆 Lối Tắt Tiên Giới Đại Hội &amp; Tiết Khí</div>
           <div class="item-row-sub">Mở nhanh Luận Kiếm Đài, Tiên Giới Minh và Tu Luyện Lục 30 cấp</div>
         </div>
-        <div style="display:flex;gap:8px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button class="btn-wuxia blue" id="btn-goto-murim-quick">Tiên Giới Đại Hội</button>
           <button class="btn-wuxia" id="btn-goto-season-quick">Tiết Khí Lục</button>
+          ${((window.onlineClient && window.onlineClient.user && (window.TIENMON_ADMIN_USERNAMES || ['krain9x', 'admin']).includes(String(window.onlineClient.user.username || '').toLowerCase()))) ? `<a href="admin.html" target="_blank" class="btn-wuxia gold" style="text-decoration:none;display:inline-flex;align-items:center;">⚖ GM Dashboard</a>` : ''}
         </div>
       </div>
       <div class="item-row-card" style="flex-direction:column;align-items:stretch;gap:8px;">

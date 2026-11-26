@@ -1917,6 +1917,96 @@ async def api_giftcode_redeem(request: web.Request):
     return web.json_response({"ok": True, "code": code, "title": gc["title"], "rewards": rws})
 
 # ==================== STATIC FILE SERVER (NO-CACHE FOR JS/CSS/HTML) ====================
+async def api_admin_overview(request: web.Request):
+    user = auth_user(request)
+    if not user or user["username"].lower() not in ("krain9x", "admin"):
+        return web.json_response({"ok": False, "error": "Chỉ tài khoản GM Admin (krain9x) mới có quyền!"}, status=403)
+    users = [dict(r) for r in DB.execute("""
+        SELECT u.id, u.username, u.sect_name, u.is_bot, u.last_seen,
+               s.power, s.realm_idx, s.max_stage, s.arena_score,
+               COALESCE(b.vip_lv, 0) AS vip_lv, g.name AS guild_name, g.tag AS guild_tag
+        FROM users u LEFT JOIN saves s ON s.user_id=u.id
+        LEFT JOIN user_billing b ON b.user_id=u.id
+        LEFT JOIN guild_members gm ON gm.user_id=u.id
+        LEFT JOIN guilds g ON g.id=gm.guild_id
+        ORDER BY s.power DESC LIMIT 120
+    """).fetchall()]
+    guilds = [dict(r) for r in DB.execute("SELECT * FROM guilds").fetchall()]
+    orders = [dict(r) for r in DB.execute("SELECT * FROM topup_orders ORDER BY id DESC LIMIT 80").fetchall()]
+    codes = [dict(r) for r in DB.execute("SELECT * FROM giftcodes").fetchall()]
+    for c in codes:
+        c["rewards"] = json.loads(c.get("rewards_json") or "{}")
+    chat = [dict(r) for r in DB.execute("SELECT * FROM chat_messages ORDER BY id DESC LIMIT 30").fetchall()]
+    return web.json_response({
+        "ok": True, "users": users, "guilds": guilds, "orders": orders,
+        "codes": codes, "boss": get_wb_payload(), "rooms": build_coop_rooms_payload(), "chat": chat
+    })
+
+async def api_admin_action(request: web.Request):
+    user = auth_user(request)
+    if not user or user["username"].lower() not in ("krain9x", "admin"):
+        return web.json_response({"ok": False, "error": "Forbidden"}, status=403)
+    d = await request.json()
+    kind = d.get("kind")
+    now = time.time()
+    if kind == "grant_mail":
+        tid = d.get("targetId")
+        att = d.get("attachments") or {}
+        title = str(d.get("title") or "Quà GM")
+        if tid == "__ALL__":
+            ids = [r[0] for r in DB.execute("SELECT id FROM users WHERE is_bot=0").fetchall()]
+        else:
+            ids = [int(tid)]
+        for x in ids:
+            send_mail(x, "GM Thái Hư Tiên Môn", title, "Quà hỗ trợ trực tiếp từ Quản Trị Viên.", att)
+        return web.json_response({"ok": True, "count": len(ids)})
+    elif kind == "grant_vip":
+        tid = int(d.get("targetId"))
+        add_exp = int(d.get("addExp") or 0)
+        b = ensure_billing(tid)
+        new_exp = b["vip_exp"] + add_exp
+        new_lv = calc_vip_level(new_exp)
+        DB.execute("UPDATE user_billing SET vip_exp=?, vip_lv=? WHERE user_id=?", (new_exp, new_lv, tid))
+        DB.commit()
+        return web.json_response({"ok": True, "vipLv": new_lv})
+    elif kind == "approve_order":
+        row, err = await fulfill_topup_order(str(d.get("orderCode") or ""))
+        if err:
+            return web.json_response({"ok": False, "error": err}, status=400)
+        return web.json_response({"ok": True})
+    elif kind == "create_giftcode":
+        code = str(d.get("code") or "").strip().upper()
+        if not code:
+            return web.json_response({"ok": False, "error": "Missing code"}, status=400)
+        DB.execute("INSERT OR REPLACE INTO giftcodes (code, title, rewards_json, max_uses, used_count, expires_at) VALUES (?, ?, ?, ?, 0, 0)",
+                   (code, str(d.get("title") or code), json.dumps(d.get("rewards") or {}, ensure_ascii=False), int(d.get("maxUses") or 500)))
+        DB.commit()
+        return web.json_response({"ok": True})
+    elif kind == "delete_giftcode":
+        DB.execute("DELETE FROM giftcodes WHERE code=?", (str(d.get("code") or "").upper(),))
+        DB.commit()
+        return web.json_response({"ok": True})
+    elif kind == "broadcast":
+        await post_system_chat(f"📢 {str(d.get('text') or '').strip()[:220]}")
+        return web.json_response({"ok": True})
+    elif kind == "reset_boss":
+        row = DB.execute("SELECT lv FROM world_boss WHERE id=1").fetchone()
+        nlv = (row["lv"] if row else 0) + 1
+        nmax = int(2500000 * (1 + (nlv - 1) * 0.45))
+        nm = WORLD_BOSS_POOL[(nlv - 1) % len(WORLD_BOSS_POOL)]
+        DB.execute("UPDATE world_boss SET name=?, lv=?, hp=?, max_hp=?, respawn_at=0, dmg_board_json='{}' WHERE id=1", (nm, nlv, nmax, nmax))
+        DB.commit()
+        await ws_broadcast({"type": "wb_update", "boss": get_wb_payload(), "lastHit": None})
+        return web.json_response({"ok": True})
+    elif kind == "delete_item":
+        if d.get("col") == "tm_chat":
+            DB.execute("DELETE FROM chat_messages WHERE id=?", (int(d.get("id")),))
+            DB.commit()
+        elif d.get("col") == "tm_coop_rooms":
+            COOP_ROOMS.pop(str(d.get("id")), None)
+        return web.json_response({"ok": True})
+    return web.json_response({"ok": False, "error": "Unknown admin action"}, status=400)
+
 async def static_handler(request: web.Request):
     rel = request.match_info.get("path", "") or "index.html"
     if rel.endswith("/"):
@@ -1977,6 +2067,8 @@ def create_app():
     app.router.add_get("/api/guildwar", api_guildwar_get)
     app.router.add_post("/api/guildwar/attack", api_guildwar_attack)
     app.router.add_post("/api/guildwar/claim", api_guildwar_claim)
+    app.router.add_get("/api/admin/overview", api_admin_overview)
+    app.router.add_post("/api/admin/action", api_admin_action)
     app.router.add_get("/ws", ws_handler)
     app.router.add_get("/", static_handler)
     app.router.add_get("/{path:.*}", static_handler)

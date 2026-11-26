@@ -1,21 +1,39 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Đọc công khai BXH, Quảng Trường, Bang Hội, Linh Mạch, Boss Thế Giới, Chợ, Chat
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email in [
+          'krain9x@tienmon.local',
+          'krain9x.tw@gmail.com',
+          'admin@tienmon.local'
+        ]
+      );
+    }
+
+    // Đọc công khai BXH, Quảng Trường, Bang Hội, Linh Mạch, Boss Thế Giới, Chợ, Chat, Giftcode
     match /tm_meta/{doc} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isSignedIn();
+    }
+    match /tm_giftcodes/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
     match /tm_users/{uid} {
       allow read: if true;
-      allow write: if request.auth != null && (request.auth.uid == uid || uid.matches('^bot_.*'));
+      allow write: if isSignedIn() && (request.auth.uid == uid || uid.matches('^bot_.*') || isAdmin());
     }
     match /tm_saves/{uid} {
       allow read: if true;
-      allow write: if request.auth != null && (request.auth.uid == uid || uid.matches('^bot_.*'));
+      allow write: if isSignedIn() && (request.auth.uid == uid || uid.matches('^bot_.*') || isAdmin());
     }
     match /tm_billing/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isSignedIn() && (request.auth.uid == uid || isAdmin());
     }
     match /tm_orders/{doc} {
       allow read, write: if request.auth != null;

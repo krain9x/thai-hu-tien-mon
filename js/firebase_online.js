@@ -1104,11 +1104,21 @@
       if (cleanPath === '/api/giftcode/redeem') {
         if (!uid) return { ok: false, error: 'Unauthorized' };
         const code = String(body.code || '').trim().toUpperCase();
-        const gc = GIFTCODES[code];
-        if (!gc) return { ok: false, error: 'Mã Giftcode không hợp lệ!' };
+        let gc = GIFTCODES[code] || null;
+        if (!gc) {
+          const dGc = await this.db.collection('tm_giftcodes').doc(code).get();
+          if (dGc.exists) {
+            const gData = dGc.data();
+            if ((gData.used_count || 0) < (gData.max_uses || 99999)) {
+              gc = { title: gData.title || code, rewards: gData.rewards || {}, _ref: dGc.ref, _used: gData.used_count || 0 };
+            }
+          }
+        }
+        if (!gc) return { ok: false, error: 'Mã Giftcode không hợp lệ hoặc đã hết lượt!' };
         const cRef = this.db.collection('tm_giftcode_claims').doc(`${uid}_${code}`);
         if ((await cRef.get()).exists) return { ok: false, error: 'Tài khoản này đã dùng mã này rồi!' };
         await cRef.set({ user_id: uid, code, claimed_at: now });
+        if (gc._ref) await gc._ref.update({ used_count: (gc._used || 0) + 1 }).catch(() => {});
         return { ok: true, title: gc.title, rewards: gc.rewards };
       }
 

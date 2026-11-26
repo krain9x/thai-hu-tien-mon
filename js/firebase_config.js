@@ -2,6 +2,7 @@
 // 'auto': dùng Python server (nếu có) khi chạy local/VPS, tự chuyển sang Firebase Firestore khi host trên GitHub Pages / static host!
 // Đổi thành 'firebase' nếu muốn test Firestore ngay trên localhost; đổi thành 'server' khi chạy thương mại VPS riêng.
 window.TIENMON_ONLINE_MODE = 'auto';
+window.TIENMON_ADMIN_USERNAMES = ['krain9x', 'admin'];
 
 window.TIENMON_FIREBASE_CONFIG = {
   apiKey: "AIzaSyAUr-dTlecyjCUNsTQ6XeQFR7P8kypsNEU",
