@@ -1,0 +1,428 @@
+{
+  "version": 1,
+  "next": {},
+  "chapters": [
+    {
+      "ch": 0,
+      "title": "Xuyên Không · Thanh Lam Phế Đỉnh",
+      "fight": 3,
+      "fightHint": "Đuổi 3 tên Yêu Thú Linh Khê đang cướp Linh Tuyền!",
+      "join": [
+        "harang",
+        "danbi",
+        "makdong"
+      ],
+      "open": [
+        {
+          "who": "",
+          "fig": "",
+          "voKey": "pro_0",
+          "text": "3 giờ sáng. Màn hình code vẫn sáng rực... Ngay khoảnh khắc Lâm Phong chạm tay vào mảnh Cổ Ngọc Thái Hư trên bàn, một đạo Cửu Thiên Thần Lôi bổ thẳng xuyên qua không gian!"
+        },
+        {
+          "who": "Thanh Linh Nhi",
+          "fig": "npc_thanhlinh",
+          "voKey": "pro_1",
+          "text": "【HỆ THỐNG THÁI HƯ KÍCH HOẠT】\nKý chủ Lâm Phong xuyên không thành công tới phế tích Thanh Lam Tiên Sơn! Linh mạch còn 3% — phát hiện 3 tên Yêu Thú Linh Khê đang xông tới cướp Linh Tuyền!"
+        },
+        {
+          "who": "Lâm Phong",
+          "fig": "hero_lamphong",
+          "voKey": "pro_2",
+          "text": "Khoan đã... tôi xuyên không sang thế giới tu tiên thật luôn rồi sao?! Được thôi, có thanh cổ kiếm này trong tay, để xem ta dọn dẹp đám cướp này thế nào!"
+        }
+      ],
+      "close": [
+        {
+          "who": "Lâm Phong",
+          "fig": "hero_lamphong",
+          "voKey": "pro_close_0",
+          "text": "Thắng rồi! Cơ thể này nhẹ bẫng, luồng linh khí ấm áp đang chảy khắp kinh mạch — còn bộ đồ hiện đại này vừa hóa thành Tiên Bào Thái Hư luôn kìa!"
+        },
+        {
+          "who": "Thanh Linh Nhi",
+          "fig": "npc_thanhlinh",
+          "voKey": "pro_close_1",
+          "text": "Chúc mừng ký chủ hoàn tất trận đầu tiên! Linh Kính đã mở khóa Thanh Liên Kiếm Khí cùng 5 đệ tử ngoại môn đầu tiên. Mau xây dựng Thái Hư Tiên Môn từ phế tích nào!"
+        }
+      ]
+    },
+    {
+      "ch": 1,
+      "title": "Chương 1 · U Lâm Yêu Cốc"
+    },
+    {
+      "ch": 2,
+      "title": "Chương 2 · Bích Thủy Hàn Đàm"
+    },
+    {
+      "ch": 3,
+      "title": "Chương 3 · Xích Viêm Hỏa Cốc"
+    },
+    {
+      "ch": 4,
+      "title": "Chương 4 · Huyền Băng Tuyết Lĩnh"
+    },
+    {
+      "ch": 5,
+      "title": "Chương 5 · Cửu U Ma Vực"
+    }
+  ],
+  "lore": {
+    "lines": [
+      {
+        "id": "st.1",
+        "who": "Thanh Linh Nhi",
+        "fig": "npc_thanhlinh",
+        "text": "【HỆ THỐNG THÁI HƯ KÍCH HOẠT】\nChúc mừng ký chủ Lâm Phong đã đồng bộ hoàn tất! Anh vừa bị Cửu Thiên Thần Lôi đánh xuyên từ thế giới hiện đại thẳng tới phế tích Thanh Lam Tiên Sơn!"
+      },
+      {
+        "id": "st.2",
+        "who": "Lâm Phong",
+        "fig": "hero_lamphong",
+        "text": "Khoan đã... tôi đang ngồi sửa bug lúc 3 giờ sáng, vừa chạm vào mảnh cổ ngọc trên bàn đã bay thẳng tới thế giới tu tiên luôn à?! Còn mấy tên yêu lang vừa rồi là thật 100% sao?"
+      },
+      {
+        "id": "st.3",
+        "who": "Thanh Linh Nhi",
+        "fig": "npc_thanhlinh",
+        "text": "Thật hơn cả deadline của anh đó! Linh mạch núi này chỉ còn 3%, ta tạm ứng trước 300 Linh Thạch từ Thái Hư Kính. Hãy tu luyện, chiêu mộ đệ tử và xây lại Thái Hư Tiên Môn từ đống đổ nát đi nào!"
+      },
+      {
+        "id": "t0.1",
+        "who": "",
+        "fig": "",
+        "text": "Sau khi đánh gục Linh Khê Yêu Vương Ngọc Thiềm Vương, ánh sáng xanh biếc bùng lên từ tấm bia đá cổ đổ nát sau Chính Điện."
+      },
+      {
+        "id": "t0.2",
+        "who": "Thanh Linh Nhi",
+        "fig": "npc_thanhlinh",
+        "text": "Chủ nhân nhìn kìa! Đây là Linh Bia của vị tổ sư ngàn năm trước để lại: \"Thái Hư bất diệt, người hữu duyên xuyên không mà tới, ắt nối lại tiên mạch cửu châu!\""
+      },
+      {
+        "id": "t0.3",
+        "who": "Lâm Phong",
+        "fig": "hero_lamphong",
+        "text": "Xuyên không cũng chẳng phải ngẫu nhiên... Đã tới thế giới này rồi, tôi sẽ dùng cả tư duy hiện đại lẫn Thái Hư Hệ Thống dựng nên đệ nhất tiên môn thiên hạ!"
+      },
+      {
+        "id": "c0.1",
+        "who": "Thanh Linh Nhi",
+        "fig": "npc_thanhlinh",
+        "text": "Linh mạch Thanh Lam Sơn đã hồi phục 20%! Trước khi tiến vào U Lâm Yêu Cốc, Hệ Thống yêu cầu ký chủ chọn con đường Tu Đạo cho Thái Hư Tiên Môn:"
+      },
+      {
+        "id": "c0.2",
+        "who": "Lâm Phong",
+        "fig": "hero_lamphong",
+        "text": "Chính Đạo Tiên Tông lấy hộ sinh làm gốc, Tán Tu Tự Do cầu bạo kích phá giới, hay Ma Đạo Huyết Tông lấy chiến dưỡng chiến — ta chọn con đường nào đây?"
+      },
+      {
+        "id": "pl.p0.hang",
+        "who": "Ngọc Thiềm Vương",
+        "fig": "",
+        "text": "Khắc Linh Ấn lên Hộ Sơn Trận sao? Đợi đấy, yêu tộc U Lâm sẽ không để yên cho ngươi đâu!"
+      },
+      {
+        "id": "pl.p0.return",
+        "who": "Ngọc Thiềm Vương",
+        "fig": "",
+        "text": "Trả lại ấn tín giữ sinh lộ cho lang tộc? Kẻ ngoại lai như ngươi... quả thật khác biệt!"
+      },
+      {
+        "id": "pl.p0.break",
+        "who": "Ngọc Thiềm Vương",
+        "fig": "",
+        "text": "Ngươi dám nghiền nát yêu ấn hấp thu toàn bộ linh khí?! Đúng là sát tinh!"
+      },
+      {
+        "id": "pl.p1.hang",
+        "who": "Thanh La Viên Vương",
+        "fig": "",
+        "text": "Treo Yêu Ấn Hắc Hổ trước cửa Thái Hư Môn... thật là nỗi nhục ngàn năm của ta!"
+      },
+      {
+        "id": "pl.p1.return",
+        "who": "Thanh La Viên Vương",
+        "fig": "",
+        "text": "Đa tạ Tông Chủ khai ân, từ nay U Lâm Yêu Cốc xin kết minh với Thái Hư Tiên Môn!"
+      },
+      {
+        "id": "pl.p1.break",
+        "who": "Thanh La Viên Vương",
+        "fig": "",
+        "text": "Cường giả vi tôn! Ta phục sức mạnh bá đạo của ngươi!"
+      },
+      {
+        "id": "pl.p2.hang",
+        "who": "Bắc Hải Long Quy",
+        "fig": "",
+        "text": "Chàng đem Băng Ấn của thiếp treo giữa Chính Điện, xem ra chàng nhớ thiếp lắm nhỉ?"
+      },
+      {
+        "id": "pl.p2.return",
+        "who": "Bắc Hải Long Quy",
+        "fig": "",
+        "text": "Công tử quả nhiên quân tử, Bích Thủy Hàn Đàm mãi mở cửa đón đệ tử Thái Hư!"
+      },
+      {
+        "id": "pl.p2.break",
+        "who": "Bắc Hải Long Quy",
+        "fig": "",
+        "text": "Lạnh lùng tàn nhẫn... trái tim chàng còn băng giá hơn cả Hàn Đàm này!"
+      },
+      {
+        "id": "pl.p3.hang",
+        "who": "Xích Viêm Hỏa Long Quân",
+        "fig": "",
+        "text": "Hỏa Ấn của bản quân tỏa sáng trên đỉnh Thái Hư, cũng không tệ!"
+      },
+      {
+        "id": "pl.p3.return",
+        "who": "Xích Viêm Hỏa Long Quân",
+        "fig": "",
+        "text": "Khí độ phi phàm! Xích Viêm Hỏa Cốc từ nay cung cấp Huyền Thiết cho tông môn ngươi!"
+      },
+      {
+        "id": "pl.p3.break",
+        "who": "Xích Viêm Hỏa Long Quân",
+        "fig": "",
+        "text": "Đập nát Hỏa Ấn nuốt trọn Địa Hỏa — ngươi điên hơn cả ma tu!"
+      },
+      {
+        "id": "pl.p4.hang",
+        "who": "Vạn Kiếm Tông Chủ",
+        "fig": "",
+        "text": "Kiếm Ấn Tuyết Sơn gặp được minh chủ, thanh kiếm này không còn cô độc nữa."
+      },
+      {
+        "id": "pl.p4.return",
+        "who": "Vạn Kiếm Tông Chủ",
+        "fig": "",
+        "text": "Lấy đức phục kiếm, con đường Phi Thăng của ngươi rộng mở rồi!"
+      },
+      {
+        "id": "pl.p4.break",
+        "who": "Vạn Kiếm Tông Chủ",
+        "fig": "",
+        "text": "Phá bỏ cũ kỹ lập tân kiếm đạo — đáng sợ, thật sự đáng sợ!"
+      },
+      {
+        "id": "pl.p5.hang",
+        "who": "Cửu U Ma Kiếm Đế",
+        "fig": "",
+        "text": "Ma Ấn Cửu U bị trấn áp dưới Thái Hư Chính Điện... thời đại của ngươi đã tới!"
+      },
+      {
+        "id": "pl.p5.return",
+        "who": "Cửu U Ma Kiếm Đế",
+        "fig": "",
+        "text": "Ngay cả Ma Đế ngươi cũng dám tha thứ sao? Thiên địa này rộng lớn thật..."
+      },
+      {
+        "id": "pl.p5.break",
+        "who": "Cửu U Ma Kiếm Đế",
+        "fig": "",
+        "text": "Hủy diệt hoàn toàn Cửu U Ma Ấn! Tên tuổi Lâm Phong sẽ chấn động cửu thiên!"
+      },
+      {
+        "id": "m1.1",
+        "who": "",
+        "fig": "",
+        "text": "Linh khí từ U Lâm Yêu Cốc cuồn cuộn chảy về Thanh Lam Sơn. Cả Thái Hư Tiên Môn chìm trong ánh ngọc bích tinh thuần."
+      },
+      {
+        "id": "m1.2",
+        "who": "Thanh Linh Nhi",
+        "fig": "npc_thanhlinh",
+        "text": "【HỆ THỐNG】: Linh mạch đã khôi phục 40%! Đã mở tọa độ Bích Thủy Hàn Đàm — nơi ẩn giấu Hàn Băng Linh Tuyền quý hiếm!"
+      },
+      {
+        "id": "m2.1",
+        "who": "Lâm Phong",
+        "fig": "hero_lamphong",
+        "text": "Hàn Đàm đã yên bình, nhưng từ phương nam có luồng hỏa khí nóng rực bốc lên tận trời xanh..."
+      },
+      {
+        "id": "m2.2",
+        "who": "Thanh Linh Nhi",
+        "fig": "npc_thanhlinh",
+        "text": "Đó là Xích Viêm Hỏa Cốc! Nếu đoạt được Hỏa Tinh ở đó, Luyện Khí Đường của ta sẽ rèn ra Phi Kiếm cấp Tiên Bảo!"
+      },
+      {
+        "id": "m3.1",
+        "who": "Lâm Phong",
+        "fig": "hero_lamphong",
+        "text": "Vượt qua biển dung nham, phía trước lại là đỉnh Tuyết Sơn quanh năm mây phủ. Vạn Kiếm Tiên Tôn đang chờ thử kiếm."
+      },
+      {
+        "id": "m4.1",
+        "who": "Thanh Linh Nhi",
+        "fig": "npc_thanhlinh",
+        "text": "Cảnh báo! Trăng máu đang mọc ở Cửu U Ma Vực — Cửu U Kiếm Đế đã cảm nhận được khí tức Thái Hư Cổ Ngọc!"
+      },
+      {
+        "id": "m5.1",
+        "who": "",
+        "fig": "",
+        "text": "Cửu U Kiếm Đế ngã xuống, mây đen tan biến, chín đạo kim quang giáng xuống đỉnh Thái Hư Tiên Môn."
+      },
+      {
+        "id": "m5.2",
+        "who": "Lâm Phong",
+        "fig": "hero_lamphong",
+        "text": "Từ một người hiện đại tay trắng xuyên không tới đây, hôm nay Thái Hư Tiên Môn đã đứng trên đỉnh cửu châu. Con đường Phi Thăng — chỉ mới bắt đầu!"
+      }
+    ],
+    "scenes": [
+      {
+        "id": "st.intro",
+        "ch": 0,
+        "title": "Thức Tỉnh Hệ Thống · Thanh Linh Nhi",
+        "jade": 100,
+        "lines": [
+          "st.1",
+          "st.2",
+          "st.3"
+        ]
+      },
+      {
+        "id": "m0.tablet",
+        "ch": 0,
+        "title": "Thái Hư Linh Bia · Cơ Duyên Xuyên Không",
+        "jade": 120,
+        "lines": [
+          "t0.1",
+          "t0.2",
+          "t0.3"
+        ]
+      },
+      {
+        "id": "m0.cross",
+        "ch": 0,
+        "title": "Định Đạo Tu Tiên · Khai Lập Tông Môn",
+        "jade": 150,
+        "lines": [
+          "c0.1",
+          "c0.2"
+        ]
+      },
+      {
+        "id": "m1.boss",
+        "ch": 1,
+        "title": "U Lâm Yêu Cốc · Thu Phục Linh Mạch",
+        "jade": 180,
+        "lines": [
+          "m1.1",
+          "m1.2"
+        ]
+      },
+      {
+        "id": "m2.boss",
+        "ch": 2,
+        "title": "Bích Thủy Hàn Đàm · Hỏa Khí Phương Nam",
+        "jade": 220,
+        "lines": [
+          "m2.1",
+          "m2.2"
+        ]
+      },
+      {
+        "id": "m3.boss",
+        "ch": 3,
+        "title": "Xích Viêm Hỏa Cốc · Hướng Về Tuyết Sơn",
+        "jade": 260,
+        "lines": [
+          "m3.1"
+        ]
+      },
+      {
+        "id": "m4.boss",
+        "ch": 4,
+        "title": "Huyền Băng Tuyết Lĩnh · Triệu Hồi Huyết Nguyệt",
+        "jade": 300,
+        "lines": [
+          "m4.1"
+        ]
+      },
+      {
+        "id": "m5.boss",
+        "ch": 5,
+        "title": "Cửu U Ma Vực · Đỉnh Cao Tu Tiên",
+        "jade": 500,
+        "lines": [
+          "m5.1",
+          "m5.2"
+        ]
+      }
+    ],
+    "chapters": [
+      {
+        "ch": 0,
+        "title": "Xuyên Không · Thanh Lam Phế Đỉnh",
+        "fight": 3,
+        "fightHint": "Đuổi 3 tên Yêu Thú Linh Khê đang cướp Linh Tuyền!",
+        "join": [
+          "harang",
+          "danbi",
+          "makdong"
+        ],
+        "open": [
+          {
+            "who": "",
+            "fig": "",
+            "voKey": "pro_0",
+            "text": "3 giờ sáng. Màn hình code vẫn sáng rực... Ngay khoảnh khắc Lâm Phong chạm tay vào mảnh Cổ Ngọc Thái Hư trên bàn, một đạo Cửu Thiên Thần Lôi bổ thẳng xuyên qua không gian!"
+          },
+          {
+            "who": "Thanh Linh Nhi",
+            "fig": "npc_thanhlinh",
+            "voKey": "pro_1",
+            "text": "【HỆ THỐNG THÁI HƯ KÍCH HOẠT】\nKý chủ Lâm Phong xuyên không thành công tới phế tích Thanh Lam Tiên Sơn! Linh mạch còn 3% — phát hiện 3 tên Yêu Thú Linh Khê đang xông tới cướp Linh Tuyền!"
+          },
+          {
+            "who": "Lâm Phong",
+            "fig": "hero_lamphong",
+            "voKey": "pro_2",
+            "text": "Khoan đã... tôi xuyên không sang thế giới tu tiên thật luôn rồi sao?! Được thôi, có thanh cổ kiếm này trong tay, để xem ta dọn dẹp đám cướp này thế nào!"
+          }
+        ],
+        "close": [
+          {
+            "who": "Lâm Phong",
+            "fig": "hero_lamphong",
+            "voKey": "pro_close_0",
+            "text": "Thắng rồi! Cơ thể này nhẹ bẫng, luồng linh khí ấm áp đang chảy khắp kinh mạch — còn bộ đồ hiện đại này vừa hóa thành Tiên Bào Thái Hư luôn kìa!"
+          },
+          {
+            "who": "Thanh Linh Nhi",
+            "fig": "npc_thanhlinh",
+            "voKey": "pro_close_1",
+            "text": "Chúc mừng ký chủ hoàn tất trận đầu tiên! Linh Kính đã mở khóa Thanh Liên Kiếm Khí cùng 5 đệ tử ngoại môn đầu tiên. Mau xây dựng Thái Hư Tiên Môn từ phế tích nào!"
+          }
+        ]
+      },
+      {
+        "ch": 1,
+        "title": "Chương 1 · U Lâm Yêu Cốc"
+      },
+      {
+        "ch": 2,
+        "title": "Chương 2 · Bích Thủy Hàn Đàm"
+      },
+      {
+        "ch": 3,
+        "title": "Chương 3 · Xích Viêm Hỏa Cốc"
+      },
+      {
+        "ch": 4,
+        "title": "Chương 4 · Huyền Băng Tuyết Lĩnh"
+      },
+      {
+        "ch": 5,
+        "title": "Chương 5 · Cửu U Ma Vực"
+      }
+    ]
+  }
+}

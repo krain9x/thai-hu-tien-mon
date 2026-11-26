@@ -1,0 +1,4200 @@
+{
+  "version": 1,
+  "start": {
+    "coin": 300,
+    "jade": 1000,
+    "xp": 0,
+    "scroll": 0,
+    "pill": 0,
+    "disciples": [
+      "dolsoe",
+      "sundeok"
+    ],
+    "deploySlots": 4
+  },
+  "grades": [
+    {
+      "id": "Ngũ Hành Tạp Căn",
+      "color": "#9AA0A6",
+      "work": 0.05
+    },
+    {
+      "id": "Tam Linh Căn",
+      "color": "#4CAF50",
+      "work": 0.08
+    },
+    {
+      "id": "Song Linh Căn",
+      "color": "#3D8BFF",
+      "work": 0.12
+    },
+    {
+      "id": "Thiên Linh Căn",
+      "color": "#A64DFF",
+      "work": 0.18
+    },
+    {
+      "id": "Thái Hư Tiên Thể",
+      "color": "#FFC23D",
+      "work": 0.25
+    }
+  ],
+  "disciples": [
+    {
+      "id": "yeonhwa",
+      "name": "Bích Dao",
+      "title": "Hàn Băng Kiếm Tiên",
+      "weapon": "Song Băng Kiếm",
+      "art": "yeonhwa",
+      "artDesc": "Tiên tử áo lam băng thêu hoa tuyết, tay cầm Song Băng Kiếm tỏa hàn khí.",
+      "grade": 4,
+      "atk": 28,
+      "hp": 360,
+      "def": 9,
+      "skill": "Hàn Băng Kiếm Vũ",
+      "bonus": "atk",
+      "bonusPer": 0.006,
+      "tex3d": "TT_Tex_Char_BichDao"
+    },
+    {
+      "id": "cheolsan",
+      "name": "Kim Cang",
+      "title": "Bất Diệt Thể Tu",
+      "weapon": "Hàng Ma Kim Côn",
+      "art": "cheolsan",
+      "artDesc": "Thể tu thân pháp kim quang rực rỡ, tay nắm Hàng Ma Kim Côn ngàn cân.",
+      "grade": 3,
+      "atk": 18,
+      "hp": 420,
+      "def": 14,
+      "skill": "Kim Cương Trấn Yêu",
+      "bonus": "hp",
+      "bonusPer": 0.005,
+      "tex3d": "TT_Tex_Char_DaiNhat"
+    },
+    {
+      "id": "unhak",
+      "name": "Huyền Thiên",
+      "title": "Cửu Lôi Kiếm Tôn",
+      "weapon": "Tử Lôi Kiếm",
+      "art": "unhak",
+      "artDesc": "Kiếm tôn đạo bào tím huyền, tóc bạc phiêu dật, triệu hồi tử lôi kiếm trận.",
+      "grade": 3,
+      "atk": 22,
+      "hp": 300,
+      "def": 10,
+      "skill": "Cửu Thiên Lôi Kiếm",
+      "bonus": "atk",
+      "bonusPer": 0.005,
+      "tex3d": "TT_Tex_Char_HuyenThien"
+    },
+    {
+      "id": "cheonga",
+      "name": "Thanh Vân",
+      "title": "Bích Dao Dược Tiên",
+      "weapon": "Linh Ngọc Châm",
+      "art": "cheonga",
+      "artDesc": "Dược tiên mặc lụa ngọc bích, dùng Linh Ngọc Châm trị thương cứu đồng môn.",
+      "grade": 2,
+      "atk": 16,
+      "hp": 230,
+      "def": 6,
+      "skill": "Thanh Liên Hồi Xuân",
+      "bonus": "hp",
+      "bonusPer": 0.004,
+      "tex3d": "TT_Tex_Char_ThanhVan"
+    },
+    {
+      "id": "heugyeong",
+      "name": "U Minh",
+      "title": "Thí Thần Thương Đế",
+      "weapon": "Huyền U Thương",
+      "art": "heugyeong",
+      "artDesc": "Sát thần áo tím đen u huyền, một thương xuyên thủng ma khí.",
+      "grade": 2,
+      "atk": 17,
+      "hp": 240,
+      "def": 7,
+      "skill": "U Minh Phá Không",
+      "bonus": "atk",
+      "bonusPer": 0.004,
+      "tex3d": "TT_Tex_Char_CuuU"
+    },
+    {
+      "id": "soyul",
+      "name": "Tử Vi",
+      "title": "Tinh Thần Trận Sư",
+      "weapon": "Bát Quái Phiến",
+      "art": "soyul",
+      "artDesc": "Trận sư đạo bào tinh hà, phất Bát Quái Linh Phiến khuấy động linh khí.",
+      "grade": 2,
+      "atk": 15,
+      "hp": 220,
+      "def": 6,
+      "skill": "Chu Thiên Tinh Trận",
+      "bonus": "coin",
+      "bonusPer": 0.004,
+      "tex3d": "TT_Tex_Char_VanHon"
+    },
+    {
+      "id": "macheol",
+      "name": "Hỏa Linh",
+      "title": "Chu Tước Viêm Đao",
+      "weapon": "Phần Thiên Đao",
+      "art": "macheol",
+      "artDesc": "Chiến tu lửa đỏ rực, vung Phần Thiên Đao chẻ đôi núi lửa.",
+      "grade": 1,
+      "atk": 13,
+      "hp": 200,
+      "def": 6,
+      "skill": "Chu Tước Viêm Trảm",
+      "bonus": "def",
+      "bonusPer": 0.003,
+      "tex3d": "TT_Tex_Char_HuyetSat"
+    },
+    {
+      "id": "danbi",
+      "name": "Linh Nhi",
+      "title": "Xạ Nhật Tiên Cung",
+      "weapon": "Phượng Vũ Cung",
+      "art": "danbi",
+      "artDesc": "Cung thủ tiên gia tinh nhạy, bắn mũi tên linh khí chuẩn xác trăm bước.",
+      "grade": 1,
+      "atk": 12,
+      "hp": 160,
+      "def": 4,
+      "skill": "Lưu Tinh Tiên Tiễn",
+      "bonus": "atk",
+      "bonusPer": 0.003,
+      "tex3d": "TT_Tex_Char_LinhNhi"
+    },
+    {
+      "id": "harang",
+      "name": "Xích Lôi",
+      "title": "Lôi Đình Quyền Tu",
+      "weapon": "Lôi Hỏa Quyền",
+      "art": "harang",
+      "artDesc": "Quyền tu nhiệt huyết, song quyền quấn điện quang đánh nát giáp yêu thú.",
+      "grade": 1,
+      "atk": 12,
+      "hp": 180,
+      "def": 5,
+      "skill": "Lôi Bạo Phá Sơn",
+      "bonus": "coin",
+      "bonusPer": 0.003,
+      "tex3d": "TT_Tex_Char_XichLoi"
+    },
+    {
+      "id": "dolsoe",
+      "name": "Thạch Hạo",
+      "title": "Ngoại Môn Thể Tu",
+      "weapon": "Linh Mộc Côn",
+      "art": "dolsoe",
+      "artDesc": "Đệ tử ngoại môn chịu khó luyện thể, đứng đầu tuyến chịu đòn cho đồng môn.",
+      "grade": 0,
+      "atk": 9,
+      "hp": 150,
+      "def": 4,
+      "skill": "Bàn Thạch Nhất Kích",
+      "bonus": "hp",
+      "bonusPer": 0.002,
+      "tex3d": "TT_Tex_Char_MacMon"
+    },
+    {
+      "id": "sundeok",
+      "name": "Mộc Thanh",
+      "title": "Ngoại Môn Thương Tu",
+      "weapon": "Thanh Trúc Thương",
+      "art": "sundeok",
+      "artDesc": "Đệ tử ngoại môn tinh thông thương pháp linh mộc, bảo vệ linh điền.",
+      "grade": 0,
+      "atk": 8,
+      "hp": 140,
+      "def": 4,
+      "skill": "Thanh Trúc Đột Kích",
+      "bonus": "coin",
+      "bonusPer": 0.002,
+      "tex3d": "TT_Tex_Char_MocThanh"
+    },
+    {
+      "id": "makdong",
+      "name": "Tiểu Bảo",
+      "title": "Tạp Dịch Tụ Bảo",
+      "weapon": "Linh Châu",
+      "art": "makdong",
+      "artDesc": "Tiểu đạo đồng có thiên phú tìm linh thạch, giúp cả tông tăng tài nguyên.",
+      "grade": 0,
+      "atk": 8,
+      "hp": 110,
+      "def": 3,
+      "skill": "Linh Châu Tán Xạ",
+      "bonus": "atk",
+      "bonusPer": 0.002,
+      "tex3d": "TT_Tex_Char_TieuBao"
+    }
+  ],
+  "discipleLv": {
+    "growth": 0.06,
+    "starGrow": 0.15,
+    "costBase": 60,
+    "costStep": 75,
+    "capByStar": [
+      20,
+      30,
+      40,
+      50,
+      60
+    ]
+  },
+  "recruit": {
+    "costOne": 100,
+    "costTen": 900,
+    "dupShard": 1,
+    "starNeed": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "pity": 50,
+    "pityGrade": 3,
+    "levels": [
+      {
+        "need": 0,
+        "odds": [
+          650,
+          280,
+          60,
+          10,
+          0
+        ]
+      },
+      {
+        "need": 10,
+        "odds": [
+          600,
+          300,
+          80,
+          18,
+          2
+        ]
+      },
+      {
+        "need": 30,
+        "odds": [
+          550,
+          310,
+          110,
+          25,
+          5
+        ]
+      },
+      {
+        "need": 60,
+        "odds": [
+          500,
+          320,
+          140,
+          32,
+          8
+        ]
+      },
+      {
+        "need": 100,
+        "odds": [
+          450,
+          330,
+          165,
+          43,
+          12
+        ]
+      },
+      {
+        "need": 160,
+        "odds": [
+          400,
+          335,
+          195,
+          54,
+          16
+        ]
+      },
+      {
+        "need": 240,
+        "odds": [
+          350,
+          340,
+          225,
+          64,
+          21
+        ]
+      },
+      {
+        "need": 340,
+        "odds": [
+          300,
+          340,
+          250,
+          80,
+          30
+        ]
+      },
+      {
+        "need": 470,
+        "odds": [
+          260,
+          340,
+          265,
+          97,
+          38
+        ]
+      },
+      {
+        "need": 630,
+        "odds": [
+          220,
+          340,
+          280,
+          112,
+          48
+        ]
+      }
+    ]
+  },
+  "train": [
+    {
+      "id": "atk",
+      "name": "Tấn Công",
+      "baseVal": 20,
+      "perLv": 2,
+      "maxVal": 0,
+      "costBase": 10,
+      "costStep": 4
+    },
+    {
+      "id": "hp",
+      "name": "Sinh Lực",
+      "baseVal": 300,
+      "perLv": 30,
+      "maxVal": 0,
+      "costBase": 10,
+      "costStep": 4
+    },
+    {
+      "id": "def",
+      "name": "Phòng Ngự",
+      "baseVal": 10,
+      "perLv": 1,
+      "maxVal": 0,
+      "costBase": 12,
+      "costStep": 5
+    },
+    {
+      "id": "crit",
+      "name": "Tỷ Lệ Bạo Kích",
+      "baseVal": 0.05,
+      "perLv": 0.002,
+      "maxVal": 0.6,
+      "costBase": 20,
+      "costStep": 8
+    },
+    {
+      "id": "critDmg",
+      "name": "Sát Thương Bạo Kích",
+      "baseVal": 1.5,
+      "perLv": 0.01,
+      "maxVal": 0,
+      "costBase": 20,
+      "costStep": 8
+    }
+  ],
+  "realms": [
+    {
+      "name": "Phàm Nhân",
+      "cap": 15,
+      "mul": 1.0,
+      "pill": 0,
+      "reqStage": 1
+    },
+    {
+      "name": "Luyện Khí",
+      "cap": 35,
+      "mul": 1.45,
+      "pill": 6,
+      "reqStage": 5
+    },
+    {
+      "name": "Trúc Cơ",
+      "cap": 65,
+      "mul": 2.2,
+      "pill": 14,
+      "reqStage": 12
+    },
+    {
+      "name": "Kim Đan",
+      "cap": 105,
+      "mul": 3.4,
+      "pill": 28,
+      "reqStage": 22
+    },
+    {
+      "name": "Nguyên Anh",
+      "cap": 155,
+      "mul": 5.2,
+      "pill": 52,
+      "reqStage": 32
+    },
+    {
+      "name": "Hóa Thần",
+      "cap": 220,
+      "mul": 8.0,
+      "pill": 90,
+      "reqStage": 42
+    },
+    {
+      "name": "Luyện Hư",
+      "cap": 300,
+      "mul": 12.5,
+      "pill": 140,
+      "reqStage": 50
+    },
+    {
+      "name": "Hợp Thể",
+      "cap": 400,
+      "mul": 19.0,
+      "pill": 210,
+      "reqStage": 56
+    },
+    {
+      "name": "Đại Thừa",
+      "cap": 520,
+      "mul": 29.0,
+      "pill": 320,
+      "reqStage": 60
+    },
+    {
+      "name": "Phi Thăng",
+      "cap": 700,
+      "mul": 45.0,
+      "pill": 480,
+      "reqStage": 65
+    }
+  ],
+  "skillLv": {
+    "perLv": 0.1,
+    "costBase": 2,
+    "costStep": 1,
+    "capByRealm": [
+      10,
+      20,
+      30,
+      40,
+      50,
+      60
+    ]
+  },
+  "halls": [
+    {
+      "id": "main",
+      "name": "Thái Hư Chính Điện",
+      "role": "Cấp môn phái · Giới hạn cấp các điện khác",
+      "maxLv": 20,
+      "costBase": 1500,
+      "costMul": 1.45,
+      "secBase": 30,
+      "secMul": 1.45,
+      "res": "",
+      "prodBase": 0,
+      "prodStep": 0,
+      "prodMul": 1,
+      "slots": 0,
+      "desc": "Trung tâm linh mạch của Thái Hư Tiên Môn, quyết định giới hạn cấp các tiên điện."
+    },
+    {
+      "id": "vault",
+      "name": "Linh Thạch Khố",
+      "role": "Sản xuất Linh Thạch",
+      "maxLv": 20,
+      "costBase": 1000,
+      "costMul": 1.45,
+      "secBase": 30,
+      "secMul": 1.45,
+      "res": "coin",
+      "prodBase": 3500,
+      "prodStep": 0,
+      "prodMul": 1.34,
+      "slots": 2,
+      "desc": "Khai thác linh mạch, tự động tụ tập Linh Thạch kể cả khi ngoại tuyến."
+    },
+    {
+      "id": "yard",
+      "name": "Diễn Kiếm Đài",
+      "role": "Sản xuất điểm Tu Luyện (kinh nghiệm đệ tử)",
+      "maxLv": 20,
+      "costBase": 1000,
+      "costMul": 1.45,
+      "secBase": 30,
+      "secMul": 1.45,
+      "res": "xp",
+      "prodBase": 1200,
+      "prodStep": 0,
+      "prodMul": 1.34,
+      "slots": 2,
+      "desc": "Nơi đệ tử luyện Ngự Kiếm Thuật, tăng Linh Lực & kinh nghiệm tu luyện."
+    },
+    {
+      "id": "library",
+      "name": "Tàng Pháp Các",
+      "role": "Sản xuất mảnh Ngọc Giản",
+      "maxLv": 20,
+      "costBase": 1200,
+      "costMul": 1.45,
+      "secBase": 40,
+      "secMul": 1.45,
+      "res": "scroll",
+      "prodBase": 4,
+      "prodStep": 2,
+      "prodMul": 1,
+      "slots": 2,
+      "desc": "Lưu giữ ngọc giản Tiên Pháp, mở khóa thần thông và cường hóa uy lực chiêu thức."
+    },
+    {
+      "id": "pharmacy",
+      "name": "Luyện Đan Phòng",
+      "role": "Luyện Đan Dược (nguyên liệu đột phá cảnh giới)",
+      "maxLv": 20,
+      "costBase": 1200,
+      "costMul": 1.45,
+      "secBase": 45,
+      "secMul": 1.45,
+      "res": "pill",
+      "prodBase": 1,
+      "prodStep": 0.5,
+      "prodMul": 1,
+      "slots": 2,
+      "desc": "Luyện chế Hồi Linh Đan & Trúc Cơ Đan, tăng số bình đan mang ra chiến trường."
+    },
+    {
+      "id": "smithy",
+      "name": "Luyện Khí Đường",
+      "role": "Trang Bị · mở trong bản cập nhật",
+      "maxLv": 20,
+      "costBase": 320,
+      "costMul": 1.38,
+      "secBase": 18,
+      "secMul": 1.45,
+      "res": "core",
+      "prodBase": 0,
+      "prodStep": 0,
+      "prodMul": 1,
+      "slots": 0,
+      "locked": false,
+      "desc": "Tế luyện Phi Kiếm & Pháp Bảo, tăng mạnh Công Kích toàn tông môn.",
+      "capLv": 20,
+      "secStep": 12,
+      "workers": 1,
+      "baseRate": 6,
+      "rateGrow": 0.25,
+      "note": "Rèn Thần Binh 3D, tự sản xuất Yêu Đan và giảm 4%/cấp chi phí rèn trang bị."
+    },
+    {
+      "id": "dorm",
+      "name": "Đệ Tử Tiên Phong",
+      "role": "Ô đệ tử tọa trấn Điện Các +1",
+      "maxLv": 6,
+      "costBase": 1500,
+      "costMul": 1.45,
+      "secBase": 35,
+      "secMul": 1.45,
+      "res": "",
+      "prodBase": 0,
+      "prodStep": 0,
+      "prodMul": 1,
+      "slots": 0,
+      "desc": "Xây động phủ cho đệ tử tu luyện, tăng Sinh Lực & tốc độ hồi linh."
+    },
+    {
+      "id": "gate",
+      "name": "Hộ Sơn Đại Trận",
+      "role": "Ải Ngày · Tháp · Thưởng vượt ải +10% mỗi cấp",
+      "maxLv": 20,
+      "costBase": 2000,
+      "costMul": 1.45,
+      "secBase": 45,
+      "secMul": 1.45,
+      "res": "",
+      "prodBase": 0,
+      "prodStep": 0,
+      "prodMul": 1,
+      "slots": 0,
+      "desc": "Trấn giữ cửa núi, tăng Phòng Ngự và thu hút tán tu gia nhập sơn môn."
+    }
+  ],
+  "town": {
+    "name": "Thái Hư Tiên Môn",
+    "main": "main",
+    "dorm": "dorm",
+    "queueMain": [
+      1,
+      5
+    ],
+    "capHours": 8,
+    "workerBase": 2,
+    "workerPerDorm": 1
+  },
+  "away": {
+    "minSec": 300,
+    "capHours": 8,
+    "killsPerMin": 60,
+    "rate": 0.5,
+    "adMul": 2
+  },
+  "chance": {
+    "on": true,
+    "p": 0.05,
+    "perDay": 3,
+    "gapSec": 600,
+    "events": [
+      {
+        "id": "c_old_alchemist",
+        "title": "Lão Đan Sư Dọc Đường",
+        "lines": [
+          "Một lão đạo sĩ râu bạc ngồi bên lò đan hỏng, vẫy tay gọi: \"Tiểu hữu, cho ta mượn chút linh lực ổn định hỏa hầu được chăng?\""
+        ],
+        "a": {
+          "label": "Truyền Linh Lực trợ giúp (+10 Tiên Đức)",
+          "rep": 10,
+          "gifts": [
+            {
+              "res": "pill",
+              "n": 3
+            },
+            {
+              "res": "coinMin",
+              "n": 15
+            }
+          ],
+          "say": "Lão Đan Sư cảm kích tặng 3 Trúc Cơ Đan!"
+        },
+        "b": {
+          "label": "Đòi chia nửa mẻ đan trước (-5 Ma Tính)",
+          "rep": -5,
+          "gifts": [
+            {
+              "res": "jade",
+              "n": 80
+            }
+          ],
+          "say": "Thu được 80 Tiên Ngọc từ mẻ đan quý!"
+        }
+      },
+      {
+        "id": "c_system_glitch",
+        "title": "Dị Biến Thái Hư Kính",
+        "lines": [
+          "[HỆ THỐNG]: Phát hiện mảnh vỡ dữ liệu thời không lơ lửng gần Linh Mạch! Có thể giải mã thành công pháp hoặc chuyển hóa thành Linh Thạch."
+        ],
+        "a": {
+          "label": "Giải mã Ngọc Giản Tiên Pháp",
+          "rep": 5,
+          "gifts": [
+            {
+              "res": "scroll",
+              "n": 3
+            }
+          ],
+          "say": "[HỆ THỐNG]: Giải mã thành công +3 Ngọc Giản!"
+        },
+        "b": {
+          "label": "Chuyển hóa thành Linh Thạch",
+          "rep": 0,
+          "gifts": [
+            {
+              "res": "coinMin",
+              "n": 25
+            }
+          ],
+          "say": "[HỆ THỐNG]: Đã nạp lượng lớn Linh Thạch vào kho!"
+        }
+      },
+      {
+        "id": "c_sword_tomb",
+        "title": "Kiếm Mộ Cổ Xưa",
+        "lines": [
+          "Dưới gốc cổ tùng có một thanh phi kiếm cắm sâu vào đá, phát ra tiếng ngân vang đồng điệu với Thái Hư Cổ Ngọc của Lâm Phong."
+        ],
+        "a": {
+          "label": "Cung kính bái lễ rồi rút kiếm (+10 Tiên Đức)",
+          "rep": 10,
+          "gifts": [
+            {
+              "res": "xpMin",
+              "n": 20
+            },
+            {
+              "res": "jade",
+              "n": 60
+            }
+          ],
+          "say": "Kiếm ý cổ nhân truyền thẳng vào đan điền!"
+        },
+        "b": {
+          "label": "Cưỡng ép luyện hóa kiếm linh (-10 Ma Tính)",
+          "rep": -10,
+          "gifts": [
+            {
+              "res": "pill",
+              "n": 4
+            }
+          ],
+          "say": "Luyện hóa kiếm linh thành 4 viên Đan Dược!"
+        }
+      },
+      {
+        "id": "c_spirit_spring",
+        "title": "Linh Tuyền Bí Ẩn",
+        "lines": [
+          "Thanh Linh Nhi reo lên: \"Chủ nhân! Trước mặt có mắt suối linh khí ngàn năm, đang bị hai tên tán tu tranh giành!\""
+        ],
+        "a": {
+          "label": "Chia đều linh tuyền cho đôi bên (+12 Tiên Đức)",
+          "rep": 12,
+          "gifts": [
+            {
+              "res": "jade",
+              "n": 75
+            }
+          ],
+          "say": "Danh tiếng Thái Hư Tiên Môn vang xa!"
+        },
+        "b": {
+          "label": "Độc chiếm toàn bộ mắt suối (-12 Ma Tính)",
+          "rep": -12,
+          "gifts": [
+            {
+              "res": "coinMin",
+              "n": 30
+            },
+            {
+              "res": "xpMin",
+              "n": 18
+            }
+          ],
+          "say": "Hấp thu trọn vẹn mắt suối linh khí!"
+        }
+      }
+    ]
+  },
+  "shop": {
+    "adJade": 30,
+    "adPerDay": 5,
+    "verifyUrl": "",
+    "products": [
+      {
+        "id": "jade_s",
+        "name": "Nắm Tiên Ngọc",
+        "jade": 300,
+        "krw": 1100,
+        "firstX": 2
+      },
+      {
+        "id": "jade_pass30",
+        "name": "Thẻ Tháng Tiên Ngọc",
+        "desc": "Nhận ngay 400 Tiên Ngọc · Mỗi ngày đăng nhập nhận 120 Tiên Ngọc · Gói 30 ngày",
+        "jade": 400,
+        "krw": 4400,
+        "days": 30,
+        "daily": 120,
+        "maxDays": 90
+      },
+      {
+        "id": "jade_m",
+        "name": "Túi Tiên Ngọc",
+        "jade": 1650,
+        "krw": 5500,
+        "firstX": 2
+      },
+      {
+        "id": "jade_l",
+        "name": "Rương Tiên Ngọc",
+        "jade": 3600,
+        "krw": 11000,
+        "firstX": 2
+      },
+      {
+        "id": "jade_xl",
+        "name": "Hòm Tiên Ngọc",
+        "jade": 12000,
+        "krw": 33000,
+        "firstX": 2
+      },
+      {
+        "id": "starter_pack",
+        "name": "Gói Nhập Môn",
+        "jade": 1000,
+        "coin": 20000,
+        "once": true,
+        "krw": 3300,
+        "icon": "cont_shop"
+      },
+      {
+        "id": "remove_ads",
+        "name": "Lệnh Bài Đặc Quyền Tông Chủ",
+        "desc": "Nhận ngay +500 Tiên Ngọc & đặc quyền tăng tốc tích trữ Linh Điện",
+        "once": true,
+        "noAds": true,
+        "krw": 9900,
+        "icon": "menu_sect",
+        "jade": 500
+      },
+      {
+        "id": "season_pass",
+        "name": "Tiên Lệnh Tu Luyện Lục",
+        "desc": "Mở khóa toàn bộ 30 bậc thưởng cao cấp của Tiết Khí Tu Luyện Lục",
+        "season": true,
+        "krw": 5500,
+        "icon": "nav_season"
+      }
+    ]
+  },
+  "codex": {
+    "dmg": 0.02,
+    "entries": [
+      {
+        "id": "minion",
+        "name": "Yêu Thú Linh Sơn",
+        "desc": "Linh Khê Ngọc Thỏ, Thanh La Sơn Hầu và yêu thú cấp thấp khắp bí cảnh.",
+        "region": -1,
+        "steps": [
+          100,
+          2000,
+          20000,
+          200000
+        ],
+        "jade": [
+          10,
+          20,
+          40,
+          80
+        ]
+      },
+      {
+        "id": "leader",
+        "name": "Thạch Kỳ Lân Thủ Vệ",
+        "desc": "Thủ vệ tinh anh dẫn dắt bầy yêu thú trấn giữ cuối mỗi ải.",
+        "region": -1,
+        "steps": [
+          10,
+          100,
+          1000,
+          5000
+        ],
+        "jade": [
+          10,
+          20,
+          40,
+          80
+        ]
+      },
+      {
+        "id": "boss",
+        "name": "Yêu Vương Trấn Ải",
+        "desc": "Bá chủ sáu đại bí cảnh, nắm giữ Linh Ấn cổ xưa và tuyệt kỹ diệt địa.",
+        "region": -1,
+        "steps": [
+          1,
+          10,
+          50,
+          200
+        ],
+        "jade": [
+          10,
+          20,
+          40,
+          80
+        ]
+      },
+      {
+        "id": "dart",
+        "name": "Xích Hồ & Yêu Pháp Sư",
+        "desc": "Xích Hồ Yêu Tu, Hỏa Kỳ Nhông phóng linh hỏa từ xa, giữ khoảng cách rất khó chịu.",
+        "region": 1,
+        "steps": [
+          30,
+          600,
+          6000,
+          60000
+        ],
+        "jade": [
+          10,
+          20,
+          40,
+          80
+        ]
+      },
+      {
+        "id": "ronin",
+        "name": "Bích Hải & Kiếm Hồn",
+        "desc": "Bích Hải Ngư Vệ, Kiếm Hồn và Bạch Cốt Kiếm Khôi tung kiếm khí sắc lẹm.",
+        "region": 2,
+        "steps": [
+          30,
+          600,
+          6000,
+          60000
+        ],
+        "jade": [
+          10,
+          20,
+          40,
+          80
+        ]
+      },
+      {
+        "id": "shield",
+        "name": "Nham Thạch & Giáp Giải",
+        "desc": "San Hô Giáp Giải và Nham Thạch Ma Khôi giáp đá dày, giảm 60% sát thương chính diện.",
+        "region": 3,
+        "steps": [
+          30,
+          600,
+          6000,
+          60000
+        ],
+        "jade": [
+          10,
+          20,
+          40,
+          80
+        ]
+      },
+      {
+        "id": "toxin",
+        "name": "Mẫu Đơn & Độc Thiềm",
+        "desc": "Mẫu Đơn Hoa Tinh và Vạn Độc Cóc phun sương độc — hạ gục sẽ tan ngay vùng độc.",
+        "region": 4,
+        "steps": [
+          30,
+          600,
+          6000,
+          60000
+        ],
+        "jade": [
+          10,
+          20,
+          40,
+          80
+        ]
+      },
+      {
+        "id": "monk",
+        "name": "Tuyết Hùng & Cú Tuyết Linh",
+        "desc": "Yêu thú thượng cổ biết hồi sinh lực và gia cố linh giáp cho đồng bọn xung quanh.",
+        "region": 5,
+        "steps": [
+          30,
+          600,
+          6000,
+          60000
+        ],
+        "jade": [
+          10,
+          20,
+          40,
+          80
+        ]
+      }
+    ]
+  },
+  "season": {
+    "epochUtc": 1795705200,
+    "days": 28,
+    "tiers": 30,
+    "tierXp": 210,
+    "dayPick": 3,
+    "weekPick": 5,
+    "pass": "season_pass",
+    "introOffStage": 30,
+    "introKeepDays": 14,
+    "boss": {
+      "name": "Ma Đầu Tiết Khí",
+      "runs": 2,
+      "sec": 60,
+      "hpMul": 20,
+      "atkMul": 1.0,
+      "xp": 30,
+      "token": 10,
+      "tokenPer": 25,
+      "tokenMax": 30
+    },
+    "dayGoals": [
+      {
+        "kind": "boss",
+        "n": 1,
+        "xp": 40,
+        "token": 0
+      },
+      {
+        "kind": "train",
+        "n": 5,
+        "xp": 40,
+        "token": 5
+      },
+      {
+        "kind": "collect",
+        "n": 3,
+        "xp": 40,
+        "token": 5
+      },
+      {
+        "kind": "skill",
+        "n": 2,
+        "xp": 40,
+        "token": 5
+      },
+      {
+        "kind": "daily",
+        "n": 2,
+        "xp": 40,
+        "token": 5
+      },
+      {
+        "kind": "tower",
+        "n": 1,
+        "xp": 40,
+        "token": 5
+      },
+      {
+        "kind": "road",
+        "n": 1,
+        "xp": 40,
+        "token": 5
+      }
+    ],
+    "weekGoals": [
+      {
+        "kind": "boss",
+        "n": 10,
+        "xp": 150,
+        "token": 20
+      },
+      {
+        "kind": "train",
+        "n": 40,
+        "xp": 150,
+        "token": 20
+      },
+      {
+        "kind": "collect",
+        "n": 25,
+        "xp": 150,
+        "token": 20
+      },
+      {
+        "kind": "recruit",
+        "n": 10,
+        "xp": 150,
+        "token": 20
+      },
+      {
+        "kind": "skill",
+        "n": 15,
+        "xp": 150,
+        "token": 20
+      },
+      {
+        "kind": "daily",
+        "n": 10,
+        "xp": 150,
+        "token": 20
+      },
+      {
+        "kind": "tower",
+        "n": 5,
+        "xp": 150,
+        "token": 20
+      },
+      {
+        "kind": "road",
+        "n": 7,
+        "xp": 150,
+        "token": 20
+      }
+    ],
+    "free": [
+      {
+        "res": "coinMin",
+        "n": 45
+      },
+      {
+        "res": "scroll",
+        "n": 4
+      },
+      {
+        "res": "jade",
+        "n": 40
+      },
+      {
+        "res": "xpMin",
+        "n": 45
+      },
+      {
+        "res": "pill",
+        "n": 2
+      },
+      {
+        "res": "coinMin",
+        "n": 70
+      },
+      {
+        "res": "scroll",
+        "n": 6
+      },
+      {
+        "res": "jade",
+        "n": 60
+      },
+      {
+        "res": "xpMin",
+        "n": 70
+      },
+      {
+        "res": "pill",
+        "n": 3,
+        "res2": "jade",
+        "n2": 80
+      },
+      {
+        "res": "coinMin",
+        "n": 90
+      },
+      {
+        "res": "scroll",
+        "n": 8
+      },
+      {
+        "res": "jade",
+        "n": 60
+      },
+      {
+        "res": "xpMin",
+        "n": 90
+      },
+      {
+        "res": "pill",
+        "n": 3
+      },
+      {
+        "res": "coinMin",
+        "n": 90
+      },
+      {
+        "res": "scroll",
+        "n": 9
+      },
+      {
+        "res": "jade",
+        "n": 80
+      },
+      {
+        "res": "xpMin",
+        "n": 90
+      },
+      {
+        "res": "pill",
+        "n": 4,
+        "res2": "jade",
+        "n2": 120
+      },
+      {
+        "res": "coinMin",
+        "n": 135
+      },
+      {
+        "res": "scroll",
+        "n": 9
+      },
+      {
+        "res": "jade",
+        "n": 80
+      },
+      {
+        "res": "xpMin",
+        "n": 135
+      },
+      {
+        "res": "pill",
+        "n": 4
+      },
+      {
+        "res": "coinMin",
+        "n": 180
+      },
+      {
+        "res": "scroll",
+        "n": 12
+      },
+      {
+        "res": "jade",
+        "n": 90
+      },
+      {
+        "res": "xpMin",
+        "n": 180
+      },
+      {
+        "res": "pill",
+        "n": 8,
+        "res2": "jade",
+        "n2": 300
+      }
+    ],
+    "paid": [
+      {
+        "res": "jade",
+        "n": 80,
+        "res2": "pill",
+        "n2": 1
+      },
+      {
+        "res": "coinMin",
+        "n": 60
+      },
+      {
+        "res": "scroll",
+        "n": 5
+      },
+      {
+        "res": "jade",
+        "n": 40
+      },
+      {
+        "res": "pill",
+        "n": 2
+      },
+      {
+        "res": "xpMin",
+        "n": 60
+      },
+      {
+        "res": "jade",
+        "n": 40
+      },
+      {
+        "res": "scroll",
+        "n": 6
+      },
+      {
+        "res": "coinMin",
+        "n": 90
+      },
+      {
+        "res": "jade",
+        "n": 150,
+        "res2": "pill",
+        "n2": 2
+      },
+      {
+        "res": "xpMin",
+        "n": 90
+      },
+      {
+        "res": "jade",
+        "n": 40
+      },
+      {
+        "res": "scroll",
+        "n": 7
+      },
+      {
+        "res": "pill",
+        "n": 2
+      },
+      {
+        "res": "jade",
+        "n": 50,
+        "res2": "coinMin",
+        "n2": 120
+      },
+      {
+        "res": "xpMin",
+        "n": 120
+      },
+      {
+        "res": "jade",
+        "n": 50
+      },
+      {
+        "res": "scroll",
+        "n": 8
+      },
+      {
+        "res": "pill",
+        "n": 2
+      },
+      {
+        "res": "jade",
+        "n": 200,
+        "res2": "pill",
+        "n2": 2
+      },
+      {
+        "res": "coinMin",
+        "n": 150
+      },
+      {
+        "res": "jade",
+        "n": 50
+      },
+      {
+        "res": "scroll",
+        "n": 9
+      },
+      {
+        "res": "xpMin",
+        "n": 150
+      },
+      {
+        "res": "pill",
+        "n": 2,
+        "res2": "jade",
+        "n2": 60
+      },
+      {
+        "res": "coinMin",
+        "n": 180
+      },
+      {
+        "res": "jade",
+        "n": 60
+      },
+      {
+        "res": "scroll",
+        "n": 10
+      },
+      {
+        "res": "xpMin",
+        "n": 180
+      },
+      {
+        "res": "jade",
+        "n": 400,
+        "res2": "pill",
+        "n2": 4
+      }
+    ],
+    "trade": [
+      {
+        "res": "scroll",
+        "n": 5,
+        "cost": 30,
+        "max": 10
+      },
+      {
+        "res": "pill",
+        "n": 1,
+        "cost": 50,
+        "max": 6
+      },
+      {
+        "res": "jade",
+        "n": 50,
+        "cost": 40,
+        "max": 10
+      },
+      {
+        "res": "coinMin",
+        "n": 60,
+        "cost": 20,
+        "max": 10
+      },
+      {
+        "res": "xpMin",
+        "n": 60,
+        "cost": 20,
+        "max": 10
+      }
+    ],
+    "intro": [
+      {
+        "goals": [
+          {
+            "kind": "stage",
+            "n": 5,
+            "res": "jade",
+            "amt": 30
+          },
+          {
+            "kind": "train",
+            "n": 10,
+            "res": "scroll",
+            "amt": 2
+          },
+          {
+            "kind": "collect",
+            "n": 3,
+            "res": "coinMin",
+            "amt": 20
+          },
+          {
+            "kind": "recruit",
+            "n": 1,
+            "res": "jade",
+            "amt": 30
+          }
+        ],
+        "res": "jade",
+        "n": 100
+      },
+      {
+        "goals": [
+          {
+            "kind": "stage",
+            "n": 10,
+            "res": "jade",
+            "amt": 30
+          },
+          {
+            "kind": "skill",
+            "n": 2,
+            "res": "scroll",
+            "amt": 3
+          },
+          {
+            "kind": "daily",
+            "n": 1,
+            "res": "coinMin",
+            "amt": 30
+          },
+          {
+            "kind": "train",
+            "n": 25,
+            "res": "xpMin",
+            "amt": 30
+          }
+        ],
+        "res": "pill",
+        "n": 2
+      },
+      {
+        "goals": [
+          {
+            "kind": "stage",
+            "n": 15,
+            "res": "jade",
+            "amt": 40
+          },
+          {
+            "kind": "daily",
+            "n": 3,
+            "res": "scroll",
+            "amt": 3
+          },
+          {
+            "kind": "recruit",
+            "n": 5,
+            "res": "jade",
+            "amt": 40
+          },
+          {
+            "kind": "collect",
+            "n": 10,
+            "res": "coinMin",
+            "amt": 30
+          }
+        ],
+        "res": "jade",
+        "n": 150
+      },
+      {
+        "goals": [
+          {
+            "kind": "stage",
+            "n": 20,
+            "res": "jade",
+            "amt": 40
+          },
+          {
+            "kind": "tower",
+            "n": 1,
+            "res": "scroll",
+            "amt": 4
+          },
+          {
+            "kind": "train",
+            "n": 50,
+            "res": "xpMin",
+            "amt": 45
+          },
+          {
+            "kind": "skill",
+            "n": 5,
+            "res": "scroll",
+            "amt": 3
+          }
+        ],
+        "res": "pill",
+        "n": 2
+      },
+      {
+        "goals": [
+          {
+            "kind": "stage",
+            "n": 25,
+            "res": "jade",
+            "amt": 50
+          },
+          {
+            "kind": "road",
+            "n": 1,
+            "res": "coinMin",
+            "amt": 45
+          },
+          {
+            "kind": "daily",
+            "n": 6,
+            "res": "scroll",
+            "amt": 4
+          },
+          {
+            "kind": "recruit",
+            "n": 10,
+            "res": "jade",
+            "amt": 50
+          }
+        ],
+        "res": "jade",
+        "n": 200
+      },
+      {
+        "goals": [
+          {
+            "kind": "stage",
+            "n": 30,
+            "res": "jade",
+            "amt": 50
+          },
+          {
+            "kind": "tower",
+            "n": 3,
+            "res": "scroll",
+            "amt": 5
+          },
+          {
+            "kind": "collect",
+            "n": 25,
+            "res": "coinMin",
+            "amt": 60
+          },
+          {
+            "kind": "skill",
+            "n": 10,
+            "res": "scroll",
+            "amt": 4
+          }
+        ],
+        "res": "pill",
+        "n": 3
+      },
+      {
+        "goals": [
+          {
+            "kind": "stage",
+            "n": 40,
+            "res": "jade",
+            "amt": 60
+          },
+          {
+            "kind": "road",
+            "n": 3,
+            "res": "xpMin",
+            "amt": 60
+          },
+          {
+            "kind": "train",
+            "n": 100,
+            "res": "coinMin",
+            "amt": 60
+          },
+          {
+            "kind": "rebirth",
+            "n": 1,
+            "res": "jade",
+            "amt": 100
+          }
+        ],
+        "res": "jade",
+        "n": 300
+      }
+    ],
+    "name": "Tiết Khí · Cửu Tiêu Linh Hội",
+    "bossName": "Thái Cổ Lôi Thú"
+  },
+  "trial": {
+    "resetHour": 0,
+    "dailyRuns": 2,
+    "gateHall": "gate",
+    "gateBonus": 0.1,
+    "questJade": 30,
+    "questScroll": 2,
+    "questTrain": 3,
+    "daily": [
+      {
+        "id": "coin",
+        "name": "Linh Thạch Quặng Mạch",
+        "res": "coin",
+        "openGateLv": 1,
+        "maxLv": 20,
+        "waves": [
+          14,
+          16,
+          18
+        ],
+        "sec": 60,
+        "stagePer": 2,
+        "rewardBase": 6000,
+        "rewardStep": 0,
+        "rewardMul": 1.12,
+        "desc": "Khai thác lượng lớn Linh Thạch để xây dựng Tiên Điện."
+      },
+      {
+        "id": "xp",
+        "name": "Tụ Linh Bí Cảnh",
+        "res": "xp",
+        "openGateLv": 1,
+        "maxLv": 20,
+        "waves": [
+          14,
+          16,
+          18
+        ],
+        "sec": 60,
+        "stagePer": 2,
+        "rewardBase": 3000,
+        "rewardStep": 0,
+        "rewardMul": 1.2,
+        "desc": "Hấp thu Linh Khí thuần khiết, tăng nhanh tu vi Tông Chủ."
+      },
+      {
+        "id": "scroll",
+        "name": "Cổ Kiếm Mộ Địa",
+        "res": "scroll",
+        "openGateLv": 1,
+        "maxLv": 20,
+        "waves": [
+          14,
+          16,
+          18
+        ],
+        "sec": 60,
+        "stagePer": 2,
+        "rewardBase": 10,
+        "rewardStep": 3,
+        "rewardMul": 1,
+        "desc": "Thu thập Ngọc Giản Tiên Pháp & Đan Dược đột phá."
+      },
+      {
+        "id": "forge",
+        "name": "Luyện Khí Bí Cảnh",
+        "res": "forge",
+        "openGateLv": 1,
+        "maxLv": 20,
+        "waves": [
+          12,
+          14,
+          16
+        ],
+        "sec": 60,
+        "stagePer": 2,
+        "rewardBase": 14,
+        "rewardStep": 4,
+        "rewardMul": 1,
+        "desc": "Săn Yêu Đan, Linh Thảo và Phôi Thần Binh để rèn & cường hóa trang bị!"
+      }
+    ],
+    "tower": {
+      "name": "Thông Thiên Tháp",
+      "openGateLv": 2,
+      "floors": 20,
+      "stagePer": 2,
+      "bossEvery": 5,
+      "waves": [
+        12
+      ],
+      "sec": 60,
+      "jade": 30,
+      "jadeBoss": 150,
+      "scroll": 2
+    }
+  },
+  "fight": {
+    "step": 0.05,
+    "gates": 10,
+    "waves": [
+      12,
+      13,
+      15
+    ],
+    "waveNextAlive": 20,
+    "spawnGap": 0.12,
+    "maxAlive": 30,
+    "escortLeader": 6,
+    "escortBoss": 8,
+    "gateGrow": 1.06,
+    "foeGateGrow": 1.1,
+    "foeGateGrows": [
+      1.06,
+      1.06,
+      1.16,
+      1.1,
+      1.1,
+      1.1
+    ],
+    "chapterGrow": 3.07,
+    "chapterGrows": [
+      4.5,
+      2.1,
+      4.94,
+      3.07
+    ],
+    "legacyChapterGrow": 1.5,
+    "legacyChapterGrows": [
+      4.5,
+      1.5,
+      1.5,
+      1.5
+    ],
+    "legacyBossHps": [
+      1,
+      0.9,
+      0.6,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "xpChapterGrow": 4.5,
+    "xpChapterGrows": [
+      4.5,
+      4.5,
+      3,
+      3
+    ],
+    "bossHps": [
+      1,
+      0.9,
+      0.55,
+      0.35,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.3
+    ],
+    "coinGrow": 1.06,
+    "defPow": 0.1,
+    "defFrom": 20,
+    "startSec": 1.0,
+    "clearSec": 2.2,
+    "defeatSec": 2.5,
+    "corpseSec": 2.2,
+    "restFill": 0.5,
+    "huntLoops": 2,
+    "retryGainNear": 0.04,
+    "retryGainFar": 0.06,
+    "retryBossNear": 0.05,
+    "retryBossFar": 0.3,
+    "retryMinKills": 15,
+    "retryMaxLoops": 30,
+    "retryBossLoops": 90,
+    "readAfter": 480,
+    "readAfters": [
+      240,
+      240,
+      240,
+      240
+    ],
+    "readPerMin": 0.09,
+    "readMax": 0.45,
+    "readPow": 0.77,
+    "readNear": 0.925,
+    "readFar": 0.6,
+    "readCurve": 0.7,
+    "slots": 3,
+    "arenaX": 15,
+    "arenaZMin": -3,
+    "arenaZMax": 31,
+    "spawnXMin": 2,
+    "spawnXMax": 14,
+    "spawnZMin": 18,
+    "spawnZMax": 24,
+    "lanes": [
+      {
+        "id": "camp",
+        "x0": 5,
+        "x1": 10,
+        "z0": 15,
+        "z1": 20
+      },
+      {
+        "id": "pass",
+        "x0": -1.5,
+        "x1": 2.5,
+        "z0": 21,
+        "z1": 25
+      },
+      {
+        "id": "grove",
+        "x0": -9.5,
+        "x1": -5.5,
+        "z0": 11,
+        "z1": 15.5
+      },
+      {
+        "id": "ford",
+        "x0": 10.5,
+        "x1": 14,
+        "z0": 3,
+        "z1": 8
+      },
+      {
+        "id": "ridge",
+        "x0": -12.5,
+        "x1": -9,
+        "z0": 3,
+        "z1": 7.5
+      },
+      {
+        "id": "roadA",
+        "x0": 4.3,
+        "x1": 7.3,
+        "z0": 15,
+        "z1": 18.5
+      },
+      {
+        "id": "roadB",
+        "x0": 5.4,
+        "x1": 8.4,
+        "z0": 19,
+        "z1": 22.5
+      },
+      {
+        "id": "roadC",
+        "x0": 6.5,
+        "x1": 9.5,
+        "z0": 23,
+        "z1": 26.5
+      },
+      {
+        "id": "daisL",
+        "x0": -3,
+        "x1": -1.6,
+        "z0": 8,
+        "z1": 14
+      },
+      {
+        "id": "daisR",
+        "x0": 6.6,
+        "x1": 8,
+        "z0": 8,
+        "z1": 14
+      },
+      {
+        "id": "daisC",
+        "x0": 0,
+        "x1": 5,
+        "z0": 17.5,
+        "z1": 19
+      },
+      {
+        "id": "duel",
+        "x0": -0.5,
+        "x1": 0.5,
+        "z0": 11,
+        "z1": 12
+      }
+    ],
+    "plans": [
+      {
+        "id": "g1",
+        "waves": [
+          "camp",
+          "camp",
+          "grove"
+        ],
+        "leader": "pass",
+        "escort": "camp"
+      },
+      {
+        "id": "g2",
+        "waves": [
+          "grove",
+          "pass",
+          "camp"
+        ],
+        "leader": "camp",
+        "escort": "ford"
+      },
+      {
+        "id": "g3",
+        "waves": [
+          "camp",
+          "pass",
+          "grove"
+        ],
+        "leader": "camp",
+        "escort": "ford"
+      },
+      {
+        "id": "g4",
+        "waves": [
+          "grove",
+          "ridge",
+          "camp"
+        ],
+        "leader": "pass",
+        "escort": "camp"
+      },
+      {
+        "id": "g5",
+        "waves": [
+          "ford",
+          "camp",
+          "grove"
+        ],
+        "leader": "camp",
+        "escort": "pass"
+      },
+      {
+        "id": "g6",
+        "waves": [
+          "camp",
+          "ridge",
+          "grove"
+        ],
+        "leader": "grove",
+        "escort": "camp"
+      },
+      {
+        "id": "g7",
+        "waves": [
+          "camp",
+          "ford",
+          "pass"
+        ],
+        "leader": "camp",
+        "escort": "camp"
+      },
+      {
+        "id": "g8",
+        "waves": [
+          "grove",
+          "ridge",
+          "camp"
+        ],
+        "leader": "camp",
+        "escort": "pass"
+      },
+      {
+        "id": "g9",
+        "waves": [
+          "pass",
+          "camp",
+          "ford"
+        ],
+        "leader": "grove",
+        "escort": "ridge"
+      },
+      {
+        "id": "boss",
+        "zone": "ford",
+        "waves": [
+          "camp",
+          "ford",
+          "pass"
+        ],
+        "leader": "camp",
+        "escort": "camp"
+      },
+      {
+        "id": "daily.coin",
+        "zone": "pass",
+        "waves": [
+          "roadA+roadB",
+          "roadC",
+          "roadB+ford"
+        ],
+        "leader": "roadA",
+        "escort": "roadB+roadC"
+      },
+      {
+        "id": "daily.xp",
+        "zone": "ridge",
+        "waves": [
+          "grove+ridge",
+          "grove",
+          "camp+pass"
+        ],
+        "leader": "ford",
+        "escort": "camp"
+      },
+      {
+        "id": "daily.scroll",
+        "zone": "grove",
+        "waves": [
+          "ridge",
+          "grove",
+          "camp"
+        ],
+        "leader": "camp",
+        "escort": "pass"
+      },
+      {
+        "id": "raid",
+        "zone": "gate",
+        "waves": [
+          "camp",
+          "pass+grove",
+          "grove"
+        ],
+        "leader": "camp",
+        "escort": "pass"
+      },
+      {
+        "id": "tower",
+        "zone": "tower",
+        "x0": -3,
+        "x1": 8,
+        "z0": -3,
+        "z1": 19,
+        "waves": [
+          "daisL+daisC+daisR"
+        ],
+        "leader": "daisC",
+        "escort": "daisL+daisR"
+      },
+      {
+        "id": "shadow",
+        "zone": "shadow",
+        "x0": -6,
+        "x1": 8,
+        "z0": -3,
+        "z1": 16,
+        "waves": [
+          "duel"
+        ],
+        "leader": "duel",
+        "escort": "duel"
+      }
+    ],
+    "gatePlans": [
+      "g1",
+      "g2",
+      "g3",
+      "g4",
+      "g5",
+      "g6",
+      "g7",
+      "g8",
+      "g9"
+    ],
+    "highStep": 0.6,
+    "highHit": 1.2,
+    "zoneCycle": [
+      "camp",
+      "pass",
+      "grove",
+      "ridge"
+    ],
+    "regionZones": [
+      {
+        "cycle": [
+          "camp",
+          "pass",
+          "grove"
+        ],
+        "boss": "ford"
+      },
+      {
+        "cycle": [
+          "ridge",
+          "ford",
+          "camp"
+        ],
+        "boss": "gate"
+      },
+      {
+        "cycle": [
+          "grove",
+          "ridge",
+          "ford"
+        ],
+        "boss": "pass"
+      },
+      {
+        "cycle": [
+          "ford",
+          "gate",
+          "ridge"
+        ],
+        "boss": "grove"
+      },
+      {
+        "cycle": [
+          "pass",
+          "grove",
+          "gate"
+        ],
+        "boss": "camp"
+      },
+      {
+        "cycle": [
+          "gate",
+          "camp",
+          "pass"
+        ],
+        "boss": "ridge"
+      }
+    ],
+    "nodeZones": [
+      "grove",
+      "ridge",
+      "camp",
+      "pass",
+      "gate"
+    ],
+    "zones": [
+      {
+        "id": "camp",
+        "waterMul": 0.55,
+        "water": [
+          {
+            "id": "s1",
+            "x0": 9.2,
+            "x1": 12.2,
+            "z0": -3,
+            "z1": 3.5
+          },
+          {
+            "id": "s2",
+            "x0": 10.3,
+            "x1": 13.3,
+            "z0": 3.5,
+            "z1": 5.0
+          },
+          {
+            "id": "s3",
+            "x0": 10.3,
+            "x1": 13.3,
+            "z0": 6.4,
+            "z1": 8.6
+          },
+          {
+            "id": "s4",
+            "x0": 11.9,
+            "x1": 15,
+            "z0": 8.6,
+            "z1": 12.6
+          }
+        ],
+        "breaks": [
+          {
+            "id": "cv1",
+            "x0": 4.5,
+            "x1": 10.5,
+            "z0": 13.6,
+            "z1": 14.4,
+            "look": "chevaux",
+            "hp": 6
+          },
+          {
+            "id": "cv2",
+            "x0": -5,
+            "x1": -4.2,
+            "z0": 10.5,
+            "z1": 16,
+            "look": "chevaux",
+            "hp": 6
+          }
+        ],
+        "nodes": [
+          3.8,
+          14,
+          11.2,
+          14,
+          -4.6,
+          9.8,
+          -4.6,
+          16.7
+        ]
+      },
+      {
+        "id": "pass",
+        "walls": [
+          {
+            "id": "wl1",
+            "x0": -15,
+            "x1": -5,
+            "z0": 6,
+            "z1": 9.8,
+            "look": "cliff"
+          },
+          {
+            "id": "wl2",
+            "x0": -15,
+            "x1": -3.5,
+            "z0": 13.2,
+            "z1": 18,
+            "look": "cliff"
+          },
+          {
+            "id": "wl3",
+            "x0": -15,
+            "x1": -6,
+            "z0": 18,
+            "z1": 31,
+            "look": "cliff"
+          },
+          {
+            "id": "wr1",
+            "x0": 5,
+            "x1": 15,
+            "z0": 6,
+            "z1": 14,
+            "look": "cliff"
+          },
+          {
+            "id": "wr2",
+            "x0": 3.5,
+            "x1": 15,
+            "z0": 14,
+            "z1": 18,
+            "look": "cliff"
+          },
+          {
+            "id": "wr3",
+            "x0": 6,
+            "x1": 15,
+            "z0": 18,
+            "z1": 31,
+            "look": "cliff"
+          }
+        ],
+        "high": [
+          {
+            "id": "st",
+            "x0": -3.5,
+            "x1": 3.5,
+            "z0": 14,
+            "z1": 18,
+            "look": "stairs",
+            "h": 0,
+            "h1": 1.6,
+            "ramp": "z"
+          },
+          {
+            "id": "top",
+            "x0": -6,
+            "x1": 6,
+            "z0": 18,
+            "z1": 31,
+            "look": "terrace",
+            "h": 1.6
+          }
+        ],
+        "lanes": [
+          {
+            "id": "camp",
+            "x0": -2,
+            "x1": 2,
+            "z0": 19,
+            "z1": 23
+          },
+          {
+            "id": "pass",
+            "x0": -2,
+            "x1": 2.5,
+            "z0": 26,
+            "z1": 30
+          },
+          {
+            "id": "grove",
+            "x0": -13,
+            "x1": -8,
+            "z0": 10.5,
+            "z1": 12.5
+          },
+          {
+            "id": "ford",
+            "x0": 9,
+            "x1": 14,
+            "z0": 0.5,
+            "z1": 4
+          },
+          {
+            "id": "ridge",
+            "x0": -14,
+            "x1": -10,
+            "z0": 0,
+            "z1": 4
+          },
+          {
+            "id": "roadA",
+            "x0": -2,
+            "x1": 1,
+            "z0": 19,
+            "z1": 22
+          },
+          {
+            "id": "roadB",
+            "x0": -1,
+            "x1": 2,
+            "z0": 23,
+            "z1": 26
+          },
+          {
+            "id": "roadC",
+            "x0": 0,
+            "x1": 3,
+            "z0": 27,
+            "z1": 30
+          }
+        ],
+        "nodes": [
+          0,
+          4,
+          0,
+          10,
+          -4.2,
+          11.5,
+          -9,
+          11.5,
+          0,
+          13,
+          0,
+          19,
+          0,
+          25
+        ]
+      },
+      {
+        "id": "grove",
+        "waterMul": 0.5,
+        "walls": [
+          {
+            "id": "t0",
+            "x": -6,
+            "z": 7.5,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t1",
+            "x": -1.5,
+            "z": 6.5,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t2",
+            "x": 3.5,
+            "z": 8,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t3",
+            "x": 7.5,
+            "z": 11,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t4",
+            "x": -8.5,
+            "z": 12.5,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t5",
+            "x": 1.5,
+            "z": 13.5,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t6",
+            "x": 6,
+            "z": 15.5,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t7",
+            "x": -5.5,
+            "z": 20,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t8",
+            "x": 1,
+            "z": 19.5,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t9",
+            "x": 9.5,
+            "z": 19.5,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t10",
+            "x": -9.5,
+            "z": 23,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t11",
+            "x": 5.5,
+            "z": 26,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t12",
+            "x": 11,
+            "z": 9,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t13",
+            "x": 12,
+            "z": 15,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t14",
+            "x": -12,
+            "z": 10,
+            "r": 0.55,
+            "look": "tree"
+          },
+          {
+            "id": "t15",
+            "x": -2,
+            "z": 24.5,
+            "r": 0.55,
+            "look": "tree"
+          }
+        ],
+        "water": [
+          {
+            "id": "pond",
+            "x": -3,
+            "z": 13,
+            "r": 3
+          }
+        ],
+        "lanes": [
+          {
+            "id": "camp",
+            "x0": 4,
+            "x1": 8,
+            "z0": 19,
+            "z1": 23
+          },
+          {
+            "id": "pass",
+            "x0": -1.5,
+            "x1": 2,
+            "z0": 26,
+            "z1": 30
+          },
+          {
+            "id": "grove",
+            "x0": -12,
+            "x1": -8.5,
+            "z0": 15,
+            "z1": 19
+          },
+          {
+            "id": "ford",
+            "x0": 10.5,
+            "x1": 14,
+            "z0": 2,
+            "z1": 6
+          },
+          {
+            "id": "ridge",
+            "x0": -13,
+            "x1": -9.5,
+            "z0": 4,
+            "z1": 7
+          }
+        ],
+        "nodes": [
+          -7,
+          10,
+          -7,
+          16,
+          1.2,
+          10,
+          1.2,
+          16
+        ]
+      },
+      {
+        "id": "ridge",
+        "high": [
+          {
+            "id": "top",
+            "x0": -8,
+            "x1": 6,
+            "z0": 12,
+            "z1": 26,
+            "look": "mound",
+            "h": 1.8
+          },
+          {
+            "id": "front",
+            "x0": -2,
+            "x1": 2,
+            "z0": 9,
+            "z1": 12,
+            "look": "stairs",
+            "h": 0,
+            "h1": 1.8,
+            "ramp": "z"
+          },
+          {
+            "id": "back",
+            "x0": -8,
+            "x1": 6,
+            "z0": 26,
+            "z1": 29,
+            "look": "slope",
+            "h": 1.8,
+            "h1": 0,
+            "ramp": "z"
+          },
+          {
+            "id": "side",
+            "x0": 6,
+            "x1": 9,
+            "z0": 19.5,
+            "z1": 24.5,
+            "look": "slope",
+            "h": 1.8,
+            "h1": 0,
+            "ramp": "x"
+          }
+        ],
+        "walls": [
+          {
+            "id": "ef1",
+            "x0": -8,
+            "x1": -2,
+            "z0": 11.7,
+            "z1": 12.3,
+            "look": "ledge"
+          },
+          {
+            "id": "ef2",
+            "x0": 2,
+            "x1": 6,
+            "z0": 11.7,
+            "z1": 12.3,
+            "look": "ledge"
+          },
+          {
+            "id": "el",
+            "x0": -8.3,
+            "x1": -7.7,
+            "z0": 12,
+            "z1": 29,
+            "look": "ledge"
+          },
+          {
+            "id": "er1",
+            "x0": 5.7,
+            "x1": 6.3,
+            "z0": 12,
+            "z1": 19.5,
+            "look": "ledge"
+          },
+          {
+            "id": "er2",
+            "x0": 5.7,
+            "x1": 6.3,
+            "z0": 24.5,
+            "z1": 29,
+            "look": "ledge"
+          },
+          {
+            "id": "es1",
+            "x0": -2.3,
+            "x1": -2,
+            "z0": 9,
+            "z1": 12,
+            "look": "ledge"
+          },
+          {
+            "id": "es2",
+            "x0": 2,
+            "x1": 2.3,
+            "z0": 9,
+            "z1": 12,
+            "look": "ledge"
+          },
+          {
+            "id": "ss1",
+            "x0": 6,
+            "x1": 9,
+            "z0": 19.2,
+            "z1": 19.5,
+            "look": "ledge"
+          },
+          {
+            "id": "ss2",
+            "x0": 6,
+            "x1": 9,
+            "z0": 24.5,
+            "z1": 24.8,
+            "look": "ledge"
+          }
+        ],
+        "lanes": [
+          {
+            "id": "camp",
+            "x0": -4,
+            "x1": 1,
+            "z0": 19,
+            "z1": 23
+          },
+          {
+            "id": "pass",
+            "x0": -2,
+            "x1": 2,
+            "z0": 28,
+            "z1": 30.5
+          },
+          {
+            "id": "grove",
+            "x0": -13,
+            "x1": -9.5,
+            "z0": 8,
+            "z1": 11
+          },
+          {
+            "id": "ford",
+            "x0": 10,
+            "x1": 14,
+            "z0": 8,
+            "z1": 12
+          },
+          {
+            "id": "ridge",
+            "x0": -13,
+            "x1": -9.5,
+            "z0": 3,
+            "z1": 7
+          }
+        ],
+        "nodes": [
+          0,
+          8.3,
+          0,
+          12.8,
+          -1,
+          19,
+          5,
+          22,
+          9.8,
+          22,
+          -9.2,
+          11,
+          -9.2,
+          27,
+          -1,
+          29.5,
+          7,
+          11,
+          10,
+          17,
+          -3.6,
+          8.2,
+          3.6,
+          8.2,
+          -9.2,
+          30.3,
+          9.8,
+          30
+        ]
+      },
+      {
+        "id": "ford",
+        "waterMul": 0.5,
+        "water": [
+          {
+            "id": "w1",
+            "x0": -15,
+            "x1": -1.5,
+            "z0": 9,
+            "z1": 15
+          },
+          {
+            "id": "w2",
+            "x0": 1.5,
+            "x1": 9,
+            "z0": 9,
+            "z1": 15
+          },
+          {
+            "id": "w3",
+            "x0": 10.5,
+            "x1": 15,
+            "z0": 9,
+            "z1": 15
+          }
+        ],
+        "high": [
+          {
+            "id": "b1",
+            "x0": -1.5,
+            "x1": 1.5,
+            "z0": 8.5,
+            "z1": 12,
+            "look": "bridge",
+            "h": 0,
+            "h1": 0.6,
+            "ramp": "z"
+          },
+          {
+            "id": "b2",
+            "x0": -1.5,
+            "x1": 1.5,
+            "z0": 12,
+            "z1": 15.5,
+            "look": "bridge",
+            "h": 0.6,
+            "h1": 0,
+            "ramp": "z"
+          }
+        ],
+        "walls": [
+          {
+            "id": "rl",
+            "x0": -1.75,
+            "x1": -1.45,
+            "z0": 9,
+            "z1": 15,
+            "look": "rail"
+          },
+          {
+            "id": "rr",
+            "x0": 1.45,
+            "x1": 1.75,
+            "z0": 9,
+            "z1": 15,
+            "look": "rail"
+          }
+        ],
+        "lanes": [
+          {
+            "id": "camp",
+            "x0": -3,
+            "x1": 3,
+            "z0": 18,
+            "z1": 23
+          },
+          {
+            "id": "ford",
+            "x0": 10,
+            "x1": 14,
+            "z0": 17,
+            "z1": 22
+          },
+          {
+            "id": "pass",
+            "x0": -2,
+            "x1": 2,
+            "z0": 26,
+            "z1": 30
+          },
+          {
+            "id": "grove",
+            "x0": -13,
+            "x1": -9,
+            "z0": 18,
+            "z1": 22
+          },
+          {
+            "id": "ridge",
+            "x0": -13,
+            "x1": -9,
+            "z0": 3,
+            "z1": 7
+          }
+        ],
+        "nodes": [
+          0,
+          7.8,
+          0,
+          16.2,
+          9.75,
+          7.8,
+          9.75,
+          16.2,
+          -2.9,
+          8,
+          -2.9,
+          16
+        ]
+      },
+      {
+        "id": "gate",
+        "walls": [
+          {
+            "id": "p1",
+            "x0": -15,
+            "x1": -8,
+            "z0": 14,
+            "z1": 15,
+            "look": "palisade"
+          },
+          {
+            "id": "p2",
+            "x0": -6.5,
+            "x1": 3,
+            "z0": 14,
+            "z1": 15,
+            "look": "palisade"
+          },
+          {
+            "id": "p3",
+            "x0": 7,
+            "x1": 15,
+            "z0": 14,
+            "z1": 15,
+            "look": "palisade"
+          }
+        ],
+        "breaks": [
+          {
+            "id": "door",
+            "x0": 3,
+            "x1": 7,
+            "z0": 14,
+            "z1": 15,
+            "look": "gate",
+            "hp": 40
+          }
+        ],
+        "lanes": [
+          {
+            "id": "camp",
+            "x0": 2,
+            "x1": 8,
+            "z0": 19,
+            "z1": 23
+          },
+          {
+            "id": "pass",
+            "x0": -2,
+            "x1": 2,
+            "z0": 26,
+            "z1": 30
+          },
+          {
+            "id": "grove",
+            "x0": -13,
+            "x1": -8.5,
+            "z0": 18,
+            "z1": 22
+          },
+          {
+            "id": "ford",
+            "x0": 10.5,
+            "x1": 14,
+            "z0": 3,
+            "z1": 8
+          },
+          {
+            "id": "ridge",
+            "x0": -12.5,
+            "x1": -9,
+            "z0": 3,
+            "z1": 7.5
+          }
+        ],
+        "nodes": [
+          -7.25,
+          13,
+          -7.25,
+          16,
+          5,
+          13,
+          5,
+          16
+        ]
+      },
+      {
+        "id": "tower",
+        "x0": -5,
+        "x1": 10,
+        "z0": -3,
+        "z1": 19.5,
+        "walls": [
+          {
+            "id": "c1",
+            "x": -1,
+            "z": 7,
+            "r": 0.45,
+            "look": "pillar"
+          },
+          {
+            "id": "c2",
+            "x": 6,
+            "z": 7,
+            "r": 0.45,
+            "look": "pillar"
+          },
+          {
+            "id": "c3",
+            "x": -1,
+            "z": 12,
+            "r": 0.45,
+            "look": "pillar"
+          },
+          {
+            "id": "c4",
+            "x": 6,
+            "z": 12,
+            "r": 0.45,
+            "look": "pillar"
+          },
+          {
+            "id": "d1",
+            "x0": -2,
+            "x1": 0,
+            "z0": 14.7,
+            "z1": 15.1,
+            "look": "dais"
+          },
+          {
+            "id": "d2",
+            "x0": 5,
+            "x1": 7,
+            "z0": 14.7,
+            "z1": 15.1,
+            "look": "dais"
+          },
+          {
+            "id": "d3",
+            "x0": -2.3,
+            "x1": -2,
+            "z0": 15,
+            "z1": 19.5,
+            "look": "dais"
+          },
+          {
+            "id": "d4",
+            "x0": 7,
+            "x1": 7.3,
+            "z0": 15,
+            "z1": 19.5,
+            "look": "dais"
+          },
+          {
+            "id": "d5",
+            "x0": -0.3,
+            "x1": 0,
+            "z0": 14,
+            "z1": 15,
+            "look": "dais"
+          },
+          {
+            "id": "d6",
+            "x0": 5,
+            "x1": 5.3,
+            "z0": 14,
+            "z1": 15,
+            "look": "dais"
+          }
+        ],
+        "high": [
+          {
+            "id": "dais",
+            "x0": -2,
+            "x1": 7,
+            "z0": 15,
+            "z1": 19.5,
+            "look": "dais",
+            "h": 0.6
+          },
+          {
+            "id": "steps",
+            "x0": 0,
+            "x1": 5,
+            "z0": 14,
+            "z1": 15,
+            "look": "stairs",
+            "h": 0,
+            "h1": 0.6,
+            "ramp": "z"
+          }
+        ],
+        "lanes": [
+          {
+            "id": "daisL",
+            "x0": -4.8,
+            "x1": -3.4,
+            "z0": 9,
+            "z1": 13
+          },
+          {
+            "id": "daisR",
+            "x0": 8.4,
+            "x1": 9.8,
+            "z0": 9,
+            "z1": 13
+          },
+          {
+            "id": "daisC",
+            "x0": 0.5,
+            "x1": 4.5,
+            "z0": 17.5,
+            "z1": 19
+          }
+        ],
+        "nodes": [
+          2.5,
+          13.2,
+          2.5,
+          15.9,
+          -3.4,
+          13.4,
+          8.4,
+          13.4
+        ]
+      },
+      {
+        "id": "shadow",
+        "x0": -6,
+        "x1": 8,
+        "z0": -3,
+        "z1": 16,
+        "walls": [
+          {
+            "id": "l1",
+            "x": -4,
+            "z": 8,
+            "r": 0.5,
+            "look": "lamp"
+          },
+          {
+            "id": "l2",
+            "x": 5,
+            "z": 8,
+            "r": 0.5,
+            "look": "lamp"
+          },
+          {
+            "id": "l3",
+            "x": -4,
+            "z": 14,
+            "r": 0.5,
+            "look": "lamp"
+          },
+          {
+            "id": "l4",
+            "x": 5,
+            "z": 14,
+            "r": 0.5,
+            "look": "lamp"
+          },
+          {
+            "id": "c1",
+            "x": 0.5,
+            "z": 8.8,
+            "r": 0.9,
+            "look": "censer"
+          }
+        ],
+        "high": [
+          {
+            "id": "stage",
+            "x": 0.5,
+            "z": 10.5,
+            "r": 3.5,
+            "look": "stage",
+            "h": 0.7
+          }
+        ]
+      }
+    ],
+    "minion": {
+      "hp": 50,
+      "atk": 5,
+      "def": 0,
+      "speed": 3.2,
+      "range": 1.3,
+      "rate": 1.5,
+      "windup": 0.45,
+      "radius": 0.4,
+      "coin": 2,
+      "xp": 1,
+      "jade": 0,
+      "pill": 0,
+      "scroll": 0,
+      "skillCd": 0,
+      "skillMul": 0,
+      "skillRadius": 0,
+      "skillWindup": 0
+    },
+    "leader": {
+      "hp": 900,
+      "atk": 8,
+      "def": 4,
+      "speed": 2.4,
+      "range": 1.7,
+      "rate": 1.6,
+      "windup": 0.5,
+      "radius": 0.6,
+      "coin": 60,
+      "xp": 30,
+      "jade": 0,
+      "pill": 1,
+      "scroll": 1,
+      "skillCd": 6,
+      "skillMul": 2.5,
+      "skillRadius": 2.6,
+      "skillWindup": 1.2
+    },
+    "boss": {
+      "hp": 2200,
+      "atk": 11,
+      "def": 8,
+      "speed": 2.2,
+      "range": 2.0,
+      "rate": 1.8,
+      "windup": 0.6,
+      "radius": 0.8,
+      "coin": 300,
+      "xp": 150,
+      "jade": 30,
+      "pill": 3,
+      "scroll": 5,
+      "skillCd": 7,
+      "skillMul": 2.6,
+      "skillRadius": 3.4,
+      "skillWindup": 1.5
+    },
+    "kindMix": 0.05,
+    "kindRamp": [
+      0.6,
+      2.0
+    ],
+    "kindPrev": 0.1,
+    "leaderKind": true,
+    "leaderNames": [
+      "Đầu Lĩnh Tán Tu Ma Đạo",
+      "Đầu Lĩnh U Lâm Yêu Cốc",
+      "Hội Chủ Huyết Kiếm Tà Tu Hội",
+      "Hương Chủ Hắc Đạo Bang",
+      "Xích Viêm Hỏa Cốc Độc Thủ",
+      "Sứ Giả Cửu U Ma Vực"
+    ],
+    "kinds": [
+      {
+        "id": "dart",
+        "name": "Phi Đao Thủ",
+        "region": 1,
+        "share": 0.22,
+        "act": "dart",
+        "hp": 0.5,
+        "atk": 0.35,
+        "range": 5.5,
+        "keep": 3.2,
+        "coin": 1.2,
+        "xp": 1.2,
+        "desc": "Đứng tuyến sau phóng phi đao. Bị áp sát sẽ lùi lại, lách sang bên lúc phi đao đang bay tới sẽ né được."
+      },
+      {
+        "id": "ronin",
+        "name": "Huyết Kiếm Tà Tu Kiếm Khách",
+        "region": 2,
+        "share": 0.22,
+        "act": "lunge",
+        "hp": 0.8,
+        "cd": 8,
+        "windup": 0.6,
+        "reach": 4.5,
+        "width": 1.2,
+        "mul": 1.4,
+        "coin": 1.2,
+        "xp": 1.2,
+        "desc": "Vạch một đường thẳng trên đất rồi lao theo đường đó chém tới. Lách ra ngoài vạch sẽ không trúng đòn."
+      },
+      {
+        "id": "shield",
+        "name": "Thiết Thuẫn",
+        "region": 3,
+        "share": 0.2,
+        "act": "shield",
+        "hp": 1.0,
+        "speed": 0.75,
+        "front": 0.4,
+        "arc": 120,
+        "coin": 1.4,
+        "xp": 1.4,
+        "desc": "Đỡ đòn đánh từ chính diện (giảm 60% sát thương). Đánh từ bên sườn hoặc sau lưng sẽ trúng trọn sát thương."
+      },
+      {
+        "id": "toxin",
+        "name": "Độc Linh Ma Sư",
+        "region": 4,
+        "share": 0.2,
+        "act": "pot",
+        "hp": 0.85,
+        "atk": 0.9,
+        "cd": 7,
+        "windup": 0.8,
+        "reach": 6,
+        "radius": 1.5,
+        "sec": 3,
+        "tick": 0.5,
+        "mul": 0.25,
+        "coin": 1.3,
+        "xp": 1.3,
+        "desc": "Ném vò độc tạo vùng độc trên mặt đất trong 3 giây. Khi Độc Linh Ma Sư ngã xuống, vùng độc cũng cạn theo."
+      },
+      {
+        "id": "monk",
+        "name": "Huyết Sát Yêu Tăng",
+        "region": 5,
+        "share": 0.15,
+        "act": "mend",
+        "hp": 0.9,
+        "atk": 0.8,
+        "cd": 5,
+        "windup": 0.8,
+        "radius": 5,
+        "heal": 0.08,
+        "focus": 7,
+        "coin": 1.4,
+        "xp": 1.4,
+        "desc": "Mỗi 5 giây hồi sinh lực cho địch xung quanh. Phải hạ gục trước."
+      }
+    ],
+    "elite": {
+      "chance": 0.04,
+      "fromChapter": 2,
+      "coin": 5,
+      "xp": 5,
+      "affixes": [
+        {
+          "id": "steel",
+          "name": "Thép Ròng",
+          "hp": 4,
+          "def": 1.5
+        },
+        {
+          "id": "swift",
+          "name": "Tật Phong",
+          "hp": 2,
+          "speed": 1.5,
+          "rate": 0.7
+        },
+        {
+          "id": "fierce",
+          "name": "Hung Bạo",
+          "hp": 2,
+          "atk": 2
+        }
+      ]
+    },
+    "bossMoves": [
+      {
+        "id": "charge",
+        "name": "Đột Kích",
+        "region": 1,
+        "act": "charge",
+        "cd": 12,
+        "windup": 0.9,
+        "reach": 7,
+        "width": 1.6,
+        "mul": 1.0,
+        "hp": 0.92,
+        "desc": "Vạch một vệt rộng trên mặt đất rồi lao thẳng theo hướng đó. Lách ra ngoài vạch sẽ không trúng đòn."
+      },
+      {
+        "id": "qi",
+        "name": "Kiếm Khí",
+        "region": 2,
+        "act": "qi",
+        "cd": 9,
+        "windup": 1.0,
+        "reach": 10,
+        "width": 1.4,
+        "mul": 2.0,
+        "desc": "Đứng tại chỗ phóng luồng kiếm khí thẳng tắp ra xa. Né khỏi vệt sáng sẽ không trúng đòn."
+      },
+      {
+        "id": "smash3",
+        "name": "Tam Liên Giáng Kích",
+        "region": 3,
+        "act": "smash3",
+        "cd": 11,
+        "windup": 0.8,
+        "reach": 6,
+        "radius": 2.0,
+        "mul": 1.4,
+        "count": 3,
+        "desc": "Giáng ba đòn liên tiếp xuống dưới chân mục tiêu. Đứng yên ở chỗ vừa né sẽ trúng ngay đòn kế tiếp."
+      },
+      {
+        "id": "potring",
+        "name": "Độc Hoàn",
+        "region": 4,
+        "act": "potring",
+        "cd": 11,
+        "windup": 1.0,
+        "reach": 2.4,
+        "radius": 1.2,
+        "sec": 4,
+        "tick": 0.5,
+        "mul": 0.3,
+        "count": 6,
+        "desc": "Bày sáu vò độc thành vòng tròn quanh thân. Nơi giao chiến cận kề hóa thành vùng độc."
+      },
+      {
+        "id": "drain",
+        "name": "Hấp Huyết",
+        "region": 5,
+        "act": "drain",
+        "cd": 10,
+        "windup": 1.0,
+        "radius": 4.0,
+        "mul": 1.2,
+        "heal": 0.5,
+        "desc": "Đánh quét xung quanh và hồi sinh lực bằng một nửa sát thương gây ra. Càng áp sát lâu, Thủ Lĩnh càng trụ dai."
+      }
+    ],
+    "bossCall": {
+      "at": 0.5,
+      "count": 4
+    },
+    "duelists": [
+      {
+        "title": "Yêu Vương Thanh Lam Sơn",
+        "alias": "Linh Khê Yêu Vương",
+        "name": "Ngọc Thiềm Vương",
+        "smashCast": "Hàn Độc Chấn Địa",
+        "moveCast": "Linh Khê Phệ Nguyệt",
+        "answer": "counter",
+        "taunt": "Một tên phàm nhân xuyên không mà dám tranh Linh Tuyền Thanh Lam với bản vương sao?!",
+        "tauntAgain": "Lại mò tới nữa à, tiểu tử vắt mũi chưa sạch.",
+        "loseLine": "Linh Tuyền Thanh Lam thuộc về Linh Khê Yêu Tộc, cút mau!",
+        "winLine": "Hừ... thanh tiên kiếm trong tay ngươi không phải vật tầm thường!"
+      },
+      {
+        "title": "Yêu Tôn U Lâm Yêu Cốc",
+        "alias": "Thanh La Yêu Tôn",
+        "name": "Thanh La Viên Vương",
+        "smashCast": "U Lâm Liệt Địa Trùy",
+        "moveCast": "Cuồng Viên Băng Sơn",
+        "answer": "dodge",
+        "taunt": "Rừng U Lâm là địa bàn Thanh La Viên Tộc ngàn năm, Thái Hư Tiên Môn là cái thá gì?!",
+        "tauntAgain": "Đúng là kẻ dai đòn.",
+        "loseLine": "Chưa đủ Trúc Cơ mà dám bước vào U Lâm Yêu Cốc!",
+        "winLine": "Linh khí tinh thuần quá... Thanh La Viên Vương ta tâm phục khẩu phục!"
+      },
+      {
+        "title": "Thủy Tôn Bích Thủy Hàn Đàm",
+        "alias": "Bắc Hải Yêu Tôn",
+        "name": "Bắc Hải Long Quy",
+        "smashCast": "Hàn Triều Băng Lãng",
+        "moveCast": "Long Quy Trấn Hải",
+        "answer": "dodge",
+        "taunt": "Bích Thủy Hàn Đàm lạnh thấu xương cốt, công tử xuyên không tới chịu chết à?",
+        "tauntAgain": "Vẫn chưa chịu buông kiếm sao.",
+        "loseLine": "Hàn triều Bắc Hải đã đông cứng kinh mạch ngươi rồi!",
+        "winLine": "Kiếm ý ấm áp như nắng sớm... bản tôn xin nhường Hàn Đàm lại cho đạo hữu!"
+      },
+      {
+        "title": "Hỏa Quân Xích Viêm Hỏa Cốc",
+        "alias": "Xích Viêm Long Quân",
+        "name": "Xích Viêm Hỏa Long Quân",
+        "smashCast": "Tam Trụ Dung Nham",
+        "moveCast": "Phần Thiên Long Viêm",
+        "answer": "block",
+        "taunt": "Đứng giữa Xích Viêm Hỏa Cốc mà dám múa kiếm? Ta sẽ thiêu ngươi thành tro!",
+        "tauntAgain": "Lại mò tới chịu lửa nữa sao.",
+        "loseLine": "Hỏa Cốc này chính là lò luyện thi của ngươi!",
+        "winLine": "Không ngờ kiếm trận của ngươi ép ngược được cả Địa Hỏa Chân Long của ta!"
+      },
+      {
+        "title": "Kiếm Đế Huyền Băng Tuyết Lĩnh",
+        "alias": "Vạn Kiếm Tiên Tôn",
+        "name": "Vạn Kiếm Tông Chủ",
+        "smashCast": "Vạn Kiếm Quy Tông",
+        "moveCast": "Huyền Băng Kiếm Vũ",
+        "answer": "block",
+        "taunt": "Một ngàn năm chưa ai bước lên đỉnh Tuyết Lĩnh mà còn nguyên vẹn!",
+        "tauntAgain": "Kiếm tâm vẫn chưa gãy sao?",
+        "loseLine": "Kiếm pháp còn non nớt, về núi tu luyện thêm trăm năm nữa!",
+        "winLine": "Kiếm Đạo của ngươi mang khí tức thiên ngoại... ta đã thấy con đường Phi Thăng!"
+      },
+      {
+        "title": "Ma Đế Cửu U Ma Vực",
+        "alias": "Cửu U Kiếm Đế",
+        "name": "Cửu U Ma Kiếm Đế",
+        "smashCast": "Cửu U Huyết Kiếm Trận",
+        "moveCast": "Diệt Thế Ma Kiếm",
+        "answer": "block",
+        "taunt": "Kẻ ngoại lai nắm giữ Thái Hư Cổ Ngọc! Giao Hệ Thống ra đây cho bản đế!",
+        "tauntAgain": "Lại ngửi thấy mùi kiếm khí rồi.",
+        "loseLine": "Huyết Nguyệt chiếu xuống, linh hồn ngươi sẽ thuộc về Ma Vực!",
+        "winLine": "Không thể nào... Cửu U Ma Vực sụp đổ dưới kiếm trận của một kẻ xuyên không?!"
+      }
+    ],
+    "relay": {
+      "on": true,
+      "count": [
+        1,
+        2,
+        3
+      ],
+      "hp": 0.5,
+      "atk": 1.0,
+      "bossHp": [
+        0.5,
+        1.0,
+        0.7
+      ],
+      "bossAtk": 1.0,
+      "momentum": 0.1,
+      "momentumMax": 3,
+      "cardSec": 1.5,
+      "gapSec": 0.8,
+      "entry": [
+        0.8,
+        6.8
+      ],
+      "bench": [
+        -1.8,
+        -1.2,
+        1.3
+      ],
+      "payout": 3,
+      "half": 0.5,
+      "friend": 0.15,
+      "petitionShard": 2,
+      "tierMax": 3,
+      "setAtk": 0.03,
+      "setHp": 0.03,
+      "factions": [
+        {
+          "name": "Thanh Lam Phế Đỉnh",
+          "shortName": "Sơn Trại",
+          "align": "",
+          "stat": "vault",
+          "value": 0.03,
+          "roster": [
+            "dolsoe",
+            "makdong",
+            "sundeok"
+          ],
+          "fighters": [
+            {
+              "rank": "Thủ Tọa Đệ Tử",
+              "name": "Thất Phúc"
+            }
+          ]
+        },
+        {
+          "name": "U Lâm Yêu Cốc",
+          "shortName": "U Lâm Yêu Cốc",
+          "align": "",
+          "stat": "walk",
+          "value": 0.03,
+          "roster": [
+            "macheol",
+            "heugyeong",
+            "danbi"
+          ],
+          "fighters": [
+            {
+              "rank": "Đầu Mục Hành Động",
+              "name": "Độc Tam"
+            },
+            {
+              "rank": "Thủ Tọa Đệ Tử",
+              "name": "Hùng Bối"
+            }
+          ]
+        },
+        {
+          "name": "Bích Thủy Hàn Đàm",
+          "shortName": "Thanh Vân Kiếm Phái",
+          "align": "jeong",
+          "stat": "crit",
+          "value": 0.01,
+          "roster": [
+            "unhak",
+            "soyul",
+            "cheonga"
+          ],
+          "fighters": [
+            {
+              "rank": "Ngoại Đường Đệ Tử",
+              "name": "Bạch Hiền"
+            },
+            {
+              "rank": "Nội Đường Đệ Tử",
+              "name": "Doãn Thư"
+            },
+            {
+              "rank": "Thủ Tọa Đệ Tử",
+              "name": "Chân Vũ"
+            }
+          ]
+        },
+        {
+          "name": "Xích Viêm Hỏa Cốc",
+          "shortName": "Hắc Đạo Bang",
+          "align": "sa",
+          "stat": "def",
+          "value": 0.03,
+          "roster": [
+            "harang",
+            "cheolsan",
+            "macheol"
+          ],
+          "fighters": [
+            {
+              "rank": "Tiên Phong",
+              "name": "Đao Thiết"
+            },
+            {
+              "rank": "Đầu Mục Hành Động",
+              "name": "Phạm Thù"
+            },
+            {
+              "rank": "Thủ Tọa Đệ Tử",
+              "name": "Cuồng Bát"
+            }
+          ]
+        },
+        {
+          "name": "Huyền Băng Tuyết Lĩnh",
+          "shortName": "Xích Viêm Hỏa Cốc",
+          "align": "sa",
+          "stat": "poison",
+          "value": 0.1,
+          "roster": [
+            "cheonga",
+            "heugyeong",
+            "danbi"
+          ],
+          "fighters": [
+            {
+              "rank": "Tiên Phong",
+              "name": "Độc Giác"
+            },
+            {
+              "rank": "Hộ Pháp",
+              "name": "Thanh Xà"
+            },
+            {
+              "rank": "Thủ Tọa Đệ Tử",
+              "name": "Diệu Hoa"
+            }
+          ]
+        },
+        {
+          "name": "Cửu U Ma Vực",
+          "shortName": "Cửu U Ma Vực",
+          "align": "ma",
+          "stat": "hp",
+          "value": 0.03,
+          "roster": [
+            "yeonhwa",
+            "heugyeong",
+            "cheolsan"
+          ],
+          "fighters": [
+            {
+              "rank": "Tiên Phong",
+              "name": "Linh Khê Yêu Tộc"
+            },
+            {
+              "rank": "Hộ Pháp",
+              "name": "Quỷ Thương"
+            },
+            {
+              "rank": "Thủ Tọa Đệ Tử",
+              "name": "Xích Vũ"
+            }
+          ]
+        }
+      ]
+    },
+    "master": {
+      "speed": 5.0,
+      "range": 1.8,
+      "arc": 150,
+      "rate": 0.45,
+      "windup": 0.18,
+      "combo": [
+        1,
+        1,
+        1.6
+      ],
+      "regen": 0.015,
+      "aggro": 16,
+      "radius": 0.45,
+      "leaderAggro": 12,
+      "dashFrom": 3.0,
+      "dashMul": 1.8
+    },
+    "mate": {
+      "speed": 4.6,
+      "meleeRange": 1.6,
+      "rangedRange": 6,
+      "rangedWeapons": [
+        "Linh Ngọc Châm",
+        "Phượng Vũ Cung",
+        "Linh Châu",
+        "Bát Quái Phiến"
+      ],
+      "rate": 1.0,
+      "windup": 0.25,
+      "skillCd": 9,
+      "skillMul": 2.2,
+      "skillRadius": 2.4,
+      "leash": 8,
+      "aggro": 9,
+      "revive": 8,
+      "regen": 0.012,
+      "radius": 0.4
+    },
+    "skills": [
+      {
+        "id": "wave",
+        "name": "Thanh Liên Kiếm Khí",
+        "fam": 0,
+        "glyph": "劍",
+        "shape": "line",
+        "reach": 7,
+        "width": 1.6,
+        "arc": 0,
+        "mul": 2.4,
+        "cd": 6,
+        "windup": 0.35,
+        "clip": "SwordSlash",
+        "desc": "Phóng kiếm khí thanh liên cắt ngang phía trước, khắc Kiếm Ấn."
+      },
+      {
+        "id": "burst",
+        "name": "Lôi Đình Bộc Phát",
+        "fam": 1,
+        "glyph": "回",
+        "shape": "circle",
+        "reach": 3.2,
+        "width": 0,
+        "arc": 0,
+        "mul": 3.0,
+        "cd": 9,
+        "windup": 0.45,
+        "clip": "SwordSpin",
+        "desc": "Kích nổ tử lôi quanh thân, làm chảy máu và chấn lùi yêu thú."
+      },
+      {
+        "id": "crescent",
+        "name": "Chu Tước Bán Nguyệt",
+        "fam": 2,
+        "glyph": "月",
+        "shape": "cone",
+        "reach": 3.6,
+        "width": 0,
+        "arc": 200,
+        "mul": 2.6,
+        "cd": 7,
+        "windup": 0.4,
+        "clip": "SaberSlash",
+        "desc": "Vung lưỡi đao hỏa diễm hình bán nguyệt, phá vỡ hộ giáp địch."
+      },
+      {
+        "id": "leap",
+        "name": "Huyền Băng Giáng Lâm",
+        "fam": 3,
+        "glyph": "龍",
+        "shape": "leap",
+        "reach": 2.8,
+        "width": 0,
+        "arc": 0,
+        "mul": 3.4,
+        "cd": 12,
+        "windup": 0.6,
+        "clip": "SaberCharged",
+        "jump": 8,
+        "desc": "Phi thân giáng hàn băng chấn địa, gây choáng diện rộng."
+      },
+      {
+        "id": "flash",
+        "name": "Súc Địa Kiếm Ảnh",
+        "fam": 0,
+        "glyph": "閃",
+        "shape": "dash",
+        "reach": 6,
+        "width": 1.6,
+        "mul": 2.0,
+        "cd": 5,
+        "windup": 0.2,
+        "clip": "Dodge",
+        "apply": "scar",
+        "realm": 0,
+        "cost": 8,
+        "desc": "Hóa thành kiếm quang xuyên qua địch, kích nổ Kiếm Ấn."
+      },
+      {
+        "id": "meteor",
+        "name": "Lưu Tinh Kiếm Vũ",
+        "fam": 0,
+        "glyph": "流",
+        "shape": "line",
+        "reach": 9,
+        "width": 1.0,
+        "mul": 1.8,
+        "cd": 7,
+        "windup": 0.25,
+        "clip": "SpearThrust",
+        "exploit": "bleed",
+        "exploitMul": 1.5,
+        "realm": 3,
+        "cost": 40,
+        "desc": "Triệu hồi mưa phi kiếm từ chín tầng trời dội xuống mục tiêu."
+      },
+      {
+        "id": "blades",
+        "name": "Vạn Kiếm Quy Tông",
+        "fam": 0,
+        "glyph": "千",
+        "shape": "cone",
+        "reach": 4,
+        "arc": 120,
+        "mul": 1.0,
+        "hits": 3,
+        "cd": 8,
+        "windup": 0.3,
+        "clip": "Combo",
+        "apply": "scar",
+        "critAdd": 0.25,
+        "realm": 4,
+        "cost": 60,
+        "desc": "Ngưng tụ 12 thanh Phi Kiếm trên không rồi phóng xuống xuyên phá toàn sân!"
+      },
+      {
+        "id": "whirl",
+        "name": "Cửu Tiêu Lôi Toàn",
+        "fam": 1,
+        "glyph": "旋",
+        "shape": "circle",
+        "reach": 3.4,
+        "mul": 1.1,
+        "hits": 2,
+        "cd": 7,
+        "windup": 0.35,
+        "clip": "ChiefSpin",
+        "apply": "bleed",
+        "stacks": 1,
+        "realm": 0,
+        "cost": 8,
+        "desc": "Xoay người tạo lốc xoáy lôi điện, kéo dài hiệu ứng Xuất Huyết."
+      },
+      {
+        "id": "shadow",
+        "name": "Tử Điện Ám Sát",
+        "fam": 1,
+        "glyph": "影",
+        "shape": "cone",
+        "reach": 9,
+        "arc": 50,
+        "mul": 1.4,
+        "cd": 6,
+        "windup": 0.25,
+        "clip": "Punch",
+        "apply": "bleed",
+        "stacks": 2,
+        "realm": 3,
+        "cost": 40,
+        "desc": "Phóng chuỗi tử điện xuyên thấu mục tiêu, bạo kích cực cao."
+      },
+      {
+        "id": "storm",
+        "name": "Cửu Thiên Thần Lôi",
+        "fam": 1,
+        "glyph": "雷",
+        "shape": "zone",
+        "reach": 3,
+        "jump": 8,
+        "mul": 0.55,
+        "hits": 6,
+        "zoneSec": 3,
+        "cd": 13,
+        "windup": 0.4,
+        "clip": "SaberCharged",
+        "apply": "bleed",
+        "stacks": 1,
+        "realm": 5,
+        "cost": 90,
+        "desc": "Giáng Cửu Thiên Thần Lôi phân nhánh đốt cháy cả chiến trường!"
+      },
+      {
+        "id": "sweep",
+        "name": "Phần Thiên Hoành Tảo",
+        "fam": 2,
+        "glyph": "掃",
+        "shape": "cone",
+        "reach": 4.2,
+        "arc": 300,
+        "mul": 2.2,
+        "cd": 9,
+        "windup": 0.5,
+        "clip": "ChiefSpin",
+        "apply": "break",
+        "push": 2.6,
+        "realm": 1,
+        "cost": 15,
+        "desc": "Vung hỏa long quét ngang diện rộng, áp chế yêu thú."
+      },
+      {
+        "id": "quake",
+        "name": "Địa Hỏa Liệt Chấn",
+        "fam": 2,
+        "glyph": "崩",
+        "shape": "line",
+        "reach": 8,
+        "width": 3.0,
+        "mul": 4.0,
+        "cd": 13,
+        "windup": 0.75,
+        "clip": "SaberCharged",
+        "apply": "break",
+        "exploit": "daze",
+        "exploitMul": 2,
+        "realm": 2,
+        "cost": 25,
+        "desc": "Đập nứt mặt đất phun nham thạch, phá giáp & gây choáng."
+      },
+      {
+        "id": "heaven",
+        "name": "Hỏa Long Giáng Thế",
+        "fam": 2,
+        "glyph": "破",
+        "shape": "leap",
+        "reach": 1.8,
+        "jump": 10,
+        "mul": 5.5,
+        "cd": 16,
+        "windup": 0.55,
+        "clip": "SaberCharged",
+        "apply": "break",
+        "bigAim": true,
+        "realm": 5,
+        "cost": 90,
+        "desc": "Triệu hồi Hỏa Long Chu Tước giáng xuống nổ tung mục tiêu Phá Giáp."
+      },
+      {
+        "id": "palm",
+        "name": "Thái Hư Linh Chưởng",
+        "fam": 3,
+        "glyph": "劈",
+        "shape": "line",
+        "reach": 8,
+        "width": 3.0,
+        "mul": 2.2,
+        "cd": 7,
+        "windup": 0.3,
+        "clip": "Punch",
+        "apply": "daze",
+        "push": 2.6,
+        "realm": 1,
+        "cost": 15,
+        "desc": "Đẩy ra chưởng kình Thái Hư cuốn bay toàn bộ kẻ địch phía trước."
+      },
+      {
+        "id": "pull",
+        "name": "Càn Khôn Hấp Linh",
+        "fam": 3,
+        "glyph": "吸",
+        "shape": "circle",
+        "reach": 6,
+        "mul": 0.8,
+        "cd": 10,
+        "windup": 0.3,
+        "clip": "SwordSpin",
+        "apply": "daze",
+        "pull": 1.6,
+        "realm": 2,
+        "cost": 25,
+        "desc": "Kéo gom yêu thú vào tâm Pháp Trận Thái Hư và làm choáng."
+      },
+      {
+        "id": "aegis",
+        "name": "Kim Liên Hộ Thể",
+        "fam": 3,
+        "glyph": "護",
+        "shape": "circle",
+        "reach": 2.6,
+        "mul": 1.0,
+        "cd": 16,
+        "windup": 0.2,
+        "clip": "Block",
+        "apply": "daze",
+        "push": 2.6,
+        "guardSec": 5,
+        "guardCut": 0.5,
+        "realm": 4,
+        "cost": 60,
+        "desc": "Mở lá chắn Kim Liên giảm 50% sát thương nhận vào và phản chấn."
+      }
+    ],
+    "mugong": {
+      "scarSec": 6,
+      "scarMul": 0.6,
+      "bleedSec": 4,
+      "bleedAtk": 0.2,
+      "bleedMax": 3,
+      "bleedTick": 0.5,
+      "spreadR": 2.5,
+      "breakSec": 5,
+      "breakTaken": 0.25,
+      "dazeSec": 1.5,
+      "dazeTaken": 0.2,
+      "bigDaze": 0.35,
+      "firstPickStage": 1,
+      "firstPick": [
+        "flash",
+        "whirl"
+      ],
+      "fams": [
+        {
+          "id": "kwae",
+          "name": "Ngự Kiếm",
+          "state": "scar",
+          "reso": [
+            {
+              "need": 2,
+              "key": "crit",
+              "value": 0.08,
+              "text": "Bạo Kích +8%"
+            },
+            {
+              "need": 3,
+              "key": "famCd",
+              "value": 0.2,
+              "text": "Hồi chiêu -20%"
+            },
+            {
+              "need": 3,
+              "key": "scar",
+              "value": 1.0,
+              "text": "Kiếm Ngân +100%"
+            },
+            {
+              "need": 4,
+              "key": "critDmg",
+              "value": 0.6,
+              "text": "Sát Thương Bạo Kích +60%"
+            }
+          ],
+          "ult": {
+            "name": "Vạn Kiếm Quy Tông",
+            "glyph": "萬",
+            "shape": "rays",
+            "rays": 8,
+            "reach": 9,
+            "width": 1.4,
+            "radius": 9,
+            "mul": 8,
+            "sure": true,
+            "windup": 0.7,
+            "clip": "SwordSpin",
+            "desc": "Tám luồng kiếm khí · Chắc chắn bạo kích"
+          }
+        },
+        {
+          "id": "seon",
+          "name": "Cửu Lôi",
+          "state": "bleed",
+          "reso": [
+            {
+              "need": 2,
+              "key": "bleed",
+              "value": 0.3,
+              "text": "Xuất Huyết +30%"
+            },
+            {
+              "need": 3,
+              "key": "spread",
+              "value": 1,
+              "text": "Khi gục ngã sẽ lây Xuất Huyết sang xung quanh"
+            },
+            {
+              "need": 4,
+              "key": "bleedMax",
+              "value": 2,
+              "text": "Xuất Huyết tối đa 5 tầng"
+            }
+          ],
+          "ult": {
+            "name": "Bạo Phong Huyết Vũ",
+            "glyph": "嵐",
+            "radius": 6,
+            "mul": 6,
+            "apply": "bleed",
+            "stacks": 5,
+            "zoneSec": 3,
+            "zoneR": 3.5,
+            "zoneMul": 0.4,
+            "hits": 6,
+            "windup": 0.7,
+            "clip": "SwordSpin",
+            "desc": "6 ô xung quanh + đầy tầng Xuất Huyết + cuồng phong 3 giây"
+          }
+        },
+        {
+          "id": "pae",
+          "name": "Chu Tước",
+          "state": "break",
+          "reso": [
+            {
+              "need": 2,
+              "key": "breakSec",
+              "value": 2,
+              "text": "Phá Giáp +2 giây"
+            },
+            {
+              "need": 3,
+              "key": "famBig",
+              "value": 0.3,
+              "text": "+30% sát thương lên địch khổng lồ"
+            },
+            {
+              "need": 4,
+              "key": "breakTaken",
+              "value": 0.15,
+              "text": "Phá Giáp: Sát thương nhận +15%"
+            }
+          ],
+          "ult": {
+            "name": "Bá Vương Nhất Đao",
+            "glyph": "霸",
+            "shape": "line",
+            "reach": 16,
+            "width": 4.5,
+            "radius": 8,
+            "mul": 12,
+            "apply": "break",
+            "windup": 0.8,
+            "clip": "SaberCharged",
+            "desc": "Đường thẳng 16 ô ×4.5 + Phá Giáp"
+          }
+        },
+        {
+          "id": "naega",
+          "name": "Thái Hư",
+          "state": "daze",
+          "reso": [
+            {
+              "need": 2,
+              "key": "taken",
+              "value": -0.1,
+              "text": "Sát thương gánh chịu -10%"
+            },
+            {
+              "need": 3,
+              "key": "dazeSec",
+              "value": 0.6,
+              "text": "Choáng +0.6 giây"
+            },
+            {
+              "need": 3,
+              "key": "breakStun",
+              "value": 0.5,
+              "text": "Thời gian choáng khi ngắt chiêu ×1.5"
+            },
+            {
+              "need": 4,
+              "key": "ult",
+              "value": 0.25,
+              "text": "Tích tụ Tuyệt Kỹ +25%"
+            }
+          ],
+          "ult": {
+            "name": "Thiên Lôi Thần Chưởng",
+            "glyph": "天",
+            "radius": 8,
+            "mul": 7,
+            "apply": "daze",
+            "stateSec": 2.5,
+            "windup": 0.7,
+            "clip": "Punch",
+            "desc": "8 ô xung quanh · gây Choáng tất cả 2.5 giây"
+          }
+        }
+      ]
+    },
+    "ult": {
+      "name": "Thái Hư Vạn Kiếm Quyết",
+      "glyph": "無",
+      "radius": 7,
+      "mul": 9,
+      "charge": 30,
+      "perKill": 1,
+      "perLeader": 5,
+      "perSec": 0.4,
+      "windup": 0.7,
+      "clip": "SwordSpin",
+      "desc": "Chém quét toàn bộ 7 ô xung quanh"
+    },
+    "autoMinHits": 3,
+    "firstPillEvery": 5,
+    "firstPill": 1,
+    "edge": {
+      "rageSec": 45,
+      "rageAtk": 0.4,
+      "rageStepSec": 10,
+      "rageStepAtk": 0.2,
+      "rageMaxAtk": 1.0,
+      "breakStun": 1.0,
+      "breakTaken": 0.25,
+      "breakGuard": 15,
+      "holdSec": 3,
+      "gritHp": 0.3,
+      "gritCoin": 0.5,
+      "weak": [
+        "scar",
+        "bleed",
+        "break",
+        "daze",
+        "bleed"
+      ],
+      "weakRage": 20
+    }
+  }
+}

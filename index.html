@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Thái Hư Tiên Môn: Xuyên Không Khai Tông (3D Tu Tiên RPG)</title>
+  <link rel="icon" type="image/png" href="assets/img/Logo_tienmon.png" />
+  <link rel="stylesheet" href="css/style.css?v=41" />
+</head>
+<body>
+  <div id="app-shell">
+    <!-- 3D WebGL2 Scene + 2D Ink/Telegraph Overlay -->
+    <canvas id="gl-canvas"></canvas>
+    <canvas id="fx-canvas"></canvas>
+
+    <!-- Sect Courtyard Floating Building Tags (Rebuild / Build / Harvest Bubble) -->
+    <div id="town-tags-layer" class="hidden"></div>
+
+    <!-- ==================== FIELD HUD (Exact APK level0 2340x1080 Layout) ==================== -->
+    <div id="field-hud" class="hud-layer hidden">
+      <!-- Top-Left: Circular Master Ring + LevelBadge + NamePlate + Hp + PowerBack + 4 Circular Mates -->
+      <div class="fh-top-left hud-interactive">
+        <div class="fh-master-cluster" id="btn-open-growth-top" title="Tu Luyện Tông Chủ">
+          <div class="fh-master-ring">
+            <img class="fh-master-face" src="assets/img/port_master.png?v=24" alt="Tông Chủ" />
+            <img class="fh-ring-frame" src="assets/img/ui_tt/03_orb_frame.png?v=24" alt="" />
+            <div class="fh-level-badge" id="hud-realm-badge">Phàm Nhân</div>
+          </div>
+          <div class="fh-master-bars">
+            <div class="b-plate fh-name-plate">
+              <span class="fh-sect-name" id="hud-sect-title">Thái Hư Tiên Môn</span>
+              <span class="fh-path-chip" id="hud-path-txt">Tán Tu</span>
+            </div>
+            <div class="fh-hp-track">
+              <div class="fh-hp-fill" id="hud-master-hp" style="width: 100%"></div>
+            </div>
+            <div class="fh-qi-track" title="Linh Khí Tu Luyện (Đầy 100% bộc phát Chu Thiên Viên Mãn!)">
+              <div class="fh-qi-fill" id="hud-master-qi" style="width: 0%"></div>
+              <span class="fh-qi-lbl" id="hud-qi-txt">Linh Khí 0%</span>
+            </div>
+            <div class="b-plate fh-power-plate">
+              <span class="fh-power-lbl">Chiến Lực</span>
+              <span class="fh-power-val" id="hud-power-txt">0</span>
+            </div>
+          </div>
+        </div>
+        <!-- 4 Circular Mate Portraits + MateHp0..3 -->
+        <div class="fh-mates-row" id="hud-mates-row"></div>
+        <!-- Guided Progression Quest Banner (Exact APK GuideStep Flow) -->
+        <button class="b-plate fh-guide-card hidden" id="hud-guide-btn" title="Bấm để thực hiện hoặc nhận thưởng">
+          <div class="fh-guide-top">
+            <span class="fh-guide-tag" id="hud-guide-tag">CHỈ DẪN 1/6</span>
+            <span class="fh-guide-reward" id="hud-guide-reward">+200 Tiền</span>
+          </div>
+          <div class="fh-guide-desc" id="hud-guide-desc">Cường hóa Tấn Công 3 lần</div>
+        </button>
+      </div>
+
+      <!-- Top-Center: StagePlate + Wide Kills Progress Bar + Boss Bar / Heavy Interrupt -->
+      <div class="fh-top-center hud-interactive">
+        <div class="b-plate fh-stage-plate">
+          <span id="hud-stage-txt">Chương 1 · Ải 1/10</span>
+        </div>
+        <div class="fh-kills-bar-wrap">
+          <div class="fh-kills-track">
+            <div class="fh-kills-fill" id="hud-kills-fill" style="width: 0%"></div>
+            <img class="fh-skull-ico" src="assets/img/skull.png" alt="" />
+            <span class="fh-kills-txt" id="hud-kills-txt">0 / 12</span>
+          </div>
+          <button class="fh-boss-btn hidden" id="btn-boss-now">⚔ Đấu Thủ Lĩnh</button>
+          <button class="fh-boss-btn exit hidden" id="btn-exit-mode">Rời Phó Bản</button>
+        </div>
+
+        <div class="fh-boss-box hidden" id="hud-boss-box">
+          <div class="fh-boss-top">
+            <span id="hud-boss-name">Thủ Lĩnh</span>
+            <span id="hud-boss-timer">60s</span>
+          </div>
+          <div class="fh-boss-hp-track">
+            <div class="fh-boss-hp-fill" id="hud-boss-hp" style="width: 100%"></div>
+            <div class="fh-boss-p2-mark" title="Mốc 50% Hóa Ma Cuồng Nộ"></div>
+          </div>
+        </div>
+
+        <div class="fh-interrupt-alert hidden" id="hud-interrupt-btn">
+          ⚡ ĐÒN NẶNG SẮP GIÁNG — BẤM SPACE (THÂN PHÁP) HOẶC TIÊN PHÁP ĐỂ CẮT ĐỨT!
+        </div>
+      </div>
+
+      <!-- Top-Right: CoinPill + JadePill + Burger Menu + 4 Vertical Content Cards (Content0..3) -->
+      <div class="fh-top-right hud-interactive">
+        <div class="fh-currency-row">
+          <button class="b-plate fh-online-pill" id="hud-online-pill" title="Tiên Giới Trực Tuyến: BXH, PK 1v1, Boss Thế Giới, Bang Hội, Đấu Giá">
+            <span id="hud-online-txt"><span class="on-dot"></span> Đăng Nhập Online</span>
+          </button>
+          <button class="b-plate fh-mail-btn" id="btn-hud-mail" title="Hộp Thư & Đạo Hữu Online">
+            ✉<span id="hud-mail-badge" class="mail-badge hidden">0</span>
+          </button>
+          <div class="b-plate fh-res-pill compact" title="Linh Thảo (Rơi từ Yêu Thú — Luyện Đan & Pháp Bảo)">
+            <img class="fh-res-ico sm" src="assets/img/res_herb.png" alt="Linh Thảo" />
+            <span id="hud-herb-txt">24</span>
+          </div>
+          <div class="b-plate fh-res-pill compact" title="Yêu Đan (Rơi từ Yêu Thú — Luyện Đan & Pháp Bảo)">
+            <img class="fh-res-ico sm" src="assets/img/res_core.png" alt="Yêu Đan" />
+            <span id="hud-core-txt">12</span>
+          </div>
+          <div class="b-plate fh-res-pill" title="Linh Thạch">
+            <img class="fh-res-ico" src="assets/img/coin.png" alt="Tiền" />
+            <span id="hud-coin-txt">300</span>
+          </div>
+          <div class="b-plate fh-res-pill" title="Tiên Ngọc">
+            <img class="fh-res-ico" src="assets/img/jade.png" alt="Ngọc" />
+            <span id="hud-jade-txt">1,000</span>
+          </div>
+          <button class="b-plate fh-burger-btn" id="btn-open-settings" title="Thiết Lập & Hệ Thống">
+            <img src="assets/img/b_burger.png" alt="Menu" />
+          </button>
+        </div>
+
+        <!-- 4 Vertical b_plate Sticker Cards matching Content0..Content3 -->
+        <div class="fh-content-cards">
+          <button class="b-plate fh-cont-card" data-open-panel="online" data-open-tab="0" style="border-color:#48f0c8;">
+            <img src="assets/img/NavMurim1115.png" alt="Online" />
+            <span>Online</span>
+          </button>
+          <button class="b-plate fh-cont-card" data-open-panel="trial" data-open-tab="0">
+            <img src="assets/img/cont_daily.png" alt="Bí Cảnh" />
+            <span>Bí Cảnh</span>
+          </button>
+          <button class="b-plate fh-cont-card" data-open-panel="trial" data-open-tab="1">
+            <img src="assets/img/cont_tower.png" alt="Thông Thiên" />
+            <span>Thông Thiên</span>
+          </button>
+          <button class="b-plate fh-cont-card" data-open-panel="story" data-open-tab="0">
+            <img src="assets/img/cont_story.png" alt="Truyện Ký" />
+            <span>Truyện Ký</span>
+          </button>
+          <button class="b-plate fh-cont-card" data-open-panel="shop" data-open-tab="0">
+            <img src="assets/img/cont_shop.png" alt="Cửa Hàng" />
+            <span>Tiên Bảo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom-Left: Xianxia Immortal Dock (7 Signature Buttons incl. Pháp Bảo 3D & Luyện Đan!) -->
+      <div class="b-plate fh-bottom-dock hud-interactive">
+        <button class="fh-menu-btn" id="btn-goto-town" title="Về Tiên Sơn 3D">
+          <img src="assets/img/menu_sect.png" alt="Sơn Môn" />
+          <span>Sơn Môn</span>
+        </button>
+        <button class="fh-menu-btn" data-panel="growth">
+          <img src="assets/img/menu_train.png" alt="Tu Luyện" />
+          <span>Tu Luyện</span>
+        </button>
+        <button class="fh-menu-btn" data-panel="artifact" title="Trang Bị Vũ Khí 3D Đổi Tay & 4 Pháp Bảo Bay Quanh Thân">
+          <img src="assets/img/menu_artifact.png" alt="Trang Bị" />
+          <span>Trang Bị</span>
+        </button>
+        <button class="fh-menu-btn" data-panel="alchemy" title="Lò Luyện Đan Tương Tác Canh Hỏa Hầu">
+          <img src="assets/img/menu_alchemy.png" alt="Luyện Đan" />
+          <span>Luyện Đan</span>
+        </button>
+        <button class="fh-menu-btn" data-panel="disciple">
+          <img src="assets/img/menu_disciple.png" alt="Đệ Tử" />
+          <span>Đệ Tử</span>
+        </button>
+        <button class="fh-menu-btn" data-panel="arts">
+          <img src="assets/img/menu_art.png" alt="Tiên Pháp" />
+          <span>Tiên Pháp</span>
+        </button>
+        <button class="fh-menu-btn" data-panel="jianghu" title="Bản Đồ Tiên Giới · Du Lịch & Luận Kiếm">
+          <img src="assets/img/menu_world.png" alt="Tiên Giới" style="border-radius:10px;" />
+          <span>Tiên Giới</span>
+        </button>
+      </div>
+
+      <!-- Bottom-Right: KitChip + Meditate/Auto/Speed/Salve Pills + Skill0..3 + Ult -->
+      <div class="fh-bottom-right hud-interactive">
+        <div class="fh-skill-top-strip">
+          <div class="b-plate fh-kit-chip" id="hud-kit-chip" title="Cộng Hưởng Tông Phái">Thái Hư Kiếm</div>
+          <div class="fh-pills-right">
+            <button class="b-plate fh-mini-pill" id="btn-dodge-dash" title="Thân Pháp Lướt Né (Phím Space) — Miễn nhiễm sát thương & Né Hoàn Hảo +20% Nộ">⚡ Né</button>
+            <button class="b-plate fh-mini-pill" id="btn-toggle-flight" title="Ngự Kiếm Phi Hành 3D (Phím F) — Đạp thần binh bay lướt +38% tốc độ!">⚔ Phi Kiếm</button>
+            <button class="b-plate fh-mini-pill" id="btn-toggle-meditate" title="Ngồi Thiền Hấp Linh 3D (Phím M / T)">🧘 Thiền</button>
+            <button class="b-plate fh-mini-pill" id="btn-use-salve" title="Dùng Hồi Linh Đan (Phím Q / H)">
+              <img src="assets/img/res_pill.png" alt="" />
+              <span id="hud-salve-txt">2/2</span>
+            </button>
+            <button class="b-plate fh-mini-pill" id="btn-toggle-hunt" title="Tiến Ải tự động hay Săn Bãi tại chỗ gom Linh Thạch">Tiến Ải</button>
+            <button class="b-plate fh-mini-pill" id="btn-toggle-autoboss" title="Tự Động Đánh Boss — Xong Ải 9 tự vào đánh Thủ Lĩnh Ải 10 & tự qua Chương tiếp!">👹 Auto Boss</button>
+            <button class="b-plate fh-mini-pill" id="btn-toggle-speed">1.0x</button>
+            <button class="b-plate fh-mini-pill active" id="btn-toggle-auto">Tự Động</button>
+            <button class="b-plate fh-mini-pill" id="btn-open-dps" title="Thống Kê Sát Thương DPS">📊 DPS</button>
+          </div>
+        </div>
+        <div class="fh-skills-row" id="hud-skills-bar"></div>
+      </div>
+    </div>
+
+    <!-- ==================== TOWN HUD (Exact APK level1 Sect Courtyard Layout) ==================== -->
+    <div id="town-hud" class="hud-layer hidden">
+      <!-- Top-Left: Sect Emblem + SectBand -->
+      <div class="th-top-left hud-interactive">
+        <div class="th-emblem-wrap">
+          <img class="th-emblem-bg" src="assets/img/emblem.png" alt="Huy Hiệu" />
+          <img class="th-emblem-hall" src="assets/img/menu_sect.png" alt="" />
+        </div>
+        <div class="b-plate th-sect-band">
+          <span class="th-sect-name">Thái Hư Tiên Môn</span>
+          <span class="th-sect-lv" id="th-sect-lv">Cấp Phái 3</span>
+        </div>
+        <button class="b-plate fh-mini-pill" data-open-panel="season" data-open-tab="0" style="margin-left:6px;">
+          <img src="assets/img/nav_season.png" alt="" />
+          <span>Tiết Khí</span>
+        </button>
+        <button class="b-plate fh-mini-pill" data-open-panel="murim" data-open-tab="0">
+          <img src="assets/img/NavMurim1115.png" alt="" />
+          <span>Tiên Minh</span>
+        </button>
+      </div>
+
+      <!-- Top-Right: CoinPill + JadePill + Close Button (Return to Field!) -->
+      <div class="th-top-right hud-interactive">
+        <div class="b-plate fh-res-pill">
+          <img class="fh-res-ico" src="assets/img/coin.png" alt="Tiền" />
+          <span id="th-coin-txt">300</span>
+        </div>
+        <div class="b-plate fh-res-pill">
+          <img class="fh-res-ico" src="assets/img/jade.png" alt="Ngọc" />
+          <span id="th-jade-txt">1,000</span>
+        </div>
+        <button class="b-plate th-close-btn" id="btn-leave-town" title="Trở Ra Chiến Trường">
+          <img src="assets/img/close.png" alt="Đóng" onerror="this.style.display='none';this.parentElement.textContent='✕';" />
+        </button>
+      </div>
+
+      <!-- Bottom-Left: Active Construction Progress Card (TownHud/Safe/Building) -->
+      <div class="b-plate th-building-card hud-interactive hidden" id="th-building-box">
+        <img class="th-bld-thumb" id="th-bld-thumb" src="assets/img/hallc_main.png" alt="" />
+        <div class="th-bld-info">
+          <div class="th-bld-head">
+            <img src="assets/img/hammer.png" alt="" />
+            <span id="th-bld-name">Tông Chủ Điện</span>
+            <span class="th-bld-time" id="th-bld-time">10s</span>
+          </div>
+          <div class="th-bld-bar">
+            <div class="th-bld-fill" id="th-bld-fill" style="width:50%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom-Right: Overview Camera Zoom Toggle + Gold Octagon btn_cut (Điện Các) -->
+      <div class="th-bottom-right hud-interactive">
+        <button class="b-plate th-overview-btn" id="btn-town-overview">Toàn Cảnh</button>
+        <button class="th-cut-btn" id="btn-open-town-panel">
+          <img class="th-cut-bg" src="assets/img/btn_cut.png" alt="" />
+          <div class="th-cut-content">
+            <img src="assets/img/ico_town_halls.png" alt="" style="border-radius:8px;" />
+            <span>Điện Các</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Signature Ultimate Cut-in Banner -->
+    <div id="ult-cutin" class="hidden">
+      <img id="ult-cutin-img" src="assets/img/hero_lamphong.png" alt="Tuyệt Kỹ" />
+      <div class="ult-name" id="ult-cutin-name">Thái Hư Vạn Kiếm Quyết!</div>
+    </div>
+
+    <!-- Hanji Modal Container (Uses exact bp_panel skin) -->
+    <div id="modal-backdrop" class="hidden">
+      <div class="hanji-panel" id="modal-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-title" id="modal-title">Tu Luyện</span>
+            <div class="panel-tabs" id="modal-tabs"></div>
+          </div>
+          <button class="btn-close-panel" id="btn-modal-close">✕</button>
+        </div>
+        <div class="panel-body" id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Story / Cutscene / Random Encounter Overlay -->
+    <div id="story-overlay" class="hidden">
+      <button class="story-skip-top hidden" id="story-skip-top">Bỏ Qua Đoạn Này ⏭</button>
+      <div class="story-narr-box hidden" id="story-narr-box">
+        <div class="story-narr-title" id="story-narr-title">Mở Đầu · Thanh Kiếm Trở Về</div>
+        <div class="story-narr-body" id="story-narr-body"></div>
+        <div class="story-step-pill" id="story-narr-step">1 / 2</div>
+        <div class="story-actions story-narr-actions" id="story-narr-actions"></div>
+      </div>
+      <div class="story-stage" id="story-talk-stage">
+        <img id="story-fig" class="story-figure-img hidden" src="" alt="Nhân Vật" />
+        <div class="story-dialog-card" id="story-dialog-card">
+          <div>
+            <div class="story-head-row">
+              <span class="story-speaker" id="story-who">Tông Chủ</span>
+              <span class="story-step-pill dark" id="story-talk-step">1 / 8</span>
+            </div>
+            <div class="story-text" id="story-text"></div>
+          </div>
+          <div class="story-actions" id="story-actions"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calligraphy Victory / Breakthrough Ribbon Banner -->
+    <div id="victory-ribbon" class="hidden">
+      <div class="vr-title" id="vr-title">PHÁ ẢI THÀNH CÔNG!</div>
+      <div class="vr-sub" id="vr-sub">Thái Hư Tiên Môn</div>
+    </div>
+
+    <!-- Smooth Zone / Stage Fade Curtain -->
+    <div id="stage-fade"></div>
+
+    <!-- Live Collapsible World & Guild Chat Dock -->
+    <div id="live-chat-dock" class="hidden hud-interactive">
+      <div class="lc-head">
+        <div class="lc-tabs">
+          <button class="lc-tab active" data-lc-ch="world">Thế Giới</button>
+          <button class="lc-tab" data-lc-ch="guild">Minh Hội</button>
+        </div>
+        <button class="lc-toggle" id="lc-toggle-btn">— Thu Gọn</button>
+      </div>
+      <div id="lc-body-wrap">
+        <div id="live-chat-msgs" class="lc-msgs"></div>
+        <div class="lc-input-row">
+          <input id="lc-input" type="text" maxlength="200" placeholder="Nhắn kênh Tiên Giới..." />
+          <button id="lc-send-btn">Gửi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time 1v1 PK Challenge Invite Banner -->
+    <div id="pk-invite-banner" class="hidden hud-interactive"></div>
+
+    <!-- Online Login / Register Modal -->
+    <div id="online-auth-modal" class="hidden"></div>
+
+    <!-- Player Equipment & Cosmetics Inspect Modal -->
+    <div id="inspect-player-modal" class="hidden hud-interactive"></div>
+
+    <!-- Top-Up Payment Checkout Modal (VietQR / MoMo / Thẻ Cào) -->
+    <div id="topup-checkout-modal" class="hidden"></div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Title Screen (FrontDoor — Authentic Clean KeyArt + Vietnamese Ribbon Logo + Drifting Spirit Motes!) -->
+    <div id="front-door">
+      <div id="fd-particles"></div>
+      <div class="fd-logo-wrap">
+        <img src="assets/img/Logo_tienmon.png" alt="Thái Hư Tiên Môn" class="fd-logo-img" />
+      </div>
+      <div class="fd-bottom-wrap">
+        <div id="fd-online-status" class="fd-online-status">🌐 Máy chủ Thái Hư Tiên Môn Online sẵn sàng</div>
+        <button class="fd-start-btn" id="btn-enter-game">CHẠM ĐỂ XUYÊN KHÔNG KHAI TÔNG</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <button class="fd-newgame-btn" id="btn-open-auth-fd">🌐 Đăng Nhập / Đăng Ký Tài Khoản Online</button>
+          <button class="fd-newgame-btn hidden" id="btn-new-game-fd">Trọng Sinh Xuyên Không (Chơi Lại Từ Đầu)</button>
+        </div>
+        <div class="fd-ver-txt">Thái Hư Tiên Môn Online · 3D Tu Tiên · PK 1v1 · Boss Thế Giới · Bang Hội &amp; Đấu Giá</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="js/audio.js?v=43"></script>
+  <script src="js/env3d.js?v=43"></script>
+  <script src="js/renderer3d.js?v=43"></script>
+  <script src="js/equipment_data.js?v=43"></script>
+  <script src="js/engine.js?v=43"></script>
+  <script src="js/ui.js?v=43"></script>
+  <script src="js/firebase_config.js?v=43"></script>
+  <script src="js/firebase_online.js?v=43"></script>
+  <script src="js/online.js?v=43"></script>
+  <script src="js/online_ui.js?v=43"></script>
+  <script src="js/topup_ui.js?v=43"></script>
+</body>
+</html>

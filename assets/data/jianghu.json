@@ -1,0 +1,4886 @@
+{
+  "version": 1,
+  "nodeSec": 90,
+  "subK": 0.5,
+  "pactMax": 4,
+  "pactCap": 1.0,
+  "laps": {
+    "cap": 5,
+    "foeHp": 0.25,
+    "reward": 0.25,
+    "smashCd": 0.1,
+    "smashCdMin": 0.7
+  },
+  "pacts": [
+    {
+      "id": "strong",
+      "name": "Cường Địch",
+      "key": "foeHp",
+      "val": 0.3,
+      "karma": 0.2
+    },
+    {
+      "id": "nosalve",
+      "name": "Không Dùng Thuốc",
+      "key": "salve",
+      "val": 2,
+      "karma": 0.15
+    },
+    {
+      "id": "few",
+      "name": "Đội Ngũ Tinh Gọn",
+      "key": "party",
+      "val": 3,
+      "karma": 0.2
+    },
+    {
+      "id": "fixform",
+      "name": "Cố Định Trận Pháp",
+      "key": "fixForm",
+      "val": 1,
+      "karma": 0.15
+    },
+    {
+      "id": "rage",
+      "name": "Thủ Lĩnh Cuồng Nộ",
+      "key": "rage",
+      "val": 0.3,
+      "karma": 0.15
+    },
+    {
+      "id": "grudge",
+      "name": "Ân Oán",
+      "key": "raid",
+      "val": 1,
+      "karma": 0.15
+    }
+  ],
+  "nodeWaves": [
+    12,
+    13,
+    15
+  ],
+  "outpostCapHours": 8,
+  "repGate": 20,
+  "karma": {
+    "fight": 2,
+    "evt": 1,
+    "boss": 10,
+    "wander": 1,
+    "wanderBoss": 5,
+    "rebirthDiv": 2
+  },
+  "formSteps": [
+    5,
+    20,
+    60,
+    150,
+    320
+  ],
+  "formPer": 0.1,
+  "formations": [
+    {
+      "id": "line",
+      "name": "Thái Hư Kiếm Trận",
+      "desc": "Trận pháp cơ bản không có hiệu ứng cộng thêm",
+      "mods": []
+    },
+    {
+      "id": "crane",
+      "name": "Bát Quái Tụ Linh Trận",
+      "desc": "Hai cánh bao vây · Tuyệt kỹ +60% · Đòn thường -20%",
+      "mods": [
+        {
+          "key": "skill",
+          "v": 0.6
+        },
+        {
+          "key": "basic",
+          "v": -0.2
+        }
+      ]
+    },
+    {
+      "id": "arrow",
+      "name": "Chu Tước Phần Thiên Trận",
+      "desc": "Đâm thủng một điểm · Bỏ qua 80% giáp · Bạo Kích +10% · Sát thương nhận +8%",
+      "mods": [
+        {
+          "key": "pierce",
+          "v": 0.8
+        },
+        {
+          "key": "crit",
+          "v": 0.1
+        },
+        {
+          "key": "taken",
+          "v": 0.08
+        }
+      ]
+    },
+    {
+      "id": "fish",
+      "name": "Huyền Vũ Kim Cang Trận",
+      "desc": "Nhắm thẳng đầu mục · Đầu Mục·Thủ Lĩnh +100% · Tiểu Tốt -10%",
+      "mods": [
+        {
+          "key": "big",
+          "v": 1.0
+        },
+        {
+          "key": "small",
+          "v": -0.1
+        }
+      ]
+    },
+    {
+      "id": "circle",
+      "name": "Cửu Lôi Tru Tiên Trận",
+      "desc": "Lập vòng phòng thủ · Sát thương nhận -30% · Sát thương gây ra -14%",
+      "mods": [
+        {
+          "key": "taken",
+          "v": -0.3
+        },
+        {
+          "key": "dmg",
+          "v": -0.14
+        }
+      ]
+    }
+  ],
+  "traits": [
+    {
+      "id": "horde",
+      "name": "Biển Người",
+      "desc": "Tiểu tốt kéo đến đông gấp 1.5 lần (Sinh lực 70%)",
+      "counter": "crane",
+      "count": 1.5,
+      "hp": 0.7,
+      "atk": 1,
+      "defAdd": 0,
+      "bigHp": 1
+    },
+    {
+      "id": "wall",
+      "name": "Thiết Bích",
+      "desc": "Khoác trọng giáp, sát thương nhận vào -37%",
+      "counter": "arrow",
+      "count": 1,
+      "hp": 1,
+      "atk": 1,
+      "defAdd": 0.6,
+      "bigHp": 1
+    },
+    {
+      "id": "titan",
+      "name": "Cự Đầu",
+      "desc": "Đầu Mục·Thủ Lĩnh Sinh Lực ×{big} · Tiểu Tốt {hp}%",
+      "counter": "fish",
+      "count": 1,
+      "hp": 0.85,
+      "atk": 1,
+      "defAdd": 0,
+      "bigHp": 3.0
+    },
+    {
+      "id": "venom",
+      "raidBossAtk": 1.5,
+      "name": "Kịch Độc",
+      "desc": "Công kích địch ×1.4",
+      "counter": "circle",
+      "count": 1,
+      "hp": 1,
+      "atk": 1.4,
+      "defAdd": 0,
+      "bigHp": 1
+    },
+    {
+      "id": "blood",
+      "raidBossAtk": 1.35,
+      "name": "Huyết Khí",
+      "desc": "Sinh lực · Công kích địch ×1.25",
+      "counter": "circle",
+      "count": 1,
+      "hp": 1.25,
+      "atk": 1.25,
+      "defAdd": 0,
+      "bigHp": 1
+    }
+  ],
+  "regions": [
+    {
+      "id": "r1",
+      "title": "Chương 1 · U Lâm Yêu Cốc",
+      "trait": "horde",
+      "art": "region_1",
+      "desc": "Rừng linh mộc ngàn năm bị Yêu Tộc chiếm cứ.",
+      "goal": "Đánh bại Thanh La Viên Vương, đoạt lại Linh Khế Cổ Tông",
+      "nodes": [
+        {
+          "id": "in",
+          "slot": 0,
+          "kind": "event",
+          "name": "U Lâm Yêu Cốc · Điểm 1",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "Nghe nói Thiên Bảo Các đã bán linh khế cổ tông của ta\ncho U Lâm Yêu Cốc rồi."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Ta biết. Thanh La Viên Vương sẽ đích thân mang tới.\n…Không, chỉ là linh cảm thôi."
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Xích Lôi",
+                  "fig": "full_harang",
+                  "text": "Yêu tu mà lại kéo đến cướp linh mạch sao?"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Lần này phải bảo vệ ruộng dược thảo trước tiên.\nLần trước ta đã để vuột mất nó."
+                },
+                {
+                  "who": "Xích Lôi",
+                  "fig": "full_harang",
+                  "text": "…Lần trước ư?"
+                }
+              ]
+            }
+          ],
+          "desc": "U Lâm Yêu Cốc cầm linh khế cổ tông kéo tới. Vượt qua sẽ lĩnh ngộ Bát Quái Tụ Linh Trận.",
+          "fig": "full_danbi",
+          "stage": 8,
+          "need": [],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Nghe nói Thiên Bảo Các đã bán linh khế cổ tông của ta\ncho U Lâm Yêu Cốc rồi."
+            },
+            {
+              "who": "Xích Lôi",
+              "fig": "full_harang",
+              "text": "Yêu tu mà lại kéo đến cướp linh mạch sao?\nĐừng làm ta nực cười!"
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Đúng là chuyện đáng cười thật.\nYêu ma mà là yêu tu thì cứ mạnh tay nện cho một trận."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Bọn chúng kéo tới từng bầy.\nHãy giương cánh bao vây đánh úp — Bát Quái Tụ Linh Trận."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "crane",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f1",
+          "slot": 1,
+          "kind": "fight",
+          "name": "U Lâm Yêu Cốc · Điểm 2",
+          "desc": "Đám tiểu tốt U Lâm Yêu Cốc đã chặn ngang đường núi.",
+          "fig": "full_makdong",
+          "stage": 8,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Tiểu Bảo",
+              "fig": "full_makdong",
+              "text": "Huynh ơi, trên đường núi yêu tu đông lúc nhúc kìa!"
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Hay lắm.\nMỗi tên đáng giá hai đồng Linh Thạch."
+            }
+          ],
+          "after": [
+            {
+              "who": "Mộc Thanh",
+              "fig": "full_sundeok",
+              "text": "Số Linh Thạch này…\nvốn dĩ chẳng phải của chúng ta sao?"
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 300
+            },
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f2",
+          "slot": 2,
+          "kind": "fight",
+          "name": "U Lâm Yêu Cốc · Điểm 3",
+          "desc": "U Lâm Yêu Cốc đã chiếm ruộng dược thảo của bổn môn. Đoạt lại sẽ biến nơi đó thành Cứ Điểm.",
+          "fig": "full_sundeok",
+          "stage": 10,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Mộc Thanh",
+              "fig": "full_sundeok",
+              "text": "Ruộng của ta! Dược thảo của ta!\nLũ kia giẫm nát hết cả rồi!"
+            },
+            {
+              "who": "Thạch Hạo",
+              "fig": "full_dolsoe",
+              "text": "…Ruộng nương để ta cày lại cho."
+            }
+          ],
+          "after": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Chúng ta giành lại được ruộng dược thảo rồi.\nTừ giờ mỗi ngày đều có Linh Thạch thu về."
+            }
+          ],
+          "reward": [
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "coin",
+            "n": 300
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "fork",
+          "slot": 3,
+          "kind": "event",
+          "name": "U Lâm Yêu Cốc · Điểm 4",
+          "desc": "Phó Yêu Vương U Lâm Yêu Cốc Hỏa Linh đã chặn đường. Chọn lối nào đây?",
+          "fig": "full_macheol",
+          "stage": 12,
+          "need": [
+            "f1|f2"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Hỏa Linh",
+              "fig": "full_macheol",
+              "text": "Dừng lại ở đó thôi, tiểu Tông Chủ.\nNợ ra nợ, mà đao ra đao."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Cũng là kẻ biết điều đấy.\nTa cho ngươi chọn một trong hai."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Quyết đấu trực diện với Hỏa Linh",
+              "desc": "Chiến thắng thì Hỏa Linh sẽ ở lại môn phái",
+              "gate": "",
+              "rep": 10,
+              "branch": "a",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Hỏa Linh",
+                  "fig": "full_macheol",
+                  "text": "Được.\nNếu thua, ta sẽ quy phục dưới trướng ngươi."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            },
+            {
+              "label": "Cướp Linh Thạch Khố Sơn Trại trước",
+              "desc": "Tránh mặt Hỏa Linh, thu lấy Linh Thạch và Ngọc Giản",
+              "gate": "",
+              "rep": -10,
+              "branch": "b",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "…Tông Chủ, làm vậy là ăn trộm đấy."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Đi cướp linh mạch thôi."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            }
+          ]
+        },
+        {
+          "id": "q",
+          "slot": 4,
+          "kind": "event",
+          "name": "U Lâm Yêu Cốc · Điểm 5",
+          "desc": "Những người dân làng mắc nợ U Lâm Yêu Cốc đang đứng bên vệ đường.",
+          "fig": "full_makdong",
+          "stage": 10,
+          "need": [
+            "f1"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Tiểu Bảo",
+              "fig": "full_makdong",
+              "text": "Huynh ơi, nghe nói dân làng\ncũng mắc nợ U Lâm Yêu Cốc đó."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Xé bỏ linh khế cổ tông giúp dân",
+              "desc": "Dân làng khắc ghi ân nghĩa Thái Hư Tiên Môn",
+              "gate": "",
+              "rep": 15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "xp",
+                  "n": 300
+                },
+                {
+                  "res": "pill",
+                  "n": 2
+                }
+              ],
+              "after": [
+                {
+                  "who": "Bô lão trong làng",
+                  "fig": "",
+                  "text": "Thái Hư Tiên Môn… Người vừa nói Thái Hư Tiên Môn phải không?\nƠn này quyết không dám quên."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "favor",
+              "bondBy": "Dân Làng Dưới Chân U Lâm Yêu Cốc",
+              "back": [
+                {
+                  "who": "Bô lão trong làng",
+                  "fig": "",
+                  "text": "Nghe tin có yêu tu kéo vào Thái Hư Tiên Môn,\nchúng tôi liền vác Mộc Côn chạy tới đây!"
+                }
+              ]
+            },
+            {
+              "label": "Tiền lãi để chúng ta thu",
+              "desc": "Thu nợ thay rồi bỏ túi riêng",
+              "gate": "",
+              "rep": -15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "coin",
+                  "n": 1500
+                },
+                {
+                  "res": "pill",
+                  "n": 2
+                }
+              ],
+              "after": [
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "Ta sẽ ghi vào sổ sách.\n…Còn lương tâm thì miễn ghi."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "grudge",
+              "bondBy": "Tàn đảng U Lâm Yêu Cốc kéo đến cướp linh mạch",
+              "back": [
+                {
+                  "who": "Tàn Đảng U Lâm Yêu Cốc",
+                  "fig": "",
+                  "text": "Tên khốn vét sạch cả tiền lãi của dân làng,\nngươi còn nhớ chứ?"
+                },
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "…Món nợ ghi trong sổ năm nào\nnay đã quay trở lại rồi."
+                }
+              ]
+            },
+            {
+              "label": "Đứng ra hòa giải giữa U Lâm Yêu Cốc và dân làng",
+              "desc": "Không đứng về phe nào",
+              "gate": "Trung",
+              "rep": 0,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "jade",
+                  "n": 30
+                },
+                {
+                  "res": "pill",
+                  "n": 3
+                }
+              ],
+              "after": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Nợ giảm một nửa.\nPhần còn lại cứ đến U Lâm Yêu Cốc mà đòi."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "",
+              "bondBy": "",
+              "back": []
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "slot": 5,
+          "kind": "fight",
+          "name": "U Lâm Yêu Cốc · Điểm 6",
+          "desc": "Chiến thắng sẽ có Hỏa Linh gia nhập.",
+          "fig": "full_macheol",
+          "stage": 12,
+          "need": [
+            "fork"
+          ],
+          "branch": "a",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Hỏa Linh",
+              "fig": "full_macheol",
+              "text": "Đại Đao của U Lâm Yêu Cốc, Hỏa Linh đây.\nTa không nương tay đâu."
+            }
+          ],
+          "after": [
+            {
+              "who": "Hỏa Linh",
+              "fig": "full_macheol",
+              "text": "…Thua rồi. Đã hứa thì giữ lời.\nTừ hôm nay ta ăn cơm của Thái Hư Tiên Môn."
+            },
+            {
+              "who": "Xích Lôi",
+              "fig": "full_harang",
+              "text": "Đại Đệ Tử là ta đây! Biết chưa hả?"
+            }
+          ],
+          "reward": [
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [
+            "macheol"
+          ],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "b",
+          "slot": 6,
+          "kind": "fight",
+          "name": "U Lâm Yêu Cốc · Điểm 7",
+          "desc": "Khoắng sạch Linh Thạch Khố U Lâm Yêu Cốc. Thu Linh Thạch và Ngọc Giản.",
+          "fig": "full_master",
+          "stage": 12,
+          "need": [
+            "fork"
+          ],
+          "branch": "b",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Cửa Linh Thạch Khố để ta mở.\nCác ngươi cứ đứng nhìn thôi."
+            }
+          ],
+          "after": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Linh Thạch nhiều quá…\nghi vào sổ không xuể nữa rồi."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 900
+            },
+            {
+              "res": "scroll",
+              "n": 10
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "boss",
+          "slot": 7,
+          "kind": "boss",
+          "name": "U Lâm Yêu Cốc · Điểm 8",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "Thanh La Yêu Tôn Thanh La Viên Vương",
+                  "fig": "villain_maung",
+                  "text": "Một môn phái đến nợ cũng không trả nổi\nmà dám bước chân vào sơn trại của ta sao?"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Câu thoại đó, lại nghe nữa rồi.\nChìa khóa Linh Thạch Khố đeo bên hông trái chứ gì."
+                },
+                {
+                  "who": "Thanh La Yêu Tôn Thanh La Viên Vương",
+                  "fig": "villain_maung",
+                  "text": "…Sao ngươi biết chuyện đó?"
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Thanh La Yêu Tôn Thanh La Viên Vương",
+                  "fig": "villain_maung",
+                  "text": "Thằng ranh con!\nTất cả xông lên đánh cho ta!"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Thói kéo bầy kéo lũ vẫn chẳng đổi.\nLần này ta sẽ kết liễu nhanh hơn."
+                }
+              ]
+            }
+          ],
+          "desc": "Thủ Lĩnh của U Lâm Yêu Cốc. Vượt qua sẽ dựng lại Linh Thạch Khố.",
+          "fig": "villain_maung",
+          "stage": 15,
+          "need": [
+            "a|b"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Thanh La Yêu Tôn Thanh La Viên Vương",
+              "fig": "villain_maung",
+              "text": "Một môn phái đến nợ cũng không trả nổi\nmà dám bước chân vào sơn trại của ta sao?"
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Nợ tất nhiên sẽ trả.\nBằng chính Linh Thạch Khố sơn trại của ngươi."
+            },
+            {
+              "who": "Thanh La Yêu Tôn Thanh La Viên Vương",
+              "fig": "villain_maung",
+              "text": "Thằng ranh con!\nTất cả xông lên đánh cho ta!"
+            }
+          ],
+          "after": [
+            {
+              "who": "Thanh La Yêu Tôn Thanh La Viên Vương",
+              "fig": "villain_maung",
+              "text": "Khục… Thái Hư Tiên Môn…\nCái tên đó, ta khắc cốt ghi tâm."
+            },
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Tìm thấy linh khế cổ tông rồi!\nLinh Thạch Khố cũng có thể dùng lại rồi."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Tốt. Tiếp theo là tiền thưởng.\nDưới chân núi sắp mở Bích Thủy Hàn Đàm."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 800
+            },
+            {
+              "res": "xp",
+              "n": 600
+            },
+            {
+              "res": "jade",
+              "n": 50
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "vault",
+          "hallLv": 1,
+          "choices": []
+        },
+        {
+          "id": "story",
+          "slot": 8,
+          "kind": "story",
+          "name": "Động Phủ U Lâm Yêu Cốc",
+          "desc": "Thanh kiếm quay về, lại thấy ngày khởi đầu năm ấy.",
+          "fig": "full_master",
+          "stage": 0,
+          "need": [],
+          "branch": "",
+          "trait": "",
+          "cuts": [],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        }
+      ],
+      "name": "U Lâm Yêu Cốc"
+    },
+    {
+      "id": "r2",
+      "title": "Chương 2 · Bích Thủy Hàn Đàm",
+      "trait": "wall",
+      "art": "region_2",
+      "desc": "Đầm băng linh khí kết tinh giữa thung lũng tuyết.",
+      "goal": "Đánh bại Băng Long Tông Sứ, khai thông Bích Thủy Linh Tuyền",
+      "nodes": [
+        {
+          "id": "in",
+          "slot": 0,
+          "kind": "event",
+          "name": "Bích Thủy Hàn Đàm · Điểm 1",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "Có tiền thưởng quán quân Bích Thủy Hàn Đàm\nlà trả sạch được số nợ còn lại."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Đối thủ chung kết là Thanh Vân Kiếm Phái.\nChẳng cần nhìn bảng đấu cũng rõ."
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Xích Lôi",
+                  "fig": "full_harang",
+                  "text": "Tỷ võ thì phải để ta!"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Trận đầu chớ bung hết sức.\nLần trước ngươi làm vậy nên mới gục đấy."
+                },
+                {
+                  "who": "Xích Lôi",
+                  "fig": "full_harang",
+                  "text": "Đệ tử có thế bao giờ?!"
+                }
+              ]
+            }
+          ],
+          "desc": "Bích Thủy Hàn Đàm đã khai mở. Vượt qua sẽ lĩnh ngộ Chùy Hành Trận.",
+          "fig": "full_harang",
+          "stage": 16,
+          "need": [],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Có tiền thưởng quán quân Bích Thủy Hàn Đàm\nlà trả sạch được số nợ còn lại."
+            },
+            {
+              "who": "Xích Lôi",
+              "fig": "full_harang",
+              "text": "Tỷ võ thì phải để ta!\nĐể ta cho chúng nếm thử nắm đấm của Đại Đệ Tử!"
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Đám chính phái vỏ bọc rất dày.\nHãy đâm thủng một điểm — Chùy Hành Trận."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "arrow",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f1",
+          "slot": 1,
+          "kind": "fight",
+          "name": "Bích Thủy Hàn Đàm · Điểm 2",
+          "desc": "Vòng loại là trận hỗn chiến tất cả cùng lao vào một lúc.",
+          "fig": "full_harang",
+          "stage": 16,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Xích Lôi",
+              "fig": "full_harang",
+              "text": "Nghe bảo vòng loại là hỗn chiến đấy!\nCứ đánh gục sạch bọn chúng là xong!"
+            }
+          ],
+          "after": [
+            {
+              "who": "Xích Lôi",
+              "fig": "full_harang",
+              "text": "…Ta ăn mấy đòn rồi nhỉ?"
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 300
+            },
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f2",
+          "slot": 2,
+          "kind": "fight",
+          "name": "Bích Thủy Hàn Đàm · Điểm 3",
+          "desc": "Chiến thắng sẽ giành được chức giáo đầu võ trường. Trở thành Cứ Điểm.",
+          "fig": "full_danbi",
+          "stage": 18,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Giành được chức giáo đầu\nlà chúng ta có thể thu học phí Tu Luyện rồi."
+            }
+          ],
+          "after": [
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Dạy dỗ đệ tử nhà người ta\nkhông có chuyện miễn phí đâu."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 300
+            }
+          ],
+          "post": {
+            "res": "xp",
+            "n": 200
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "fork",
+          "slot": 3,
+          "kind": "event",
+          "name": "Bích Thủy Hàn Đàm · Điểm 4",
+          "desc": "Chọn đối thủ trận chung kết. Giao đấu với ai sẽ quyết định người gia nhập môn phái.",
+          "fig": "full_heugyeong",
+          "stage": 21,
+          "need": [
+            "f1|f2"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "U Minh",
+              "fig": "full_heugyeong",
+              "text": "Thái Hư Tiên Môn? Chưa từng nghe qua.\nHẹn gặp ở trận chung kết."
+            },
+            {
+              "who": "Tử Vi",
+              "fig": "full_soyul",
+              "text": "Ta là con gái Ngoại Đường Chủ Thanh Vân Kiếm Phái.\n…Đánh cược một ván chăng?"
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Đấu quang minh chính đại với U Minh",
+              "desc": "Chiến thắng sẽ có U Minh gia nhập",
+              "gate": "",
+              "rep": 10,
+              "branch": "a",
+              "reward": [],
+              "after": [
+                {
+                  "who": "U Minh",
+                  "fig": "full_heugyeong",
+                  "text": "Được.\nKẻ thua phải đi theo người thắng."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            },
+            {
+              "label": "Nhận lời đánh cược của Tử Vi",
+              "desc": "Chiến thắng sẽ có Tử Vi gia nhập",
+              "gate": "",
+              "rep": -10,
+              "branch": "b",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Tử Vi",
+                  "fig": "full_soyul",
+                  "text": "Nếu thua, ta sẽ đi theo học hỏi.\nCòn nếu thắng… nợ của người tăng gấp đôi nhé."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            }
+          ]
+        },
+        {
+          "id": "q",
+          "slot": 4,
+          "kind": "event",
+          "name": "Bích Thủy Hàn Đàm · Điểm 5",
+          "desc": "Một sới bạc đặt cược thắng thua tỷ võ đã mở ra.",
+          "fig": "full_sundeok",
+          "stage": 18,
+          "need": [
+            "f1"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Mộc Thanh",
+              "fig": "full_sundeok",
+              "text": "Đằng kia có sới đặt cược\năn tiền theo trận tỷ võ kìa!"
+            },
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Tông Chủ. Tuyệt đối. Không được."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Lật tung sới bạc",
+              "desc": "Phá sới bạc kiếm chác trên trận tỷ võ của người khác",
+              "gate": "",
+              "rep": 15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "xp",
+                  "n": 300
+                },
+                {
+                  "res": "pill",
+                  "n": 2
+                }
+              ],
+              "after": [
+                {
+                  "who": "Xích Lôi",
+                  "fig": "full_harang",
+                  "text": "Lũ kiếm tiền trên xương máu tỷ đấu của người khác,\nlật sạch hết cho ta!"
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "favor",
+              "bondBy": "Đám Khách Xem Được Giải Thoát Khỏi Sới",
+              "back": [
+                {
+                  "who": "Xích Lôi",
+                  "fig": "full_harang",
+                  "text": "Vụ người lật tung sới bạc dạo trước,\nai nấy đều còn nhớ cả đấy!"
+                }
+              ]
+            },
+            {
+              "label": "Đặt cược vào bổn môn",
+              "desc": "Đặt cược vào cửa thắng",
+              "gate": "",
+              "rep": -15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "coin",
+                  "n": 1800
+                },
+                {
+                  "res": "pill",
+                  "n": 2
+                }
+              ],
+              "after": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Vì đằng nào chúng ta cũng thắng,\nnên đây là làm ăn chứ không phải đánh bạc."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "grudge",
+              "bondBy": "Du Côn Sới Bạc Cháy Túi",
+              "back": [
+                {
+                  "who": "Du Côn",
+                  "fig": "",
+                  "text": "Môn phái cuỗm sạch tiền cược của bọn ta rồi chuồn\nlà chỗ này phải không?"
+                }
+              ]
+            },
+            {
+              "label": "Góp tiền thưởng sửa giếng làng",
+              "desc": "Danh Vọng hóa thành tiền bạc",
+              "gate": "Hiệp",
+              "rep": 5,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "jade",
+                  "n": 40
+                },
+                {
+                  "res": "pill",
+                  "n": 3
+                }
+              ],
+              "after": [
+                {
+                  "who": "Bô lão trong làng",
+                  "fig": "",
+                  "text": "Nghe bảo Thái Hư Tiên Môn\nđã sửa lại giếng nước cho làng."
+                },
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "…Danh Vọng cũng ra tiền đấy.\nChắc vậy."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "",
+              "bondBy": "",
+              "back": []
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "slot": 5,
+          "kind": "fight",
+          "name": "Bích Thủy Hàn Đàm · Điểm 6",
+          "desc": "Chiến thắng sẽ có U Minh gia nhập. Đệ Tử Tiên Phong cũng được mở lại.",
+          "fig": "full_heugyeong",
+          "stage": 21,
+          "need": [
+            "fork"
+          ],
+          "branch": "a",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "U Minh",
+              "fig": "full_heugyeong",
+              "text": "Đây là thương pháp của Hạ Hầu Thế Gia.\nThử chống đỡ xem."
+            }
+          ],
+          "after": [
+            {
+              "who": "U Minh",
+              "fig": "full_heugyeong",
+              "text": "…Ta sẽ tái đấu.\nCho tới lúc đó, ta ở lại môn phái của ngươi."
+            }
+          ],
+          "reward": [
+            {
+              "res": "xp",
+              "n": 300
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [
+            "heugyeong"
+          ],
+          "hall": "dorm",
+          "hallLv": 1,
+          "choices": []
+        },
+        {
+          "id": "b",
+          "slot": 6,
+          "kind": "fight",
+          "name": "Bích Thủy Hàn Đàm · Điểm 7",
+          "desc": "Chiến thắng sẽ có Tử Vi gia nhập. Đệ Tử Tiên Phong cũng được mở lại.",
+          "fig": "full_soyul",
+          "stage": 21,
+          "need": [
+            "fork"
+          ],
+          "branch": "b",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Tử Vi",
+              "fig": "full_soyul",
+              "text": "Thanh Phong Phiến, xuất chiêu đây!"
+            }
+          ],
+          "after": [
+            {
+              "who": "Tử Vi",
+              "fig": "full_soyul",
+              "text": "Ta thua rồi. Đúng như giao ước,\ntừ hôm nay xin gọi người là Sư Phụ."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Sư phụ gì chứ.\nGọi ta là Tông Chủ."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 300
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [
+            "soyul"
+          ],
+          "hall": "dorm",
+          "hallLv": 1,
+          "choices": []
+        },
+        {
+          "id": "boss",
+          "slot": 7,
+          "kind": "boss",
+          "name": "Bích Thủy Hàn Đàm · Điểm 8",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "Ngoại Đường Chủ",
+                  "fig": "villain_oedang",
+                  "text": "Một môn phái vô danh mà đòi đoạt quán quân sao.\nTa quyết không công nhận."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Cái vẻ mặt không chịu phục kia\nvẫn chẳng khác xưa chút nào."
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Ngoại Đường Chủ",
+                  "fig": "villain_oedang",
+                  "text": "Ngoại Đường Thanh Vân Kiếm Phái\nsẽ tiếp chiêu ngươi!"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Đến chiêu thứ ba là vai lại nhô lên.\nTới giờ vẫn chưa sửa được sao."
+                }
+              ]
+            }
+          ],
+          "desc": "Ngoại Đường của Thanh Vân Kiếm Phái không chịu công nhận ngôi quán quân. Đánh bại chúng, Diễn Kiếm Đài sẽ được dựng lại.",
+          "fig": "villain_oedang",
+          "stage": 24,
+          "need": [
+            "a|b"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Ngoại Đường Chủ",
+              "fig": "villain_oedang",
+              "text": "Một môn phái vô danh mà đòi đoạt quán quân sao.\nTa quyết không công nhận."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Sự công nhận, cứ dùng kiếm mà đòi."
+            },
+            {
+              "who": "Ngoại Đường Chủ",
+              "fig": "villain_oedang",
+              "text": "Ngoại Đường Thanh Vân Kiếm Phái\nsẽ tiếp chiêu ngươi!"
+            }
+          ],
+          "after": [
+            {
+              "who": "Ngoại Đường Chủ",
+              "fig": "villain_oedang",
+              "text": "…Thái Hư Tiên Môn sao.\nThanh Vân Kiếm Phái sẽ không quên chuyện hôm nay."
+            },
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Tiền thưởng trả sạch nợ nần rồi!\nDiễn Kiếm Đài cũng được mở lại rồi."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Hết sạch nợ nần.\nGiờ mới thực sự là một môn phái."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 800
+            },
+            {
+              "res": "xp",
+              "n": 600
+            },
+            {
+              "res": "jade",
+              "n": 50
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "yard",
+          "hallLv": 1,
+          "choices": []
+        },
+        {
+          "id": "rough",
+          "slot": 8,
+          "kind": "fight",
+          "name": "Động Phủ Bích Thủy Hàn Đàm",
+          "desc": "Trận tỷ võ ngõ hẻm có treo tiền thưởng. Vì bất kể luật lệ nên có cả đao kiếm tẩm độc. Không ghé qua vẫn có thể tiến thẳng tới chỗ Thủ Lĩnh.",
+          "fig": "full_harang",
+          "stage": 23,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "venom",
+          "cuts": [
+            {
+              "who": "Xích Lôi",
+              "fig": "full_harang",
+              "text": "Nghe nói tỷ võ ngõ hẻm\nchẳng có luật lệ gì đâu!"
+            }
+          ],
+          "after": [],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 1200
+            },
+            {
+              "res": "xp",
+              "n": 900
+            },
+            {
+              "res": "scroll",
+              "n": 10
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [],
+          "rough": true
+        }
+      ],
+      "name": "Bích Thủy Hàn Đàm"
+    },
+    {
+      "id": "r3",
+      "sub": "venom",
+      "title": "Chương 3 · Xích Viêm Hỏa Cốc",
+      "trait": "titan",
+      "art": "region_3",
+      "desc": "Hẻm núi dung nham chứa Huyền Thiết và Địa Hỏa.",
+      "goal": "Đoạt lại Hỏa Linh Đan Lô từ tay Ma Tôn Phần Thiên",
+      "nodes": [
+        {
+          "id": "in",
+          "slot": 0,
+          "kind": "event",
+          "name": "Xích Viêm Hỏa Cốc · Điểm 1",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "Thanh Vân",
+                  "fig": "full_cheonga",
+                  "text": "Luyện Đan Phòng của gia gia bị Xích Viêm Hỏa Cốc…\nXin hãy cứu giúp."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Đừng khóc. Trước khi mặt trời lặn\nta sẽ đòi lại. Xưa nay vẫn luôn như vậy."
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Thạch Hạo",
+                  "fig": "full_dolsoe",
+                  "text": "…Mấy người đằng kia to xác thật đấy."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Đám to xác đều yếu ở đầu gối.\nLần trước ta đã đếm kỹ cả rồi."
+                }
+              ]
+            }
+          ],
+          "desc": "Xích Viêm Hỏa Cốc đã cướp mất Luyện Đan Phòng. Vượt qua sẽ lĩnh ngộ Huyền Vũ Kim Cang Trận.",
+          "fig": "full_cheonga",
+          "stage": 24,
+          "need": [],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Thanh Vân",
+              "fig": "full_cheonga",
+              "text": "Luyện Đan Phòng của gia gia bị Xích Viêm Hỏa Cốc…\nXin hãy cứu giúp."
+            },
+            {
+              "who": "Thạch Hạo",
+              "fig": "full_dolsoe",
+              "text": "…Mấy người đằng kia to xác thật đấy."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Gặp kẻ to xác phải đánh thẳng vào đầu.\nTụ lại như vảy cá mà đâm tới — Huyền Vũ Kim Cang Trận."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "fish",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f1",
+          "slot": 1,
+          "kind": "fight",
+          "name": "Xích Viêm Hỏa Cốc · Điểm 2",
+          "desc": "Đám Đầu Mục Hành Động của Xích Viêm Hỏa Cốc đã chặn kín con phố.",
+          "fig": "full_macheol",
+          "stage": 24,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Hỏa Linh",
+              "fig": "full_macheol",
+              "text": "Là đám Đầu Mục Hành Động của Xích Viêm Hỏa Cốc.\nHiểm độc hơn lũ yêu tu nhiều."
+            }
+          ],
+          "after": [
+            {
+              "who": "Mộc Thanh",
+              "fig": "full_sundeok",
+              "text": "Chỉ được cái xác to\nchứ chẳng có gì ghê gớm!"
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 300
+            },
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f2",
+          "slot": 2,
+          "kind": "fight",
+          "name": "Xích Viêm Hỏa Cốc · Điểm 3",
+          "desc": "Bến đò nơi dược liệu cập bến. Chiếm giữ sẽ trở thành Cứ Điểm.",
+          "fig": "full_danbi",
+          "stage": 26,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Dược liệu được chuyển về qua bến đò.\nChiếm được nơi đó là luyện được Đan Dược."
+            }
+          ],
+          "after": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Dược liệu bắt đầu được chuyển về rồi.\nMỗi ngày đều luyện được ít Đan Dược."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 300
+            }
+          ],
+          "post": {
+            "res": "pill",
+            "n": 1
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "fork",
+          "slot": 3,
+          "kind": "event",
+          "name": "Xích Viêm Hỏa Cốc · Điểm 4",
+          "desc": "Tầng ngầm Xích Viêm Hỏa Cốc. Địa lao và mật khố, không thể đi cả hai.",
+          "fig": "full_cheonga",
+          "stage": 29,
+          "need": [
+            "f1|f2"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Thanh Vân",
+              "fig": "full_cheonga",
+              "text": "Gia gia đang bị giam dưới tầng ngầm\ncủa Xích Viêm Hỏa Cốc."
+            },
+            {
+              "who": "Hỏa Linh",
+              "fig": "full_macheol",
+              "text": "Mật khố của Ma Tôn cũng nằm dưới lòng đất.\nKhông thể đi cả hai nơi được."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Tiến vào Địa Lao",
+              "desc": "Cứu Gia Gia · Thanh Vân gia nhập",
+              "gate": "",
+              "rep": 10,
+              "branch": "a",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Thanh Vân",
+                  "fig": "full_cheonga",
+                  "text": "Đa tạ…\nTôi cũng xin đi theo."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            },
+            {
+              "label": "Tới mật khố Ma Tôn",
+              "desc": "Thu lấy Linh Thạch và Đan Dược",
+              "gate": "",
+              "rep": -10,
+              "branch": "b",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Thanh Vân",
+                  "fig": "full_cheonga",
+                  "text": "…Còn gia gia thì sao?"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Vét sạch kim khố xong là đi ngay.\nTa hứa đấy."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            }
+          ]
+        },
+        {
+          "id": "q",
+          "slot": 4,
+          "kind": "event",
+          "name": "Xích Viêm Hỏa Cốc · Điểm 5",
+          "desc": "Dân làng đang tàn tạ dần trong ổ nha phiến của Xích Viêm Hỏa Cốc.",
+          "fig": "full_makdong",
+          "stage": 26,
+          "need": [
+            "f1"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Tiểu Bảo",
+              "fig": "full_makdong",
+              "text": "Huynh ơi, trong cái hang đằng kia\ncó mùi gì lạ lắm."
+            },
+            {
+              "who": "Thanh Vân",
+              "fig": "full_cheonga",
+              "text": "Là thuốc phiện.\nDân làng ở trong đó đang…"
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Phóng hỏa thiêu rụi ổ thuốc phiện",
+              "desc": "Không để lọt dù một làn khói bay về làng",
+              "gate": "",
+              "rep": 15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "xp",
+                  "n": 300
+                }
+              ],
+              "after": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Đốt đi.\nĐốt sạch."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "favor",
+              "bondBy": "Những người thoát khỏi ổ thuốc phiện",
+              "back": [
+                {
+                  "who": "",
+                  "fig": "",
+                  "text": "Những người từng được cứu khỏi ổ thuốc phiện\nđã cầm cuốc xẻng và liềm hái tụ họp lại."
+                }
+              ]
+            },
+            {
+              "label": "Tiếp quản ổ thuốc phiện",
+              "desc": "Thay thế Xích Viêm Hỏa Cốc nắm giữ mạch tiền",
+              "gate": "",
+              "rep": -15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "coin",
+                  "n": 2100
+                }
+              ],
+              "after": [
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "…Khoản tiền này\nta sẽ không ghi vào sổ đâu."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "grudge",
+              "bondBy": "Tàn đảng Xích Viêm Hỏa Cốc kéo đến hòng chiếm lại ổ thuốc phiện",
+              "back": [
+                {
+                  "who": "Tàn Đảng Xích Viêm Hỏa Cốc",
+                  "fig": "",
+                  "text": "Dùng tiền từ ổ thuốc phiện của bọn ta,\năn sung mặc sướng lắm hả?"
+                }
+              ]
+            },
+            {
+              "label": "Thu nạp tàn đảng Xích Viêm Hỏa Cốc",
+              "desc": "Sai khiến những kẻ chuyên ngả theo phe mạnh",
+              "gate": "Bá",
+              "rep": -5,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "jade",
+                  "n": 40
+                },
+                {
+                  "res": "scroll",
+                  "n": 15
+                }
+              ],
+              "after": [
+                {
+                  "who": "Hỏa Linh",
+                  "fig": "full_macheol",
+                  "text": "Kẻ trong hắc đạo luôn ngả về phe kẻ mạnh.\nGiờ chúng ta chính là kẻ mạnh."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "",
+              "bondBy": "",
+              "back": []
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "slot": 5,
+          "kind": "fight",
+          "name": "Xích Viêm Hỏa Cốc · Điểm 6",
+          "desc": "Cứu gia gia của Thanh Vân. Thắng trận Thanh Vân sẽ gia nhập.",
+          "fig": "full_cheonga",
+          "stage": 29,
+          "need": [
+            "fork"
+          ],
+          "branch": "a",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Thanh Vân",
+              "fig": "full_cheonga",
+              "text": "Gia gia!\nNgười ráng cầm cự thêm chút nữa thôi!"
+            }
+          ],
+          "after": [
+            {
+              "who": "",
+              "fig": "",
+              "text": "Gia gia của Thanh Vân\nđã an cư tại Luyện Đan Phòng Thái Hư Tiên Môn."
+            }
+          ],
+          "reward": [
+            {
+              "res": "xp",
+              "n": 300
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [
+            "cheonga"
+          ],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "b",
+          "slot": 6,
+          "kind": "fight",
+          "name": "Xích Viêm Hỏa Cốc · Điểm 7",
+          "desc": "Khoắng sạch mật khố Xích Viêm Hỏa Cốc. Thu Linh Thạch và Đan Dược.",
+          "fig": "full_macheol",
+          "stage": 29,
+          "need": [
+            "fork"
+          ],
+          "branch": "b",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Hỏa Linh",
+              "fig": "full_macheol",
+              "text": "Đám canh giữ kim khố đấy.\nTo xác gớm."
+            }
+          ],
+          "after": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Linh Thạch với Đan Dược\nchất cao như núi kìa!"
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 900
+            },
+            {
+              "res": "pill",
+              "n": 5
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "boss",
+          "slot": 7,
+          "kind": "boss",
+          "name": "Xích Viêm Hỏa Cốc · Điểm 8",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "Phần Thiên",
+                  "fig": "villain_sado",
+                  "text": "Ngôi làng này thuộc về Xích Viêm Hỏa Cốc.\nCả Luyện Đan Phòng lẫn bến đò đều vậy."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Dứt câu đó là ngươi nhấc tay trái lên trước.\nTa nhìn thấu hết rồi."
+                },
+                {
+                  "who": "Phần Thiên",
+                  "fig": "villain_sado",
+                  "text": "…Cái gì?"
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Phần Thiên",
+                  "fig": "villain_sado",
+                  "text": "…Gương mặt này trông quen lắm."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Là lần đầu tiên.\nĐối với ngươi thôi."
+                }
+              ]
+            }
+          ],
+          "desc": "Bang chủ Xích Viêm Hỏa Cốc kẻ thao túng cả ngôi làng. Đánh bại hắn sẽ dựng lại được Luyện Đan Phòng.",
+          "fig": "villain_sado",
+          "stage": 32,
+          "need": [
+            "a|b"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Phần Thiên",
+              "fig": "villain_sado",
+              "text": "Ngôi làng này thuộc về Xích Viêm Hỏa Cốc.\nCả Luyện Đan Phòng lẫn bến đò đều vậy."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Ngươi dám động vào\nngười của môn phái ta ư."
+            },
+            {
+              "who": "Phần Thiên",
+              "fig": "villain_sado",
+              "text": "…Cái gì?"
+            }
+          ],
+          "after": [
+            {
+              "who": "Phần Thiên",
+              "fig": "villain_sado",
+              "text": "Xích Viêm Hỏa Cốc lừng lẫy…\nlại bại dưới tay một thằng nhóc thế này…"
+            },
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Chúng ta giành lại được Luyện Đan Phòng rồi.\nTừ giờ Đan Dược sẽ tự tay chúng ta sắc luyện."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "…Có thư gửi tới sao?\nNgười gửi là Huyền Thiên ư?"
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 800
+            },
+            {
+              "res": "xp",
+              "n": 600
+            },
+            {
+              "res": "jade",
+              "n": 50
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "pharmacy",
+          "hallLv": 1,
+          "choices": []
+        },
+        {
+          "id": "rough",
+          "slot": 8,
+          "kind": "fight",
+          "name": "Động Phủ Xích Viêm Hỏa Cốc",
+          "desc": "Trường đấu thú nơi Xích Viêm Hỏa Cốc thả người ra đánh hội đồng. Thắng sẽ gom sạch tiền cược. Bỏ qua vẫn tới gặp Thủ Lĩnh được.",
+          "fig": "full_macheol",
+          "stage": 31,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "horde",
+          "cuts": [
+            {
+              "who": "Hỏa Linh",
+              "fig": "full_macheol",
+              "text": "Là trường đấu thú.\nChúng thả người ra không dứt."
+            }
+          ],
+          "after": [],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 1500
+            },
+            {
+              "res": "pill",
+              "n": 10
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [],
+          "rough": true
+        }
+      ],
+      "name": "Xích Viêm Hỏa Cốc"
+    },
+    {
+      "id": "r4",
+      "sub": "wall",
+      "title": "Chương 4 · Huyền Băng Tuyết Lĩnh",
+      "trait": "venom",
+      "art": "region_4",
+      "desc": "Đỉnh núi băng giá nơi cổ kiếm tôn ẩn tu.",
+      "goal": "Đánh bại Độc Thủ của Xích Viêm Hỏa Cốc để tìm lại \"Thái Hư Kiếm Kinh\"",
+      "nodes": [
+        {
+          "id": "in",
+          "slot": 0,
+          "kind": "event",
+          "name": "Huyền Băng Tuyết Lĩnh · Điểm 1",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "",
+                  "fig": "",
+                  "text": "Bức thư gửi tới sau sáu mươi năm.\nTông Chủ chưa kịp bóc phong bì đã mỉm cười."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Tên đệ út ấy.\nChữ viết hẳn vẫn xấu tệ như xưa."
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Là Xích Viêm Hỏa Cốc.\nHãy mang theo thật nhiều giải độc thảo."
+                },
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "Nhưng Tông Chủ vẫn chưa\nđọc thư mà?"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "…Cứ coi như ta đọc rồi đi."
+                }
+              ]
+            }
+          ],
+          "desc": "Bức thư gửi tới sau sáu mươi năm. Vượt qua sẽ lĩnh ngộ Cửu Lôi Tru Tiên Trận.",
+          "fig": "full_master",
+          "stage": 32,
+          "need": [],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "",
+              "fig": "",
+              "text": "Bức thư gửi tới sau sáu mươi năm.\nNgười gửi chính là Huyền Thiên."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Tiểu sư đệ… đệ vẫn còn sống sao.\nThái Hư Kiếm Kinh đang ở Xích Viêm Hỏa Cốc ư?"
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Đấu với độc thì bên nào trụ vững hơn sẽ thắng.\nLập đội hình vòng tròn — Cửu Lôi Tru Tiên Trận."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "circle",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f1",
+          "slot": 1,
+          "kind": "fight",
+          "name": "Huyền Băng Tuyết Lĩnh · Điểm 2",
+          "desc": "Khu rừng chướng khí độc mù mịt đến thở cũng khó khăn.",
+          "fig": "full_makdong",
+          "stage": 32,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Tiểu Bảo",
+              "fig": "full_makdong",
+              "text": "Khụ khụ…\nHuynh ơi, ngạt thở quá."
+            }
+          ],
+          "after": [
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Nín thở rồi đi theo ta.\nKhông còn xa đâu."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 300
+            },
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f2",
+          "slot": 2,
+          "kind": "fight",
+          "name": "Huyền Băng Tuyết Lĩnh · Điểm 3",
+          "desc": "Tàng thư cổ phía bên kia hang động. Chiếm được sẽ thành cứ điểm.",
+          "fig": "full_danbi",
+          "stage": 34,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Nghe nói sâu trong hang\ncó một tàng thư cổ."
+            }
+          ],
+          "after": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Sách vẫn còn nguyên đây!\nMỗi ngày ta sẽ chuyển về từng ít một."
+            }
+          ],
+          "reward": [
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "scroll",
+            "n": 2
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "fork",
+          "slot": 3,
+          "kind": "event",
+          "name": "Huyền Băng Tuyết Lĩnh · Điểm 4",
+          "desc": "Miếu cổ nơi Huyền Thiên dừng chân, hoặc ruộng độc thảo mà Kim Cang đang nhắm tới.",
+          "fig": "full_cheolsan",
+          "stage": 37,
+          "need": [
+            "f1|f2"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Kim Cang",
+              "fig": "full_cheolsan",
+              "text": "Này, Tiểu Tông Chủ lừng danh kia.\nLão già Huyền Thiên đang ở trong ngôi miếu đằng kia đấy."
+            },
+            {
+              "who": "Kim Cang",
+              "fig": "full_cheolsan",
+              "text": "Ta định đánh úp ruộng dược thảo của tên Độc Thủ.\nĐi cùng chăng?"
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Tới ngôi miếu tìm Huyền Thiên",
+              "desc": "Huyền Thiên gia nhập",
+              "gate": "",
+              "rep": 10,
+              "branch": "a",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Đi tìm tiểu sư đệ trước đã."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            },
+            {
+              "label": "Cùng Kim Cang tới ruộng độc thảo",
+              "desc": "Kim Cang gia nhập",
+              "gate": "",
+              "rep": -10,
+              "branch": "b",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Kim Cang",
+                  "fig": "full_cheolsan",
+                  "text": "Ha ha!\nTiền thịt hôm nay ngươi trả đấy nhé!"
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            }
+          ]
+        },
+        {
+          "id": "q",
+          "slot": 4,
+          "kind": "event",
+          "name": "Huyền Băng Tuyết Lĩnh · Điểm 5",
+          "desc": "Dân làng dưới chân Xích Viêm Hỏa Cốc đã trúng độc ngã gục.",
+          "fig": "full_sundeok",
+          "stage": 34,
+          "need": [
+            "f1"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Mộc Thanh",
+              "fig": "full_sundeok",
+              "text": "Dân làng\ngục ngã hết cả rồi!"
+            },
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Thuốc giải độc…\nđến phần của chúng ta còn chẳng đủ."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Chia Sẻ Thuốc Giải Độc",
+              "desc": "Thiếu thì lại làm thêm",
+              "gate": "",
+              "rep": 15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "xp",
+                  "n": 300
+                }
+              ],
+              "after": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Nếu thiếu\nthì lại làm thêm thôi."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "favor",
+              "bondBy": "Dân Làng Sống Sót Nhờ Thuốc Giải Độc",
+              "back": [
+                {
+                  "who": "Dân làng",
+                  "fig": "",
+                  "text": "Cái mạng được người tha năm đó,\nlần này tới lượt chúng tôi bảo vệ người!"
+                }
+              ]
+            },
+            {
+              "label": "Bán Thuốc Giải Độc",
+              "desc": "Báo giá rẻ",
+              "gate": "",
+              "rep": -15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "coin",
+                  "n": 2400
+                }
+              ],
+              "after": [
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "…Giá này\nđã tính rẻ lắm rồi."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "grudge",
+              "bondBy": "Dược thương Độc Môn ôm hận vì giá thuốc",
+              "back": [
+                {
+                  "who": "Dược Thương Độc Môn",
+                  "fig": "",
+                  "text": "Cái giá thuốc giải bán cắt cổ của ngươi,\nhôm nay bọn ta lấy lại bằng độc."
+                }
+              ]
+            },
+            {
+              "label": "Thu nhận những người hái thuốc",
+              "desc": "Những người hái thuốc tin tưởng Thái Hư Tiên Môn đều đi theo",
+              "gate": "Hiệp",
+              "rep": 5,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "jade",
+                  "n": 40
+                },
+                {
+                  "res": "pill",
+                  "n": 5
+                }
+              ],
+              "after": [
+                {
+                  "who": "Người Hái Thuốc",
+                  "fig": "",
+                  "text": "Nếu là Thái Hư Tiên Môn thì chúng tôi tin.\nThảo dược cứ để chúng tôi cung cấp."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "",
+              "bondBy": "",
+              "back": []
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "slot": 5,
+          "kind": "fight",
+          "name": "Huyền Băng Tuyết Lĩnh · Điểm 6",
+          "desc": "Ngôi miếu nơi Huyền Thiên đang chờ. Chiến thắng sẽ có Huyền Thiên gia nhập.",
+          "fig": "full_unhak",
+          "stage": 37,
+          "need": [
+            "fork"
+          ],
+          "branch": "a",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Huyền Thiên",
+              "fig": "full_unhak",
+              "text": "…Ngươi là ai?\nĐường kiếm ấy, bộ pháp ấy…"
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Lâu rồi không gặp, tiểu sư đệ."
+            }
+          ],
+          "after": [
+            {
+              "who": "Huyền Thiên",
+              "fig": "full_unhak",
+              "text": "Sư huynh…? Sư huynh!\nĐệ đã đợi huynh… suốt sáu mươi năm ròng."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Đừng có khóc, lão già kia.\nTrước khi ăn cốc vào đầu bây giờ."
+            }
+          ],
+          "reward": [
+            {
+              "res": "scroll",
+              "n": 10
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [
+            "unhak"
+          ],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "b",
+          "slot": 6,
+          "kind": "fight",
+          "name": "Huyền Băng Tuyết Lĩnh · Điểm 7",
+          "desc": "Ruộng dược thảo của Độc Thủ. Chiến thắng sẽ có Kim Cang gia nhập.",
+          "fig": "full_cheolsan",
+          "stage": 37,
+          "need": [
+            "fork"
+          ],
+          "branch": "b",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Kim Cang",
+              "fig": "full_cheolsan",
+              "text": "Phá giới tăng Kim Cang của Kim Cương Tự!\nLên đây!"
+            }
+          ],
+          "after": [
+            {
+              "who": "Kim Cang",
+              "fig": "full_cheolsan",
+              "text": "Một trận đã đời!\nCơm của môn phái này có ngon không đó?"
+            }
+          ],
+          "reward": [
+            {
+              "res": "pill",
+              "n": 5
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [
+            "cheolsan"
+          ],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "boss",
+          "slot": 7,
+          "kind": "boss",
+          "name": "Huyền Băng Tuyết Lĩnh · Điểm 8",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "Độc Thủ",
+                  "fig": "villain_doksu",
+                  "text": "Đến tìm Thái Hư Kiếm Kinh sao?\nMột nửa quyển đó đã hóa thành Độc Kinh của ta rồi."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Đọc được một nửa rồi\nmà chỉ có bấy nhiêu bản lĩnh thôi sao."
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Độc Thủ",
+                  "fig": "villain_doksu",
+                  "text": "Tan chảy trong kịch độc đi!"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Giờ thì thứ độc đó,\nđến mùi vị ta cũng thuộc nằm lòng rồi."
+                }
+              ]
+            }
+          ],
+          "desc": "Độc Thủ, kẻ đã đánh cắp Thái Hư Kiếm Kinh. Vượt qua sẽ dựng lại Tàng Kinh Các.",
+          "fig": "villain_doksu",
+          "stage": 41,
+          "need": [
+            "a|b"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Độc Thủ",
+              "fig": "villain_doksu",
+              "text": "Đến tìm Thái Hư Kiếm Kinh sao?\nMột nửa quyển đó đã hóa thành Độc Kinh của ta rồi."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Đã chạm tay vào Ngọc Giản của kẻ khác\nthì phải trả giá thôi."
+            },
+            {
+              "who": "Độc Thủ",
+              "fig": "villain_doksu",
+              "text": "Tan chảy trong kịch độc đi!"
+            }
+          ],
+          "after": [
+            {
+              "who": "Độc Thủ",
+              "fig": "villain_doksu",
+              "text": "Đường kiếm ấy…\nlà của Thái Hư Kiếm Tiên sáu mươi năm trước…"
+            },
+            {
+              "who": "",
+              "fig": "",
+              "text": "Bộ Thái Hư Kiếm Kinh tìm lại được\nđã đặt về kệ trong Tàng Kinh Các."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Giờ chỉ còn lại một cái tên duy nhất.\nCửu U Ma Vực."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 800
+            },
+            {
+              "res": "xp",
+              "n": 600
+            },
+            {
+              "res": "jade",
+              "n": 50
+            },
+            {
+              "res": "scroll",
+              "n": 10
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "library",
+          "hallLv": 1,
+          "choices": []
+        },
+        {
+          "id": "rough",
+          "slot": 8,
+          "kind": "fight",
+          "name": "Động Phủ Huyền Băng Tuyết Lĩnh",
+          "desc": "Sâu trong Xích Viêm Hỏa Cốc là hang ổ của con quái vật to bằng mái nhà. Bỏ qua vẫn có thể tiến thẳng tới chỗ Thủ Lĩnh.",
+          "fig": "full_cheolsan",
+          "stage": 40,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "titan",
+          "cuts": [
+            {
+              "who": "Kim Cang",
+              "fig": "full_cheolsan",
+              "text": "Thứ sống ở chốn này,\nđến cả ta cũng chẳng buồn đụng vào."
+            }
+          ],
+          "after": [],
+          "reward": [
+            {
+              "res": "xp",
+              "n": 1200
+            },
+            {
+              "res": "scroll",
+              "n": 15
+            },
+            {
+              "res": "pill",
+              "n": 10
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [],
+          "rough": true
+        }
+      ],
+      "name": "Huyền Băng Tuyết Lĩnh"
+    },
+    {
+      "id": "r5",
+      "sub": "horde",
+      "title": "Chương 5 · Cửu U Ma Vực",
+      "trait": "blood",
+      "art": "region_5",
+      "desc": "Vùng đất huyết nguyệt nơi Ma Đế ngự trị.",
+      "goal": "Đánh bại Trưởng Lão Cửu U Ma Vực, nhổ tận gốc lũ thích khách",
+      "nodes": [
+        {
+          "id": "in",
+          "slot": 0,
+          "kind": "event",
+          "name": "Cửu U Ma Vực · Điểm 1",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "",
+                  "fig": "",
+                  "text": "Đêm trăng đỏ mọc,\nmột tín vật đẫm máu cắm phập trước Sơn Môn."
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Cũng đến lúc rồi. Đánh thức tất cả dậy đi.\nLần này chúng ta cũng cùng nhau xuất chiến."
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Trước khi trăng đỏ mọc,\nhãy thắp sáng đèn đuốc nơi Sơn Môn."
+                },
+                {
+                  "who": "Xích Lôi",
+                  "fig": "full_harang",
+                  "text": "Sao người biết được\ntrăng sắp hóa đỏ?"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Sống đủ lâu tự khắc sẽ rõ."
+                }
+              ]
+            }
+          ],
+          "desc": "Tín vật của Cửu U Ma Vực đã cắm trước Sơn Môn.",
+          "fig": "full_master",
+          "stage": 40,
+          "need": [],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "",
+              "fig": "",
+              "text": "Đêm trăng đỏ mọc,\nmột tín vật đẫm máu cắm phập trước Sơn Môn."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "…Cửu U Ma Vực.\nChính là lũ người của sáu mươi năm trước."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Lần này ta không đi một mình nữa.\nTất cả cùng đi."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f1",
+          "slot": 1,
+          "kind": "fight",
+          "name": "Cửu U Ma Vực · Điểm 2",
+          "desc": "Đám lâu la Huyết Giáo đông nghịt không thấy điểm dừng.",
+          "fig": "full_harang",
+          "stage": 40,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "horde",
+          "cuts": [
+            {
+              "who": "Xích Lôi",
+              "fig": "full_harang",
+              "text": "Đông không thấy điểm dừng!"
+            }
+          ],
+          "after": [
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Kết cục này\ndo chúng ta định đoạt."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 300
+            },
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "f2",
+          "slot": 2,
+          "kind": "fight",
+          "name": "Cửu U Ma Vực · Điểm 3",
+          "desc": "Phân đà do Thiết Vệ Đội mặc trọng giáp trấn giữ. Chiếm được sẽ thành cứ điểm.",
+          "fig": "full_macheol",
+          "stage": 42,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "wall",
+          "cuts": [
+            {
+              "who": "Hỏa Linh",
+              "fig": "full_macheol",
+              "text": "Là Thiết Vệ Đội của Huyết Giáo.\nGiáp trụ rất dày."
+            }
+          ],
+          "after": [
+            {
+              "who": "Linh Nhi",
+              "fig": "full_danbi",
+              "text": "Trong phân đà chất đầy Tiên Ngọc.\nMỗi ngày đều thu được một ít."
+            }
+          ],
+          "reward": [
+            {
+              "res": "xp",
+              "n": 200
+            }
+          ],
+          "post": {
+            "res": "jade",
+            "n": 3
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "fork",
+          "slot": 3,
+          "kind": "event",
+          "name": "Cửu U Ma Vực · Điểm 4",
+          "desc": "Thích khách bị Huyết Giáo vứt bỏ lại vung đao lên.",
+          "fig": "full_yeonhwa",
+          "stage": 45,
+          "need": [
+            "f1|f2"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Bích Dao",
+              "fig": "full_yeonhwa",
+              "text": "Tông Chủ Thái Hư Tiên Môn.\nTa đến lấy đầu ngươi đây."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Thích khách bị Huyết Giáo vứt bỏ,\nsao còn cầm đao làm gì."
+            },
+            {
+              "who": "Bích Dao",
+              "fig": "full_yeonhwa",
+              "text": "…Câm miệng."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Giao đấu với Bích Dao",
+              "desc": "Chiến thắng sẽ có Bích Dao gia nhập",
+              "gate": "",
+              "rep": 10,
+              "branch": "a",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Hãy nói chuyện bằng đao kiếm.\nTa sẽ lắng nghe."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            },
+            {
+              "label": "Chém hạ Bích Dao",
+              "desc": "Đánh sập cả Phân Đà Huyết Giáo · Tiên Ngọc",
+              "gate": "",
+              "rep": -15,
+              "branch": "b",
+              "reward": [],
+              "after": [
+                {
+                  "who": "Bích Dao",
+                  "fig": "full_yeonhwa",
+                  "text": "…Phải.\nĐó mới là tiên giới."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0
+            }
+          ]
+        },
+        {
+          "id": "q",
+          "slot": 4,
+          "kind": "event",
+          "name": "Cửu U Ma Vực · Điểm 5",
+          "desc": "Cửu U Ma Vực đã giam cầm dân làng.",
+          "fig": "full_makdong",
+          "stage": 42,
+          "need": [
+            "f1"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Tiểu Bảo",
+              "fig": "full_makdong",
+              "text": "Huynh ơi, bọn Huyết Giáo\nnhốt người ở trong kia kìa."
+            }
+          ],
+          "after": [],
+          "reward": [],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [
+            {
+              "label": "Thả Tù Binh",
+              "desc": "Danh tiếng Thái Hư Tiên Môn vang xa",
+              "gate": "",
+              "rep": 15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "xp",
+                  "n": 300
+                }
+              ],
+              "after": [
+                {
+                  "who": "",
+                  "fig": "",
+                  "text": "Những người được cứu thoát\nđã truyền tụng danh tiếng Thái Hư Tiên Môn khắp nơi."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "favor",
+              "bondBy": "Tù Binh Được Cứu Thoát",
+              "back": [
+                {
+                  "who": "",
+                  "fig": "",
+                  "text": "Những người được giải cứu khỏi Huyết Giáo\nđã tụ hội dưới ngọn cờ Thái Hư Tiên Môn."
+                }
+              ]
+            },
+            {
+              "label": "Đoạt lấy Ngọc Giản của Huyết Giáo",
+              "desc": "Dùng tiên pháp Huyết Giáo đánh trả chúng",
+              "gate": "",
+              "rep": -15,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "scroll",
+                  "n": 75
+                }
+              ],
+              "after": [
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Võ công của Huyết Giáo,\ntrả lại cho lũ Huyết Giáo nếm mùi."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "grudge",
+              "bondBy": "Đội truy kích Huyết Giáo đến truy tìm Ngọc Giản",
+              "back": [
+                {
+                  "who": "Đội Truy Kích Huyết Giáo",
+                  "fig": "",
+                  "text": "Cái giá của việc trộm Ngọc Giản bổn giáo,\nphải trả bằng máu."
+                }
+              ]
+            },
+            {
+              "label": "Trao Đổi Tù Binh",
+              "desc": "Vừa cứu người vừa nhận Tiên Ngọc",
+              "gate": "Trung",
+              "rep": 0,
+              "branch": "",
+              "reward": [
+                {
+                  "res": "jade",
+                  "n": 60
+                }
+              ],
+              "after": [
+                {
+                  "who": "Linh Nhi",
+                  "fig": "full_danbi",
+                  "text": "Vừa cứu được người vừa nhận được Tiên Ngọc.\nThế mới gọi là làm ăn chứ."
+                }
+              ],
+              "join": [],
+              "hall": "",
+              "hallLv": 0,
+              "karma": 0,
+              "bond": "",
+              "bondBy": "",
+              "back": []
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "slot": 5,
+          "kind": "fight",
+          "name": "Cửu U Ma Vực · Điểm 6",
+          "desc": "Hồng Nguyệt Song Đao. Thắng trận Bích Dao sẽ gia nhập.",
+          "fig": "full_yeonhwa",
+          "stage": 45,
+          "need": [
+            "fork"
+          ],
+          "branch": "a",
+          "trait": "titan",
+          "cuts": [
+            {
+              "who": "Bích Dao",
+              "fig": "full_yeonhwa",
+              "text": "Hồng Nguyệt Song Đao.\nThử giữ mạng xem."
+            }
+          ],
+          "after": [
+            {
+              "who": "Bích Dao",
+              "fig": "full_yeonhwa",
+              "text": "…Ta thua rồi.\nỞ Huyết Giáo cũng chẳng còn chốn dung thân."
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Vậy thì cứ ở lại đây.\nCơm nước có đủ cho ngươi."
+            }
+          ],
+          "reward": [
+            {
+              "res": "xp",
+              "n": 300
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [
+            "yeonhwa"
+          ],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "b",
+          "slot": 6,
+          "kind": "fight",
+          "name": "Cửu U Ma Vực · Điểm 7",
+          "desc": "Thiêu rụi Phân Đà Huyết Giáo. Thu Tiên Ngọc và Ngọc Giản.",
+          "fig": "full_master",
+          "stage": 45,
+          "need": [
+            "fork"
+          ],
+          "branch": "b",
+          "trait": "venom",
+          "cuts": [
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "San phẳng cả phân đà."
+            }
+          ],
+          "after": [
+            {
+              "who": "",
+              "fig": "",
+              "text": "Phân Đà Huyết Giáo\nđã bốc cháy rụi ngay trong đêm đó."
+            }
+          ],
+          "reward": [
+            {
+              "res": "jade",
+              "n": 100
+            },
+            {
+              "res": "scroll",
+              "n": 10
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": []
+        },
+        {
+          "id": "boss",
+          "slot": 7,
+          "kind": "boss",
+          "name": "Cửu U Ma Vực · Điểm 8",
+          "lap": [
+            {
+              "cuts": [
+                {
+                  "who": "Trưởng Lão Cửu U Ma Vực",
+                  "fig": "villain_elder",
+                  "text": "Vị Kiếm Tiên bỏ mạng khi định chém Giáo chủ…\nnay đã quay về sao?"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Ta sẽ quay lại dù bao nhiêu lần.\nCho tới khi ngươi gục ngã mới thôi."
+                }
+              ]
+            },
+            {
+              "cuts": [
+                {
+                  "who": "Trưởng Lão Cửu U Ma Vực",
+                  "fig": "villain_elder",
+                  "text": "Mối nợ này ta sẽ trả\nbằng máu của Huyết Ma!"
+                },
+                {
+                  "who": "Tông Chủ",
+                  "fig": "full_master",
+                  "text": "Lời trăng trối của ngươi ta cũng biết.\n\"Giáo chủ vẫn còn sống\", phải không."
+                }
+              ]
+            }
+          ],
+          "desc": "Tàn đảng của ngày hôm ấy sáu mươi năm về trước. Đánh bại chúng, Sơn Môn sẽ sừng sững trở lại.",
+          "fig": "villain_elder",
+          "stage": 50,
+          "need": [
+            "a|b"
+          ],
+          "branch": "",
+          "trait": "",
+          "cuts": [
+            {
+              "who": "Trưởng Lão Cửu U Ma Vực",
+              "fig": "villain_elder",
+              "text": "Vị Kiếm Tiên bỏ mạng khi định chém Giáo chủ…\nnay đã quay về sao?"
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Ta đã trở lại.\nLần này mang theo cả một môn phái."
+            },
+            {
+              "who": "Trưởng Lão Cửu U Ma Vực",
+              "fig": "villain_elder",
+              "text": "Mối nợ này ta sẽ trả\nbằng máu của Huyết Ma!"
+            }
+          ],
+          "after": [
+            {
+              "who": "Trưởng Lão Cửu U Ma Vực",
+              "fig": "villain_elder",
+              "text": "Giáo chủ…\nvẫn còn… sống…"
+            },
+            {
+              "who": "Tông Chủ",
+              "fig": "full_master",
+              "text": "Ta biết.\nThế nên mới phải càng mạnh hơn nữa."
+            }
+          ],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 1000
+            },
+            {
+              "res": "xp",
+              "n": 800
+            },
+            {
+              "res": "jade",
+              "n": 100
+            },
+            {
+              "res": "scroll",
+              "n": 20
+            },
+            {
+              "res": "pill",
+              "n": 10
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "gate",
+          "hallLv": 1,
+          "choices": []
+        },
+        {
+          "id": "rough",
+          "slot": 8,
+          "kind": "fight",
+          "name": "Động Phủ Cửu U Ma Vực",
+          "desc": "Huyết Trì nơi Huyết Giáo nuôi luyện thích khách, có Thiết Vệ Đội mặc trọng giáp canh giữ. Bỏ qua vẫn tới gặp Thủ Lĩnh được.",
+          "fig": "full_yeonhwa",
+          "stage": 49,
+          "need": [
+            "in"
+          ],
+          "branch": "",
+          "trait": "wall",
+          "cuts": [
+            {
+              "who": "Bích Dao",
+              "fig": "full_yeonhwa",
+              "text": "Là Huyết Trì.\nTa cũng lớn lên từ nơi này."
+            }
+          ],
+          "after": [],
+          "reward": [
+            {
+              "res": "coin",
+              "n": 2000
+            },
+            {
+              "res": "xp",
+              "n": 1200
+            },
+            {
+              "res": "jade",
+              "n": 100
+            }
+          ],
+          "post": {
+            "res": "",
+            "n": 0
+          },
+          "rep": 0,
+          "form": "",
+          "join": [],
+          "hall": "",
+          "hallLv": 0,
+          "choices": [],
+          "rough": true
+        }
+      ],
+      "name": "Cửu U Ma Vực"
+    }
+  ],
+  "repTiers": [
+    {
+      "at": 30,
+      "name": "Nghĩa Hiệp",
+      "mods": [
+        {
+          "key": "outpost",
+          "v": 0.2
+        }
+      ]
+    },
+    {
+      "at": 60,
+      "name": "Đại Hiệp",
+      "mods": [
+        {
+          "key": "masterHp",
+          "v": 0.2
+        }
+      ]
+    },
+    {
+      "at": -30,
+      "name": "Ác Danh",
+      "mods": [
+        {
+          "key": "reward",
+          "v": 0.3
+        }
+      ]
+    },
+    {
+      "at": -60,
+      "name": "Ma Đầu",
+      "mods": [
+        {
+          "key": "masterAtk",
+          "v": 0.2
+        }
+      ]
+    }
+  ],
+  "doctrines": [
+    {
+      "title": "Thanh Đao Của Sơn Môn",
+      "opts": [
+        {
+          "name": "Sơn Môn Của Kiếm",
+          "desc": "Tông Chủ mở đường tiên phong — thích hợp trảm Thủ Lĩnh",
+          "mods": [
+            {
+              "key": "masterAtk",
+              "v": 0.3
+            }
+          ]
+        },
+        {
+          "name": "Sơn Môn Của Tình Sư Huynh Đệ",
+          "desc": "Càng bồi dưỡng đệ tử càng mạnh",
+          "mods": [
+            {
+              "key": "mate",
+              "v": 0.3
+            }
+          ]
+        },
+        {
+          "name": "Sơn Môn Con Buôn",
+          "desc": "Giao chiến chậm hơn nhưng điện các phát triển nhanh",
+          "mods": [
+            {
+              "key": "coin",
+              "v": 0.5
+            }
+          ]
+        }
+      ],
+      "name": "Thanh Tĩnh Vô Vi"
+    },
+    {
+      "title": "Con Đường Tu Luyện",
+      "opts": [
+        {
+          "name": "Tốc Kiếm",
+          "desc": "Ra Tuyệt Kỹ liên tục — hợp với Bát Quái Tụ Linh Trận",
+          "mods": [
+            {
+              "key": "cd",
+              "v": 0.2
+            }
+          ]
+        },
+        {
+          "name": "Nội Công",
+          "desc": "Xoay chuyển cục diện bằng tuyệt kỹ",
+          "mods": [
+            {
+              "key": "ult",
+              "v": 0.4
+            }
+          ]
+        },
+        {
+          "name": "Cuồng Tu Luyện",
+          "desc": "Đệ tử tăng cấp nhanh hơn",
+          "mods": [
+            {
+              "key": "xp",
+              "v": 0.5
+            }
+          ]
+        }
+      ],
+      "name": "Dĩ Chiến Dưỡng Đạo"
+    },
+    {
+      "title": "Lối Đánh",
+      "opts": [
+        {
+          "name": "Nhất Kích",
+          "desc": "Nổ Bạo Kích cực mạnh — hợp với Chùy Hành Trận",
+          "mods": [
+            {
+              "key": "critDmg",
+              "v": 0.4
+            }
+          ]
+        },
+        {
+          "name": "Thiết Bích",
+          "desc": "Tông Chủ khó bị đánh gục",
+          "mods": [
+            {
+              "key": "masterHp",
+              "v": 0.4
+            }
+          ]
+        },
+        {
+          "name": "Hồi Phục",
+          "desc": "Bền bỉ trong giao chiến dài hơi — hợp với Cửu Lôi Tru Tiên Trận",
+          "mods": [
+            {
+              "key": "regen",
+              "v": 0.6
+            }
+          ]
+        }
+      ],
+      "name": "Tụ Linh Khai Khoáng"
+    },
+    {
+      "title": "Cơ Nghiệp Sơn Môn",
+      "opts": [
+        {
+          "name": "Mở Rộng Điện Các",
+          "desc": "Tự động tích lũy ngay cả khi vắng mặt",
+          "mods": [
+            {
+              "key": "hall",
+              "v": 0.4
+            }
+          ]
+        },
+        {
+          "name": "Mở rộng cứ điểm",
+          "desc": "Cứ điểm lập trên tiên giới sinh lời nhiều hơn",
+          "mods": [
+            {
+              "key": "outpost",
+              "v": 0.6
+            }
+          ]
+        },
+        {
+          "name": "Thưởng Tiên Giới",
+          "desc": "Nhận thêm thưởng mỗi khi vượt ải",
+          "mods": [
+            {
+              "key": "reward",
+              "v": 0.4
+            }
+          ]
+        }
+      ],
+      "name": "Đan Khí Song Tu"
+    },
+    {
+      "title": "Chặng Đường Cuối",
+      "opts": [
+        {
+          "name": "Thiên Hạ Đệ Nhất Kiếm",
+          "desc": "Tất cả cùng mạnh — con đường trực diện nhất",
+          "mods": [
+            {
+              "key": "dmg",
+              "v": 0.3
+            }
+          ]
+        },
+        {
+          "name": "Kim Cương",
+          "desc": "Chống chịu tốt trước kẻ địch mang Kịch Độc · Huyết Khí",
+          "mods": [
+            {
+              "key": "taken",
+              "v": -0.2
+            }
+          ]
+        },
+        {
+          "name": "Hợp Kích Trận",
+          "desc": "Đồng Hành cùng hợp sức đánh Thủ Lĩnh",
+          "mods": [
+            {
+              "key": "mateDmg",
+              "v": 0.5
+            }
+          ]
+        }
+      ],
+      "name": "Vạn Pháp Quy Tông"
+    }
+  ],
+  "perks": [
+    {
+      "id": "sword",
+      "name": "Kiếm Kiếp Trước",
+      "desc": "Công Kích Tông Chủ +10%",
+      "key": "masterAtk",
+      "per": 0.1,
+      "max": 10,
+      "costBase": 20,
+      "costStep": 10,
+      "deep": 20,
+      "deepPer": 0.05,
+      "deepCost": 60,
+      "deepStep": 10
+    },
+    {
+      "id": "body",
+      "name": "Kim Cương Bất Hoại",
+      "desc": "Sinh Lực Tông Chủ +10%",
+      "key": "masterHp",
+      "per": 0.1,
+      "max": 10,
+      "costBase": 20,
+      "costStep": 10,
+      "deep": 20,
+      "deepPer": 0.05,
+      "deepCost": 60,
+      "deepStep": 10
+    },
+    {
+      "id": "vault",
+      "name": "Mật Khố Cổ",
+      "desc": "Linh Thạch Cánh Đồng +20%",
+      "key": "coin",
+      "per": 0.2,
+      "max": 10,
+      "costBase": 15,
+      "costStep": 8,
+      "deep": 20,
+      "deepPer": 0.05,
+      "deepCost": 50,
+      "deepStep": 10
+    },
+    {
+      "id": "mind",
+      "name": "Đốn Ngộ",
+      "desc": "Tu Luyện Cánh Đồng +20%",
+      "key": "xp",
+      "per": 0.2,
+      "max": 10,
+      "costBase": 15,
+      "costStep": 8,
+      "deep": 20,
+      "deepPer": 0.05,
+      "deepCost": 50,
+      "deepStep": 10
+    },
+    {
+      "id": "bond",
+      "name": "Duyên Tình Sư Huynh Đệ",
+      "desc": "Tấn công · Sinh lực Đồng Hành +10%",
+      "key": "mate",
+      "per": 0.1,
+      "max": 10,
+      "costBase": 25,
+      "costStep": 12,
+      "deep": 20,
+      "deepPer": 0.04,
+      "deepCost": 70,
+      "deepStep": 10
+    },
+    {
+      "id": "karma",
+      "name": "Nghiệp Báo",
+      "desc": "Nghiệp Lực nhận được +10%",
+      "key": "karma",
+      "per": 0.1,
+      "max": 5,
+      "costBase": 40,
+      "costStep": 20,
+      "deep": 10,
+      "deepPer": 0.03,
+      "deepCost": 100,
+      "deepStep": 20
+    },
+    {
+      "id": "foresight",
+      "name": "Tiên Kiến Chi Minh",
+      "desc": "Mở thông cả hai hướng tại ngã rẽ",
+      "key": "foresight",
+      "per": 1,
+      "max": 1,
+      "needRebirth": 1,
+      "costBase": 60,
+      "costStep": 0
+    }
+  ],
+  "wander": {
+    "stageBase": 40,
+    "stageStep": 1,
+    "bossEvery": 10,
+    "eventEvery": 4,
+    "jade": 10,
+    "jadeBoss": 50,
+    "wear": 0.1,
+    "routes": [
+      {
+        "id": "iron",
+        "name": "Con Đường Thiết Bích",
+        "hp": 1.2,
+        "atk": 1,
+        "karma": 0.25,
+        "jade": 0
+      },
+      {
+        "id": "blood",
+        "name": "Con Đường Huyết Khí",
+        "hp": 1,
+        "atk": 1.2,
+        "karma": 0,
+        "jade": 0.25
+      }
+    ],
+    "events": [
+      {
+        "id": "w1",
+        "slot": 0,
+        "kind": "event",
+        "name": "Thương đoàn lạc lối",
+        "desc": "Trên đường núi bắt gặp cỗ xe ngựa của thương đoàn bị tuột bánh.",
+        "fig": "full_makdong",
+        "stage": 0,
+        "need": [],
+        "branch": "",
+        "trait": "",
+        "cuts": [
+          {
+            "who": "Tiểu Bảo",
+            "fig": "full_makdong",
+            "text": "Huynh ơi, xe ngựa của thương đoàn\nbị tuột bánh rồi."
+          }
+        ],
+        "after": [],
+        "reward": [],
+        "post": {
+          "res": "",
+          "n": 0
+        },
+        "rep": 0,
+        "form": "",
+        "join": [],
+        "hall": "",
+        "hallLv": 0,
+        "choices": [
+          {
+            "label": "Hộ Tống Họ",
+            "desc": "Thương đoàn hậu tạ",
+            "gate": "",
+            "rep": 5,
+            "branch": "",
+            "reward": [
+              {
+                "res": "coin",
+                "n": 300
+              }
+            ],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 0
+          },
+          {
+            "label": "Thu Tiền Mãi Lộ",
+            "desc": "Đòi thêm",
+            "gate": "",
+            "rep": -5,
+            "branch": "",
+            "reward": [
+              {
+                "res": "coin",
+                "n": 500
+              }
+            ],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 0
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "slot": 0,
+        "kind": "event",
+        "name": "Cao Thủ Ẩn Thế",
+        "desc": "Dưới chân thác nước, một lão nhân tóc bạc đang ngồi lau kiếm.",
+        "fig": "",
+        "stage": 0,
+        "need": [],
+        "branch": "",
+        "trait": "",
+        "cuts": [
+          {
+            "who": "",
+            "fig": "",
+            "text": "Dưới chân thác nước, một lão nhân tóc bạc\nđang ngồi lau kiếm."
+          }
+        ],
+        "after": [],
+        "reward": [],
+        "post": {
+          "res": "",
+          "n": 0
+        },
+        "rep": 0,
+        "form": "",
+        "join": [],
+        "hall": "",
+        "hallLv": 0,
+        "choices": [
+          {
+            "label": "Thỉnh giáo chỉ điểm",
+            "desc": "Tu Luyện",
+            "gate": "",
+            "rep": 0,
+            "branch": "",
+            "reward": [
+              {
+                "res": "xp",
+                "n": 400
+              }
+            ],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 0
+          },
+          {
+            "label": "Thỉnh giáo tỷ võ",
+            "desc": "Ngọc Giản",
+            "gate": "",
+            "rep": 0,
+            "branch": "",
+            "reward": [
+              {
+                "res": "scroll",
+                "n": 15
+              }
+            ],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 0
+          }
+        ]
+      },
+      {
+        "id": "w3",
+        "slot": 0,
+        "kind": "event",
+        "name": "Lãng nhân trọng thương",
+        "desc": "Một lãng nhân đẫm máu nằm gục bên vệ đường.",
+        "fig": "",
+        "stage": 0,
+        "need": [],
+        "branch": "",
+        "trait": "",
+        "cuts": [
+          {
+            "who": "",
+            "fig": "",
+            "text": "Một lãng nhân đẫm máu\nnằm gục bên vệ đường."
+          }
+        ],
+        "after": [],
+        "reward": [],
+        "post": {
+          "res": "",
+          "n": 0
+        },
+        "rep": 0,
+        "form": "",
+        "join": [],
+        "hall": "",
+        "hallLv": 0,
+        "choices": [
+          {
+            "label": "Cứu Chữa Vết Thương",
+            "desc": "Nghiệp Lực tích tụ",
+            "gate": "",
+            "rep": 5,
+            "branch": "",
+            "reward": [],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 2
+          },
+          {
+            "label": "Thu Đao Lại",
+            "desc": "Tiên Ngọc",
+            "gate": "",
+            "rep": -5,
+            "branch": "",
+            "reward": [
+              {
+                "res": "jade",
+                "n": 20
+              }
+            ],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 0
+          }
+        ]
+      },
+      {
+        "id": "w4",
+        "slot": 0,
+        "kind": "event",
+        "name": "Miếu Hoang",
+        "desc": "Ngôi miếu hoang của một môn phái vô danh.",
+        "fig": "",
+        "stage": 0,
+        "need": [],
+        "branch": "",
+        "trait": "",
+        "cuts": [
+          {
+            "who": "",
+            "fig": "",
+            "text": "Ngôi miếu hoang\ncủa một môn phái vô danh."
+          }
+        ],
+        "after": [],
+        "reward": [],
+        "post": {
+          "res": "",
+          "n": 0
+        },
+        "rep": 0,
+        "form": "",
+        "join": [],
+        "hall": "",
+        "hallLv": 0,
+        "choices": [
+          {
+            "label": "Dâng Hương",
+            "desc": "Nghiệp Lực tích tụ",
+            "gate": "",
+            "rep": 0,
+            "branch": "",
+            "reward": [],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 3
+          },
+          {
+            "label": "Lấy đồ cúng dường",
+            "desc": "Đan Dược",
+            "gate": "",
+            "rep": -3,
+            "branch": "",
+            "reward": [
+              {
+                "res": "pill",
+                "n": 4
+              }
+            ],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 0
+          }
+        ]
+      },
+      {
+        "id": "w5",
+        "slot": 0,
+        "kind": "event",
+        "name": "Tàn Đảng Huyết Giáo",
+        "desc": "Tàn đảng Huyết Giáo vẫn còn lẩn trốn trong núi.",
+        "fig": "full_harang",
+        "stage": 0,
+        "need": [],
+        "branch": "",
+        "trait": "",
+        "cuts": [
+          {
+            "who": "Xích Lôi",
+            "fig": "full_harang",
+            "text": "Là lũ Huyết Giáo!\nBọn chúng vẫn còn sót lại!"
+          }
+        ],
+        "after": [],
+        "reward": [],
+        "post": {
+          "res": "",
+          "n": 0
+        },
+        "rep": 0,
+        "form": "",
+        "join": [],
+        "hall": "",
+        "hallLv": 0,
+        "choices": [
+          {
+            "label": "Đuổi Cổ Đi",
+            "desc": "Tiên Ngọc",
+            "gate": "",
+            "rep": 5,
+            "branch": "",
+            "reward": [
+              {
+                "res": "jade",
+                "n": 15
+              }
+            ],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 0
+          },
+          {
+            "label": "Thu lấy",
+            "desc": "Ngọc Giản",
+            "gate": "",
+            "rep": -5,
+            "branch": "",
+            "reward": [
+              {
+                "res": "scroll",
+                "n": 20
+              }
+            ],
+            "after": [],
+            "join": [],
+            "hall": "",
+            "hallLv": 0,
+            "karma": 0
+          }
+        ]
+      }
+    ]
+  },
+  "endings": [
+    {
+      "id": "jeong",
+      "name": "Thái Hư Tiên Môn Chính Đạo",
+      "repMin": 30,
+      "repMax": 100,
+      "cuts": [
+        {
+          "who": "",
+          "fig": "",
+          "text": "Người trong thiên hạ gọi Thái Hư Tiên Môn\nlà môn phái của chính đạo."
+        },
+        {
+          "who": "Linh Nhi",
+          "fig": "full_danbi",
+          "text": "Ủy thác gửi tới tấp nập.\nTừ nay sạch bóng nợ nần rồi!"
+        },
+        {
+          "who": "Tông Chủ",
+          "fig": "full_master",
+          "text": "…Tốt lắm.\nLần này đã giữ trọn được rồi."
+        },
+        {
+          "who": "",
+          "fig": "",
+          "text": "Trang cuối của Thái Hư Kiếm Kinh\nvẫn còn thêm một dòng nữa."
+        },
+        {
+          "who": "",
+          "fig": "",
+          "text": "— Thanh kiếm dù bao phen\nvẫn quay về khởi điểm."
+        }
+      ]
+    },
+    {
+      "id": "pae",
+      "name": "Thái Hư Tiên Môn Bá Đạo",
+      "repMin": -100,
+      "repMax": -30,
+      "cuts": [
+        {
+          "who": "",
+          "fig": "",
+          "text": "Giang hồ đã bắt đầu\nkhiếp sợ Thái Hư Tiên Môn."
+        },
+        {
+          "who": "Hỏa Linh",
+          "fig": "full_macheol",
+          "text": "Đám người hắc đạo\nxếp hàng dài cúi đầu chào đón."
+        },
+        {
+          "who": "Tông Chủ",
+          "fig": "full_master",
+          "text": "Kệ thiên hạ sợ hay không.\nTa chỉ cần bảo vệ môn phái của mình là đủ."
+        },
+        {
+          "who": "",
+          "fig": "",
+          "text": "Trang cuối của Thái Hư Kiếm Kinh\nvẫn còn thêm một dòng nữa."
+        },
+        {
+          "who": "",
+          "fig": "",
+          "text": "— Thanh kiếm dù bao phen\nvẫn quay về khởi điểm."
+        }
+      ]
+    },
+    {
+      "id": "jung",
+      "name": "Con Đường Của Thái Hư Tiên Môn",
+      "repMin": -29,
+      "repMax": 29,
+      "cuts": [
+        {
+          "who": "",
+          "fig": "",
+          "text": "Chẳng phải chính phái cũng chẳng phải hắc đạo,\nThái Hư Tiên Môn vẫn là Thái Hư Tiên Môn."
+        },
+        {
+          "who": "Linh Nhi",
+          "fig": "full_danbi",
+          "text": "Không nghiêng về phe nào,\nthế là cả hai bên đều gửi ủy thác tới."
+        },
+        {
+          "who": "Tông Chủ",
+          "fig": "full_master",
+          "text": "Đó chính là\ncon đường của chúng ta."
+        },
+        {
+          "who": "",
+          "fig": "",
+          "text": "Trang cuối của Thái Hư Kiếm Kinh\nvẫn còn thêm một dòng nữa."
+        },
+        {
+          "who": "",
+          "fig": "",
+          "text": "— Thanh kiếm dù bao phen\nvẫn quay về khởi điểm."
+        }
+      ]
+    }
+  ],
+  "exp": {
+    "required": true,
+    "salveBase": 2,
+    "salveHall": "pharmacy",
+    "salvePerLv": 4,
+    "salveCap": 5,
+    "salveHeal": 0.5,
+    "bagKeep": 0.5,
+    "streakBonus": 0.15,
+    "streakMax": 0.6,
+    "salveSec": 900,
+    "downHp": 0.25,
+    "injurePill": 10,
+    "previewRuns": 3,
+    "fightShard": 1
+  },
+  "raid": {
+    "fromStage": 15,
+    "at": [
+      5,
+      10
+    ],
+    "add": [
+      3,
+      -2
+    ],
+    "bossAt": 10,
+    "waves": [
+      12,
+      14
+    ],
+    "sec": 97,
+    "cut": 0.5,
+    "lostKeep": 0.5,
+    "capBelow": 2,
+    "maxLost": 2,
+    "pactAt": [
+      3,
+      6,
+      9,
+      10
+    ],
+    "pactAdd": [
+      3,
+      3,
+      3,
+      -2
+    ],
+    "repAt": 30,
+    "grudgeDelay": 3,
+    "grudgeAdd": 2,
+    "factions": [
+      {
+        "id": "heukpung",
+        "when": "r1",
+        "name": "Biệt Động Đội U Lâm Yêu Cốc",
+        "trait": "horde",
+        "line": "Biệt Động Đội U Lâm Yêu Cốc đang ồ ạt kéo vào sơn trang bổn môn!",
+        "hall": "vault",
+        "reward": [
+          {
+            "res": "coin",
+            "n": 400
+          },
+          {
+            "res": "xp",
+            "n": 300
+          }
+        ]
+      },
+      {
+        "id": "bimu",
+        "when": "r2",
+        "name": "Lãng Khách Bích Thủy Hàn Đàm",
+        "trait": "wall",
+        "line": "Đám lãng khách bại trận ở Bích Thủy Hàn Đàm kéo đến báo thù!",
+        "hall": "yard",
+        "reward": [
+          {
+            "res": "coin",
+            "n": 400
+          },
+          {
+            "res": "xp",
+            "n": 300
+          }
+        ]
+      },
+      {
+        "id": "heukdo",
+        "when": "r3",
+        "name": "Đội Hành Động Xích Viêm Hỏa Cốc",
+        "trait": "titan",
+        "line": "Đội Hành Động Xích Viêm Hỏa Cốc đang nhắm vào sơn trang bổn môn!",
+        "hall": "vault",
+        "reward": [
+          {
+            "res": "coin",
+            "n": 400
+          },
+          {
+            "res": "xp",
+            "n": 300
+          }
+        ]
+      },
+      {
+        "id": "mandok",
+        "when": "r4",
+        "name": "Độc Linh Ma Sư Xích Viêm Hỏa Cốc",
+        "trait": "venom",
+        "line": "Đám Độc Linh Ma Sư Xích Viêm Hỏa Cốc đang rải độc khắp sơn trang bổn phái!",
+        "hall": "pharmacy",
+        "reward": [
+          {
+            "res": "coin",
+            "n": 400
+          },
+          {
+            "res": "xp",
+            "n": 300
+          }
+        ]
+      },
+      {
+        "id": "hyeolma",
+        "when": "r5",
+        "name": "Huyết Quỷ Đội Cửu U Ma Vực",
+        "trait": "blood",
+        "line": "Huyết Quỷ Đội của Cửu U Ma Vực đang ập vào sơn trang bổn môn!",
+        "hall": "library",
+        "reward": [
+          {
+            "res": "coin",
+            "n": 400
+          },
+          {
+            "res": "xp",
+            "n": 300
+          }
+        ]
+      },
+      {
+        "id": "assassin",
+        "when": "Hiệp",
+        "name": "Thích Khách Tà Phái",
+        "trait": "venom",
+        "line": "Nghe tiếng nghĩa hiệp của bổn môn, tà phái đã phái thích khách tới!",
+        "hall": "library",
+        "reward": [
+          {
+            "res": "coin",
+            "n": 700
+          },
+          {
+            "res": "pill",
+            "n": 8
+          }
+        ]
+      },
+      {
+        "id": "posse",
+        "when": "Bá",
+        "name": "Đội Thảo Phạt Chính Phái",
+        "trait": "wall",
+        "line": "Đội thảo phạt chính phái nghe thấy ác danh liền kéo tới tấn công!",
+        "hall": "vault",
+        "reward": [
+          {
+            "res": "coin",
+            "n": 100
+          },
+          {
+            "res": "scroll",
+            "n": 20
+          },
+          {
+            "res": "pill",
+            "n": 8
+          }
+        ]
+      }
+    ]
+  },
+  "fame": {
+    "boss": 40,
+    "region": 80,
+    "raid": 15,
+    "grit": 10,
+    "exp": 30,
+    "realm": 20,
+    "wander": 25,
+    "tiers": [
+      {
+        "at": 0,
+        "name": "Sơn Môn Vô Danh",
+        "mods": [],
+        "cuts": []
+      },
+      {
+        "at": 150,
+        "name": "Sơn Môn Vang Danh",
+        "mods": [
+          {
+            "key": "hall",
+            "v": 0.03
+          },
+          {
+            "key": "outpost",
+            "v": 0.05
+          }
+        ],
+        "cuts": [
+          {
+            "who": "Tiểu Bảo",
+            "fig": "full_makdong",
+            "text": "Huynh ơi! Ngoài chợ người ta bàn tán về mình kìa!\nHọ đồn Thái Hư Tiên Môn có một vị Tông Chủ điên kìa!"
+          },
+          {
+            "who": "Tông Chủ",
+            "fig": "full_master",
+            "text": "…Bỏ chữ \"điên\" đi."
+          }
+        ]
+      },
+      {
+        "at": 500,
+        "name": "Sơn Môn Lừng Danh",
+        "mods": [
+          {
+            "key": "hall",
+            "v": 0.03
+          },
+          {
+            "key": "outpost",
+            "v": 0.05
+          }
+        ],
+        "cuts": [
+          {
+            "who": "Linh Nhi",
+            "fig": "full_danbi",
+            "text": "Có thư xin nhập môn gửi tới.\n…Tận ba bức lận."
+          },
+          {
+            "who": "Xích Lôi",
+            "fig": "full_harang",
+            "text": "Bảo bọn họ chào Đại Đệ Tử trước đi!"
+          }
+        ]
+      },
+      {
+        "at": 1000,
+        "name": "Danh Môn",
+        "mods": [
+          {
+            "key": "hall",
+            "v": 0.03
+          },
+          {
+            "key": "outpost",
+            "v": 0.05
+          }
+        ],
+        "cuts": [
+          {
+            "who": "",
+            "fig": "",
+            "text": "Trước Sơn Môn đã treo lên tấm Linh Ấn mới.\nThái Hư Tiên Môn (太乙門)."
+          },
+          {
+            "who": "Mộc Thanh",
+            "fig": "full_sundeok",
+            "text": "Tiền làm Linh Ấn ai trả thế?\n…Đừng bảo là lại mua chịu nữa nhé?"
+          }
+        ]
+      },
+      {
+        "at": 1800,
+        "name": "Hàng Ngũ Cửu Phái",
+        "mods": [
+          {
+            "key": "hall",
+            "v": 0.03
+          },
+          {
+            "key": "outpost",
+            "v": 0.05
+          }
+        ],
+        "cuts": [
+          {
+            "who": "Hỏa Linh",
+            "fig": "full_macheol",
+            "text": "Đám Cửu Phái vừa sai người tới.\nRủ chúng ta ngồi chung chiếu."
+          },
+          {
+            "who": "Tông Chủ",
+            "fig": "full_master",
+            "text": "Ngồi chung bàn thì cứ ngồi.\nTiền cơm bên đó trả là được."
+          }
+        ]
+      },
+      {
+        "at": 3000,
+        "name": "Thiên Hạ Đệ Nhất Môn",
+        "mods": [
+          {
+            "key": "hall",
+            "v": 0.03
+          },
+          {
+            "key": "outpost",
+            "v": 0.05
+          }
+        ],
+        "cuts": [
+          {
+            "who": "",
+            "fig": "",
+            "text": "Người trong tiên giới giờ đây\nnhắc tới Thái Hư Tiên Môn đầu tiên."
+          },
+          {
+            "who": "Tông Chủ",
+            "fig": "full_master",
+            "text": "…Vốn chỉ định trả xong nợ thôi.\nVậy mà đã đi xa đến nhường này."
+          }
+        ]
+      }
+    ]
+  },
+  "feats": [
+    {
+      "id": "st10",
+      "name": "Thủ Lĩnh Đầu Tiên",
+      "desc": "Đánh bại Thủ Lĩnh phần Mở Đầu",
+      "kind": "stage",
+      "n": 10,
+      "jade": 40,
+      "fame": 10
+    },
+    {
+      "id": "st20",
+      "name": "Vượt Qua U Lâm",
+      "desc": "Vượt ải 20 Cánh Đồng",
+      "kind": "stage",
+      "n": 20,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "st30",
+      "name": "Ngưỡng Cửa Cửu Châu",
+      "desc": "Vượt ải 30 Cánh Đồng",
+      "kind": "stage",
+      "n": 30,
+      "jade": 70,
+      "fame": 20
+    },
+    {
+      "id": "st40",
+      "name": "Thâm Nhập Cửu Châu",
+      "desc": "Vượt ải 40 Cánh Đồng",
+      "kind": "stage",
+      "n": 40,
+      "jade": 80,
+      "fame": 25
+    },
+    {
+      "id": "st50",
+      "name": "Ải Cuối Cùng",
+      "desc": "Vượt ải 50 Cánh Đồng",
+      "kind": "stage",
+      "n": 50,
+      "jade": 100,
+      "fame": 30
+    },
+    {
+      "id": "rl2",
+      "name": "Cao Thủ Trúc Cơ",
+      "desc": "Đạt Cảnh Giới Trúc Cơ",
+      "kind": "realm",
+      "n": 2,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "rl4",
+      "name": "Nguyên Anh",
+      "desc": "Đạt Cảnh Giới Nguyên Anh",
+      "kind": "realm",
+      "n": 4,
+      "jade": 80,
+      "fame": 25
+    },
+    {
+      "id": "rl5",
+      "name": "Hóa Thần",
+      "desc": "Đạt Cảnh Giới Hóa Thần",
+      "kind": "realm",
+      "n": 5,
+      "jade": 140,
+      "fame": 40
+    },
+    {
+      "id": "rd1",
+      "name": "Trấn Giữ Sơn Môn",
+      "desc": "Lần đầu đẩy lùi tập kích",
+      "kind": "raid",
+      "n": 1,
+      "jade": 40,
+      "fame": 10
+    },
+    {
+      "id": "rd10",
+      "name": "Thiết Ung Thành",
+      "desc": "Đẩy lùi mười đợt tập kích",
+      "kind": "raid",
+      "n": 10,
+      "jade": 80,
+      "fame": 25
+    },
+    {
+      "id": "rc5",
+      "name": "Đẩy Lùi Trong Một Lần",
+      "desc": "Đẩy lùi năm đợt tập kích mà không bại trận",
+      "kind": "raidClean",
+      "n": 5,
+      "jade": 70,
+      "fame": 20
+    },
+    {
+      "id": "gr1",
+      "name": "Đoạn Tuyệt Oán Thù",
+      "desc": "Đẩy lùi cuộc tập kích do oán thù kéo tới",
+      "kind": "grudge",
+      "n": 1,
+      "jade": 40,
+      "fame": 15
+    },
+    {
+      "id": "hp1",
+      "name": "Ân Nghĩa Đáp Đền",
+      "desc": "Cùng những người mang ơn đẩy lùi cuộc tập kích",
+      "kind": "help",
+      "n": 1,
+      "jade": 40,
+      "fame": 10
+    },
+    {
+      "id": "hp3",
+      "name": "Sơn Môn Trọng Nghĩa Khí",
+      "desc": "Ba lần cùng người mang ơn đẩy lùi tập kích",
+      "kind": "help",
+      "n": 3,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "gt1",
+      "name": "Tử Chiến",
+      "desc": "Hạ gục Thủ Lĩnh khi sinh lực cạn kiệt",
+      "kind": "grit",
+      "n": 1,
+      "jade": 40,
+      "fame": 10
+    },
+    {
+      "id": "gt10",
+      "name": "Cao Thủ Tử Chiến",
+      "desc": "Thắng mười trận Tử Chiến",
+      "kind": "grit",
+      "n": 10,
+      "jade": 70,
+      "fame": 20
+    },
+    {
+      "id": "so1",
+      "name": "Đơn Thương Độc Mã",
+      "desc": "Vượt ải Thủ Lĩnh không cần Đồng Hành",
+      "kind": "solo",
+      "n": 1,
+      "jade": 70,
+      "fame": 20
+    },
+    {
+      "id": "rg1",
+      "name": "Lần Đầu Bình Định",
+      "desc": "Bình định một vùng",
+      "kind": "region",
+      "n": 1,
+      "jade": 40,
+      "fame": 10
+    },
+    {
+      "id": "rg3",
+      "name": "Hành Tẩu Cửu Châu",
+      "desc": "Bình định ba vùng",
+      "kind": "region",
+      "n": 3,
+      "jade": 70,
+      "fame": 20
+    },
+    {
+      "id": "rg5",
+      "name": "Bình Định Cửu Châu",
+      "desc": "Bình định toàn bộ năm vùng",
+      "kind": "region",
+      "n": 5,
+      "jade": 100,
+      "fame": 30
+    },
+    {
+      "id": "ex1",
+      "name": "Hoàn Thành Viễn Chinh",
+      "desc": "Viễn chinh tiến thẳng tới Thủ Lĩnh khu vực",
+      "kind": "exp",
+      "n": 1,
+      "jade": 40,
+      "fame": 15
+    },
+    {
+      "id": "ns1",
+      "name": "Viễn Chinh Vô Huyết",
+      "desc": "Hoàn thành Viễn Chinh mà không dùng Hồi Linh Đan",
+      "kind": "noSalve",
+      "n": 1,
+      "jade": 70,
+      "fame": 20
+    },
+    {
+      "id": "rb1",
+      "name": "Hồi Quy",
+      "desc": "Hồi Quy lần đầu tiên",
+      "kind": "rebirth",
+      "n": 1,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "rb3",
+      "name": "Kiếp Sống Thứ Ba",
+      "desc": "Hồi Quy ba lần",
+      "kind": "rebirth",
+      "n": 3,
+      "jade": 80,
+      "fame": 25
+    },
+    {
+      "id": "rb5",
+      "name": "Kiếp Sống Thứ Năm",
+      "desc": "Hồi Quy năm lần",
+      "kind": "rebirth",
+      "n": 5,
+      "jade": 120,
+      "fame": 40
+    },
+    {
+      "id": "pl1",
+      "name": "Con Đường Minh Ước",
+      "desc": "Lập từ hai Minh Ước trở lên và hoàn thành một vòng chinh phạt",
+      "kind": "pactLap",
+      "n": 1,
+      "jade": 80,
+      "fame": 25
+    },
+    {
+      "id": "pl3",
+      "name": "Người Giữ Trọn Minh Ước",
+      "desc": "Lập từ hai Minh Ước trở lên và hoàn thành ba vòng chinh phạt",
+      "kind": "pactLap",
+      "n": 3,
+      "jade": 120,
+      "fame": 40
+    },
+    {
+      "id": "pf1",
+      "name": "Tứ Trùng Minh Ước",
+      "desc": "Lập bốn Minh Ước và hoàn thành một vòng chinh phạt",
+      "kind": "pactFull",
+      "n": 1,
+      "jade": 150,
+      "fame": 50
+    },
+    {
+      "id": "dc8",
+      "name": "Thêm Người Một Nhà",
+      "desc": "Thu nhận tám đệ tử",
+      "kind": "disciples",
+      "n": 8,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "mn10",
+      "name": "Mở Rộng Tông Chủ Điện",
+      "desc": "Nâng Tông Chủ Điện lên cấp 10",
+      "kind": "main",
+      "n": 10,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "fm5",
+      "name": "Trận Pháp Đại Sư",
+      "desc": "Thu thập đủ năm loại trận pháp",
+      "kind": "forms",
+      "n": 5,
+      "jade": 70,
+      "fame": 20
+    },
+    {
+      "id": "hy60",
+      "name": "Đại Hiệp",
+      "desc": "Đạt 60 điểm Thanh Danh hướng Hiệp",
+      "kind": "hyeop",
+      "n": 60,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "pa60",
+      "name": "Ma Đầu",
+      "desc": "Đạt 60 điểm Thanh Danh hướng Bá",
+      "kind": "pae",
+      "n": 60,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "sh1",
+      "name": "Chế Ngự Thiên Kiếp",
+      "desc": "Vượt qua Thiên Kiếp ngay lần đầu",
+      "kind": "shadowClean",
+      "n": 1,
+      "jade": 60,
+      "fame": 15
+    },
+    {
+      "id": "wd10",
+      "name": "Khách Du Lãng",
+      "desc": "Vượt tầng 10 Du Lãng",
+      "kind": "wander",
+      "n": 10,
+      "jade": 70,
+      "fame": 20
+    },
+    {
+      "id": "wd30",
+      "name": "Du Lãng Thiên Hạ",
+      "desc": "Vượt tầng 30 Du Lãng",
+      "kind": "wander",
+      "n": 30,
+      "jade": 100,
+      "fame": 30
+    }
+  ],
+  "shadow": {
+    "atk": 2.5,
+    "hp": 2.5,
+    "sec": 60,
+    "ease": 0.1,
+    "floor": 0.6
+  }
+}

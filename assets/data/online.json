@@ -1,0 +1,223 @@
+{
+  "openStage": 15,
+  "callsPerDay": 8,
+  "syncPerDay": 2,
+  "reportPerDay": 2,
+  "rankPerDay": 2,
+  "rankGapSec": 3600,
+  "backupPerDay": 1,
+  "backupMax": 3,
+  "backupGapSec": 1800,
+  "friendPerDay": 5,
+  "arena": {
+    "runs": 5,
+    "adRuns": 1,
+    "foes": 3,
+    "start": 1000,
+    "band": 150,
+    "win": 25,
+    "winMin": 12,
+    "winMax": 40,
+    "winDiv": 10,
+    "lose": 18,
+    "loseMin": 5,
+    "loseMax": 28,
+    "loseDiv": 20,
+    "sec": 60,
+    "edge": 1.25,
+    "foeMul": 1.0,
+    "reset": 0.5,
+    "ladderStep": 300,
+    "foeMax": 3.0,
+    "honorWin": 20,
+    "honorLose": 6,
+    "tiers": [
+      {
+        "id": "t_bronze",
+        "name": "Thanh Đồng Tiên Bảng",
+        "at": 0,
+        "cap": 4000,
+        "honor": 50
+      },
+      {
+        "id": "t_silver",
+        "name": "Bạch Ngân Tiên Bảng",
+        "at": 1100,
+        "cap": 12000,
+        "honor": 100
+      },
+      {
+        "id": "t_gold",
+        "name": "Hoàng Kim Tiên Bảng",
+        "at": 1250,
+        "cap": 40000,
+        "honor": 160
+      },
+      {
+        "id": "t_jade",
+        "name": "Tử Kim Tiên Bảng",
+        "at": 1450,
+        "cap": 150000,
+        "honor": 240
+      },
+      {
+        "id": "t_dragon",
+        "name": "Thái Hư Chí Tôn Bảng",
+        "at": 1700,
+        "cap": 600000,
+        "honor": 350
+      }
+    ],
+    "capCost": [
+      200,
+      300,
+      450,
+      650,
+      900,
+      1200,
+      1600,
+      2100,
+      2700,
+      3400
+    ]
+  },
+  "guild": {
+    "max": 30,
+    "officers": 2,
+    "bossRuns": 3,
+    "bossMerit": 8,
+    "bossSec": 60,
+    "bossHpMul": 30,
+    "bossAtkMul": 1.0,
+    "botPerRun": 400,
+    "borrowPerDay": 2,
+    "lendMerit": 5,
+    "donateMerit": 20,
+    "donateExp": 10,
+    "donateMin": 30,
+    "cheerPerDay": 3,
+    "cheerMerit": 2,
+    "stages": [
+      2000,
+      5000,
+      9000,
+      14000,
+      20000,
+      27000,
+      35000,
+      44000,
+      54000,
+      65000
+    ],
+    "stageMerit": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      70
+    ],
+    "stageJade": [
+      5,
+      5,
+      5,
+      5,
+      10,
+      10,
+      10,
+      10,
+      15,
+      15
+    ],
+    "bldExp": [
+      0,
+      300,
+      900,
+      2000,
+      4000,
+      7000
+    ],
+    "skillBase": 6,
+    "buildings": [
+      {
+        "id": "hall",
+        "name": "Minh Điện",
+        "desc": "Tăng giới hạn cấp kỹ năng Liên Minh",
+        "per": 2
+      },
+      {
+        "id": "yard",
+        "name": "Diễn Võ Trường",
+        "desc": "Tăng cống hiến nhận từ mốc tuần",
+        "per": 0.1
+      },
+      {
+        "id": "store",
+        "name": "Bảo Khố",
+        "desc": "Tăng điểm cống hiến khi quyên góp",
+        "per": 0.1
+      }
+    ],
+    "skills": [
+      {
+        "id": "g_coin",
+        "name": "Quản Lý Tài Vật",
+        "key": "coin",
+        "per": 0.02,
+        "max": 16,
+        "costBase": 50,
+        "costStep": 25
+      },
+      {
+        "id": "g_xp",
+        "name": "Bí Quyết Tu Luyện",
+        "key": "xp",
+        "per": 0.02,
+        "max": 16,
+        "costBase": 50,
+        "costStep": 25
+      },
+      {
+        "id": "g_hall",
+        "name": "Quản Lý Điện Các",
+        "key": "hall",
+        "per": 0.02,
+        "max": 16,
+        "costBase": 50,
+        "costStep": 25
+      },
+      {
+        "id": "g_reward",
+        "name": "Tiên Giới Kiến Văn",
+        "key": "reward",
+        "per": 0.02,
+        "max": 16,
+        "costBase": 50,
+        "costStep": 25
+      }
+    ],
+    "cheers": [
+      "Hôm nay cũng cùng cố gắng nào",
+      "Cùng thảo phạt ma đầu nào",
+      "Đa tạ đã quyên góp",
+      "Mong được chỉ giáo",
+      "Quả là một chiêu tuyệt diệu",
+      "Cứ thong thả giữ sức nhé",
+      "Cùng nhau lớn mạnh nhé",
+      "Tuần này chư vị đã vất vả rồi"
+    ],
+    "emotes": [
+      "Ôm Quyền",
+      "Vỗ tay",
+      "Bật cười",
+      "Siết quyền",
+      "Thán phục",
+      "Chào hỏi"
+    ],
+    "botMembers": 12
+  }
+}

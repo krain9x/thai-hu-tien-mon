@@ -1,0 +1,5 @@
+server/tienmon_online.db*
+server/__pycache__/
+*.pyc
+*.log
+.DS_Store
