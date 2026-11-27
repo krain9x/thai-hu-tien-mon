@@ -6,6 +6,7 @@
     pill: 'Đan Dược Đột Phá',
     scroll: 'Ngọc Giản Tiên Pháp',
     essence: 'Tinh Thạch Luyện Khí',
+    chaosShard: 'Hỗn Độn Nguyên Tinh',
     gem_kim: 'Kim Sát Linh Châu Lv.1',
     gem_moc: 'Mộc Sinh Linh Châu Lv.1',
     gem_thuy: 'Thủy Linh Bảo Châu Lv.1',

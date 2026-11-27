@@ -292,6 +292,14 @@ def init_db():
         day_key TEXT NOT NULL,
         PRIMARY KEY(user_id, vein_id, day_key)
     );
+    CREATE TABLE IF NOT EXISTS gm_audit_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gm_name TEXT NOT NULL,
+        action_kind TEXT NOT NULL,
+        target_label TEXT DEFAULT '',
+        detail TEXT DEFAULT '',
+        created_at REAL NOT NULL
+    );
     """)
 
     # Seed 5 Linh Mạch Bang Hội if empty
@@ -1996,29 +2004,55 @@ def is_gm_admin(user: dict) -> bool:
         return False
     return bool(user.get("is_admin")) or user.get("username", "").lower() in ("krain9x", "admin")
 
+def log_gm_action(gm_name: str, kind: str, target_label: str = "", detail: str = ""):
+    try:
+        DB.execute(
+            "INSERT INTO gm_audit_logs (gm_name, action_kind, target_label, detail, created_at) VALUES (?, ?, ?, ?, ?)",
+            (str(gm_name or "GM"), str(kind), str(target_label)[:80], str(detail)[:220], time.time())
+        )
+        DB.commit()
+    except Exception:
+        pass
+
 async def api_admin_overview(request: web.Request):
     user = auth_user(request)
     if not is_gm_admin(user):
         return web.json_response({"ok": False, "error": "Chỉ tài khoản GM Admin mới có quyền!"}, status=403)
     users = [dict(r) for r in DB.execute("""
-        SELECT u.id, u.username, u.sect_name, u.is_bot, COALESCE(u.banned, 0) AS banned, u.last_seen,
-               s.power, s.realm_idx, s.max_stage, s.arena_score,
-               COALESCE(b.vip_lv, 0) AS vip_lv, g.name AS guild_name, g.tag AS guild_tag
+        SELECT u.id, u.username, u.sect_name, u.title, u.is_bot, COALESCE(u.banned, 0) AS banned, u.last_seen, u.created_at,
+               s.power, s.realm_idx, s.max_stage, s.tower_floor, s.arena_score, s.fame, s.rep,
+               COALESCE(b.vip_lv, 0) AS vip_lv, COALESCE(b.vip_exp, 0) AS vip_exp, COALESCE(b.total_vnd, 0) AS total_vnd,
+               g.name AS guild_name, g.tag AS guild_tag
         FROM users u LEFT JOIN saves s ON s.user_id=u.id
         LEFT JOIN user_billing b ON b.user_id=u.id
         LEFT JOIN guild_members gm ON gm.user_id=u.id
         LEFT JOIN guilds g ON g.id=gm.guild_id
-        ORDER BY s.power DESC LIMIT 120
+        ORDER BY s.power DESC LIMIT 160
     """).fetchall()]
-    guilds = [dict(r) for r in DB.execute("SELECT * FROM guilds").fetchall()]
-    orders = [dict(r) for r in DB.execute("SELECT * FROM topup_orders ORDER BY id DESC LIMIT 80").fetchall()]
+    guilds = [dict(r) for r in DB.execute("""
+        SELECT g.*, (SELECT COUNT(*) FROM guild_members gm WHERE gm.guild_id=g.id) AS member_count,
+               u.username AS leader_name
+        FROM guilds g LEFT JOIN users u ON u.id = g.leader_id
+        ORDER BY g.week_score DESC
+    """).fetchall()]
+    orders = [dict(r) for r in DB.execute("SELECT * FROM topup_orders ORDER BY id DESC LIMIT 100").fetchall()]
     codes = [dict(r) for r in DB.execute("SELECT * FROM giftcodes").fetchall()]
     for c in codes:
         c["rewards"] = json.loads(c.get("rewards_json") or "{}")
-    chat = [dict(r) for r in DB.execute("SELECT * FROM chat_messages ORDER BY id DESC LIMIT 30").fetchall()]
+    chat = [dict(r) for r in DB.execute("SELECT * FROM chat_messages ORDER BY id DESC LIMIT 40").fetchall()]
+    logs = [dict(r) for r in DB.execute("SELECT * FROM gm_audit_logs ORDER BY id DESC LIMIT 60").fetchall()]
+    rev_row = DB.execute("""
+        SELECT
+          COALESCE(SUM(CASE WHEN status='paid' THEN amount_vnd ELSE 0 END), 0) AS totalPaidVnd,
+          COALESCE(SUM(CASE WHEN status='paid' THEN 1 ELSE 0 END), 0) AS paidCount,
+          COALESCE(SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END), 0) AS pendingCount,
+          COALESCE(SUM(CASE WHEN status='rejected' THEN 1 ELSE 0 END), 0) AS rejectedCount
+        FROM topup_orders
+    """).fetchone()
     return web.json_response({
         "ok": True, "users": users, "guilds": guilds, "orders": orders,
-        "codes": codes, "boss": get_wb_payload(), "rooms": build_coop_rooms_payload(), "chat": chat
+        "codes": codes, "boss": get_wb_payload(), "rooms": build_coop_rooms_payload(),
+        "chat": chat, "logs": logs, "revenue": dict(rev_row) if rev_row else {}
     })
 
 async def api_admin_action(request: web.Request):
@@ -2027,17 +2061,22 @@ async def api_admin_action(request: web.Request):
         return web.json_response({"ok": False, "error": "Forbidden"}, status=403)
     d = await request.json()
     kind = d.get("kind")
-    now = time.time()
+    gm_name = user.get("username", "GM")
     if kind == "grant_mail":
         tid = d.get("targetId")
         att = d.get("attachments") or {}
         title = str(d.get("title") or "Quà GM")
+        body_msg = str(d.get("body") or "Quà hỗ trợ trực tiếp từ Quản Trị Viên.")
         if tid == "__ALL__":
             ids = [r[0] for r in DB.execute("SELECT id FROM users WHERE is_bot=0").fetchall()]
+            t_lbl = f"Toàn server ({len(ids)} người)"
         else:
             ids = [safe_int(tid, 0)]
+            u_row = DB.execute("SELECT username FROM users WHERE id=?", (ids[0],)).fetchone()
+            t_lbl = u_row["username"] if u_row else f"#{ids[0]}"
         for x in ids:
-            send_mail(x, "GM Thái Hư Tiên Môn", title, "Quà hỗ trợ trực tiếp từ Quản Trị Viên.", att)
+            send_mail(x, "GM Thái Hư Tiên Môn", title, body_msg, att)
+        log_gm_action(gm_name, "grant_mail", t_lbl, f"{title}: {json.dumps(att, ensure_ascii=False)}")
         return web.json_response({"ok": True, "count": len(ids)})
     elif kind == "grant_vip":
         tid = safe_int(d.get("targetId"), 0)
@@ -2047,10 +2086,11 @@ async def api_admin_action(request: web.Request):
         new_lv = calc_vip_level(new_exp)
         DB.execute("UPDATE user_billing SET vip_exp=?, vip_lv=? WHERE user_id=?", (new_exp, new_lv, tid))
         DB.commit()
+        log_gm_action(gm_name, "grant_vip", f"UID {tid}", f"+{add_exp} VIP EXP -> VIP {new_lv}")
         return web.json_response({"ok": True, "vipLv": new_lv})
     elif kind == "toggle_ban":
         tid = safe_int(d.get("targetId"), 0)
-        row = DB.execute("SELECT COALESCE(banned, 0) AS banned FROM users WHERE id=? AND is_bot=0", (tid,)).fetchone()
+        row = DB.execute("SELECT username, COALESCE(banned, 0) AS banned FROM users WHERE id=? AND is_bot=0", (tid,)).fetchone()
         if not row:
             return web.json_response({"ok": False, "error": "User not found"}, status=404)
         new_ban = 0 if row["banned"] else 1
@@ -2064,37 +2104,91 @@ async def api_admin_action(request: web.Request):
                 except Exception:
                     pass
         DB.commit()
+        log_gm_action(gm_name, "toggle_ban", row["username"], "KHÓA TÀI KHOẢN" if new_ban else "MỞ KHÓA")
         return web.json_response({"ok": True, "banned": bool(new_ban)})
+    elif kind == "rename_sect":
+        tid = safe_int(d.get("targetId"), 0)
+        new_sect = str(d.get("sectName") or "").strip()[:32]
+        if not new_sect:
+            return web.json_response({"ok": False, "error": "Tên tông môn trống"}, status=400)
+        DB.execute("UPDATE users SET sect_name=? WHERE id=?", (new_sect, tid))
+        DB.commit()
+        log_gm_action(gm_name, "rename_sect", f"UID {tid}", f"Đổi thành [{new_sect}]")
+        return web.json_response({"ok": True, "sectName": new_sect})
     elif kind == "approve_order":
-        row, err = await fulfill_topup_order(str(d.get("orderCode") or ""), attach_rewards_in_mail=True)
+        oc = str(d.get("orderCode") or "")
+        row, err = await fulfill_topup_order(oc, attach_rewards_in_mail=True)
         if err:
             return web.json_response({"ok": False, "error": err}, status=400)
+        log_gm_action(gm_name, "approve_order", oc, f"Cộng quà: {json.dumps(row.get('rewards') or {}, ensure_ascii=False)}")
         return web.json_response({"ok": True, "rewards": row.get("rewards")})
+    elif kind == "reject_order":
+        oc = str(d.get("orderCode") or "")
+        reason = str(d.get("reason") or "Thông tin giao dịch chưa khớp hoặc hết hạn.").strip()[:180]
+        row = DB.execute("SELECT user_id, status, pack_name FROM topup_orders WHERE order_code=?", (oc,)).fetchone()
+        if not row:
+            return web.json_response({"ok": False, "error": "Không tìm thấy đơn"}, status=404)
+        if row["status"] != "pending":
+            return web.json_response({"ok": False, "error": "Chỉ hủy được đơn đang chờ duyệt"}, status=400)
+        DB.execute("UPDATE topup_orders SET status='rejected' WHERE order_code=?", (oc,))
+        DB.commit()
+        send_mail(row["user_id"], "GM Thanh Toán", f"Đơn Nạp {oc} Bị Từ Chối", f"Đơn {row['pack_name']} ({oc}) chưa được duyệt. Lý do: {reason}", {})
+        log_gm_action(gm_name, "reject_order", oc, reason)
+        return web.json_response({"ok": True})
     elif kind == "create_giftcode":
         code = str(d.get("code") or "").strip().upper()
         if not code:
             return web.json_response({"ok": False, "error": "Missing code"}, status=400)
+        rws = d.get("rewards") or {}
         DB.execute("""
             INSERT INTO giftcodes (code, title, rewards_json, max_uses, used_count, expires_at) VALUES (?, ?, ?, ?, 0, 0)
             ON CONFLICT(code) DO UPDATE SET title=excluded.title, rewards_json=excluded.rewards_json, max_uses=excluded.max_uses
-        """, (code, str(d.get("title") or code), json.dumps(d.get("rewards") or {}, ensure_ascii=False), max(1, safe_int(d.get("maxUses"), 500))))
+        """, (code, str(d.get("title") or code), json.dumps(rws, ensure_ascii=False), max(1, safe_int(d.get("maxUses"), 500))))
         DB.commit()
+        log_gm_action(gm_name, "create_giftcode", code, json.dumps(rws, ensure_ascii=False))
         return web.json_response({"ok": True})
     elif kind == "delete_giftcode":
-        DB.execute("DELETE FROM giftcodes WHERE code=?", (str(d.get("code") or "").upper(),))
+        code = str(d.get("code") or "").upper()
+        DB.execute("DELETE FROM giftcodes WHERE code=?", (code,))
         DB.commit()
+        log_gm_action(gm_name, "delete_giftcode", code, "Xóa Giftcode")
         return web.json_response({"ok": True})
     elif kind == "broadcast":
-        await post_system_chat(f"📢 {str(d.get('text') or '').strip()[:220]}")
+        txt = str(d.get("text") or "").strip()[:220]
+        await post_system_chat(f"📢 {txt}")
+        log_gm_action(gm_name, "broadcast", "Thế Giới", txt)
         return web.json_response({"ok": True})
-    elif kind == "reset_boss":
+    elif kind in ("reset_boss", "spawn_boss"):
         row = DB.execute("SELECT lv FROM world_boss WHERE id=1").fetchone()
-        nlv = (row["lv"] if row else 0) + 1
+        cur_lv = row["lv"] if row else 1
+        nlv = max(1, safe_int(d.get("lv"), cur_lv + 1 if d.get("lv") is None else cur_lv))
+        custom_nm = str(d.get("name") or "").strip()
+        nm = custom_nm if custom_nm else WORLD_BOSS_POOL[(nlv - 1) % len(WORLD_BOSS_POOL)]
         nmax = int(2500000 * (1 + (nlv - 1) * 0.45))
-        nm = WORLD_BOSS_POOL[(nlv - 1) % len(WORLD_BOSS_POOL)]
         DB.execute("UPDATE world_boss SET name=?, lv=?, hp=?, max_hp=?, respawn_at=0, dmg_board_json='{}' WHERE id=1", (nm, nlv, nmax, nmax))
         DB.commit()
         await ws_broadcast({"type": "wb_update", "boss": get_wb_payload(), "lastHit": None})
+        log_gm_action(gm_name, "spawn_boss", f"{nm} Lv.{nlv}", f"HP {nmax:,}")
+        return web.json_response({"ok": True})
+    elif kind == "delete_guild":
+        gid = safe_int(d.get("guildId"), 0)
+        g_row = DB.execute("SELECT name, tag FROM guilds WHERE id=?", (gid,)).fetchone()
+        if not g_row:
+            return web.json_response({"ok": False, "error": "Không tìm thấy Bang hội"}, status=404)
+        DB.execute("UPDATE veins SET guild_id=NULL WHERE guild_id=?", (gid,))
+        DB.execute("DELETE FROM guild_members WHERE guild_id=?", (gid,))
+        DB.execute("DELETE FROM guilds WHERE id=?", (gid,))
+        DB.commit()
+        log_gm_action(gm_name, "delete_guild", f"[{g_row['tag']}] {g_row['name']}", "Giải tán liên minh")
+        return web.json_response({"ok": True})
+    elif kind == "clear_chat":
+        ch = str(d.get("channel") or "all")
+        if ch == "all":
+            DB.execute("DELETE FROM chat_messages")
+        else:
+            DB.execute("DELETE FROM chat_messages WHERE channel=?", (ch,))
+        DB.commit()
+        log_gm_action(gm_name, "clear_chat", ch, "Dọn sạch lịch sử chat")
         return web.json_response({"ok": True})
     elif kind == "delete_item":
         if d.get("col") == "tm_chat":
@@ -2102,6 +2196,7 @@ async def api_admin_action(request: web.Request):
             DB.commit()
         elif d.get("col") == "tm_coop_rooms":
             COOP_ROOMS.pop(str(d.get("id")), None)
+        log_gm_action(gm_name, "delete_item", str(d.get("col")), f"ID {d.get('id')}")
         return web.json_response({"ok": True})
     return web.json_response({"ok": False, "error": "Unknown admin action"}, status=400)
 
