@@ -1154,7 +1154,10 @@
       if (online.isLoggedIn()) engine.onOpenPanelRequest('online', 7);
       else openAuthModal('register');
     });
-    document.getElementById('btn-open-auth-fd')?.addEventListener('click', () => openAuthModal('login'));
+    document.getElementById('btn-open-auth-fd')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openAuthModal('login');
+    });
 
     // Wire Live Chat Box
     const chatToggle = document.getElementById('lc-toggle-btn');

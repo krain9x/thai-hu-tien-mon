@@ -3576,7 +3576,7 @@
       enterGameFromFrontDoor();
     };
   }
-  document.getElementById('front-door').onclick = enterGameFromFrontDoor;
+  // Only dedicated buttons enter the game (avoid accidental prologue trigger when tapping Login/background on mobile!)
 
   // Boot Everything!
   (async function boot() {
