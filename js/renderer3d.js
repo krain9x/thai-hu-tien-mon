@@ -1718,10 +1718,11 @@ class MurimRenderer3D {
       || (arrayKind === 'dao' ? 'TT_Wp_FlameDao'
         : (arrayKind === 'spear' ? 'TT_Wp_ThunderSpear'
           : (arrayKind === 'staff' ? 'TT_Wp_JadeStaff' : 'TT_Wp_IronJian')));
-    const ttMesh = this.meshes[ttKey];
+    const activeTtKey = this.meshes[ttKey] ? ttKey : (wVis && wVis.fallbackTtMesh && this.meshes[wVis.fallbackTtMesh] ? wVis.fallbackTtMesh : ttKey);
+    const ttMesh = this.meshes[activeTtKey];
     if (ttMesh && ttMesh.texName) {
       const bright = 1.04 + glowBoost * 0.14;
-      this.drawCharMesh(ttKey, modelMat, ttMesh.texName, [bright, bright, bright, alpha], 1, 1, glowBoost * 0.22, 0, true, false);
+      this.drawCharMesh(activeTtKey, modelMat, ttMesh.texName, [bright, bright, bright, alpha], 1, 1, glowBoost * 0.22, 0, true, false);
       return;
     }
     const bladeCol = (wVis && wVis.bladeCol) || [0.56, 1.0, 0.98];
@@ -2222,11 +2223,13 @@ class MurimRenderer3D {
 
   async _loadSecondaryPacks() {
     try {
-      const [tmMan, tmBuf, apMan, apBuf] = await Promise.all([
+      const [tmMan, tmBuf, apMan, apBuf, cwMan, cwBuf] = await Promise.all([
         fetch('assets/meshes/tutien_monsters.json?v=30').then(r => r.ok ? r.json() : null).catch(() => null),
         fetch('assets/meshes/tutien_monsters.bin?v=30').then(r => r.ok ? r.arrayBuffer() : null).catch(() => null),
         fetch('assets/meshes/tutien_artifacts_pets.json?v=30').then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('assets/meshes/tutien_artifacts_pets.bin?v=30').then(r => r.ok ? r.arrayBuffer() : null).catch(() => null)
+        fetch('assets/meshes/tutien_artifacts_pets.bin?v=30').then(r => r.ok ? r.arrayBuffer() : null).catch(() => null),
+        fetch('assets/meshes/chaos_weapons.json?v=52').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('assets/meshes/chaos_weapons.bin?v=52').then(r => r.ok ? r.arrayBuffer() : null).catch(() => null)
       ]);
       if (tmMan && tmBuf) {
         for (const [k, m] of Object.entries(tmMan.mobs || {})) {
@@ -2243,6 +2246,12 @@ class MurimRenderer3D {
         }
         for (const [k, m] of Object.entries(apMan.pets || {})) {
           this.meshes[k] = this.createSkinnedCharVAO(apBuf, m, false);
+          if (m.tex) this.loadTexture3D(m.tex);
+        }
+      }
+      if (cwMan && cwBuf) {
+        for (const [k, m] of Object.entries(cwMan.props || {})) {
+          this.meshes[k] = this.createSkinnedCharVAO(cwBuf, m, false);
           if (m.tex) this.loadTexture3D(m.tex);
         }
       }
@@ -2269,7 +2278,7 @@ class MurimRenderer3D {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     };
-    img.src = `assets/tex3d/${name}.png?v=32`;
+    img.src = `assets/tex3d/${name}.png?v=52`;
   }
 
   // ==================== SKELETAL ANIMATION POSE EVALUATOR ====================
@@ -4949,23 +4958,38 @@ class MurimRenderer3D {
 
         // Sample Master's live weapon base & tip (local +Z of _weapWorld matches original Weapon_Jian blade axis!)
         if (u.isMaster && u.animT > 0) {
+          const tier = (mVis && mVis.gradeTier) ? mVis.gradeTier : 1;
+          const enhLv = (mVis && mVis.enhLv) ? mVis.enhLv : 0;
+          const tipLen = 1.08 + (tier >= 5 ? 0.36 : tier >= 4 ? 0.22 : tier >= 3 ? 0.10 : 0) + Math.min(0.18, enhLv * 0.006);
+          const maxTrail = tier >= 5 ? 24 : (tier >= 4 ? 20 : 16);
           const M = this._weapWorld;
           const bx = M[12], by = M[13], bz = M[14];
-          const tx = bx + M[8] * 1.08, ty = by + M[9] * 1.08, tz = bz + M[10] * 1.08;
+          const tx = bx + M[8] * tipLen, ty = by + M[9] * tipLen, tz = bz + M[10] * tipLen;
           const rgb = mVis ? hexToRgb(mVis.trailHex) : [0.36, 1.0, 0.95];
           const rgbaStr = `rgba(${Math.round(rgb[0]*255)}, ${Math.round(rgb[1]*255)}, ${Math.round(rgb[2]*255)}, ALPHA)`;
           this.weaponTrailPts.push({ bx, by, bz, tx, ty, tz, age: 0, colorRgba: rgbaStr });
-          if (this.weaponTrailPts.length > 16) this.weaponTrailPts.shift();
+          while (this.weaponTrailPts.length > maxTrail) this.weaponTrailPts.shift();
         }
 
         if (mVis) {
           // Align sculpted +Y weapon onto hand socket's +Z grip axis (Rx +90deg); TT_Wp_* grip is exact origin (zOff = 0.0)!
-          const handSc = this.getWeaponScaleForKind(mVis.arrayKind);
-          const hasTT = !!(mVis.ttMesh && this.meshes[mVis.ttMesh]);
+          const tier = mVis.gradeTier || 1;
+          const enhLv = mVis.enhLv || 0;
+          const handSc = this.getWeaponScaleForKind(mVis.arrayKind) * (tier >= 5 ? 1.12 : (tier >= 4 ? 1.06 : 1.0));
+          const hasTT = !!((mVis.ttMesh && this.meshes[mVis.ttMesh]) || (mVis.fallbackTtMesh && this.meshes[mVis.fallbackTtMesh]));
           const zOff = hasTT ? 0.0 : (mVis.arrayKind === 'spear' || mVis.arrayKind === 'staff' ? 0.02 : 0.14);
           trsMat4(this._localMat, 0, 0, zOff, 0.7071068, 0, 0, 0.7071068, handSc, handSc, handSc);
           mulMat4(this._weapMat, this._weapWorld, this._localMat);
-          this.drawSculptedWeapon3D(mVis.arrayKind, this._weapMat, mVis, alpha, u.flashT > 0 ? 0.65 : (mVis.id === 'wp_iron_jian' ? 0.10 : 0.35));
+          const wpGlow = u.flashT > 0 ? 0.65 : ((mVis.id === 'wp_iron_jian' ? 0.10 : 0.24) + tier * 0.09 + Math.min(0.32, enhLv * 0.012));
+          this.drawSculptedWeapon3D(mVis.arrayKind, this._weapMat, mVis, alpha, wpGlow);
+          if (tier >= 4 && this.meshes._orb) {
+            const M = this._weapWorld;
+            const pulse = 0.075 + Math.sin(now * 6.5) * 0.02 + (tier >= 5 ? 0.025 : 0);
+            const ox = M[12] + M[8] * 0.62, oy = M[13] + M[9] * 0.62, oz = M[14] + M[10] * 0.62;
+            const oCol = mVis.haloCol || [1.0, 0.45, 0.25, 0.85];
+            this.setModelMatrix(ox, oy, oz, 0, pulse, pulse, pulse, 0, 0);
+            this.drawCharMesh('_orb', this.matModel, '', [oCol[0], oCol[1], oCol[2], 0.82 * alpha], 1, 1, 0.95, 1, false, false);
+          }
         } else if (activeWeaponMesh.startsWith('TT_Wp_') && this.meshes[activeWeaponMesh]) {
           const isPole = activeWeaponMesh.includes('Spear') || activeWeaponMesh.includes('Staff') || activeWeaponMesh.includes('Banner');
           const hSc = isPole ? 0.54 : 0.48;
@@ -4994,6 +5018,33 @@ class MurimRenderer3D {
 
   renderUnitCosmetics3D(u, yOff, groundY, now, game) {
     const cos = (u.isMaster && game && game.state && game.state.cosmetics) ? game.state.cosmetics : (u.cosmetics || null);
+    const mVis = (u.isMaster && game && game.getEquippedWeaponVisual && !u.dead) ? game.getEquippedWeaponVisual() : null;
+    const wpTier = mVis ? (mVis.gradeTier || 1) : 1;
+    const wpEnh = mVis ? (mVis.enhLv || 0) : 0;
+
+    // 0) Thần Binh Khí Vận 3D (Weapon Grade & Enhancement Aura + Orbiting Embers on Master)
+    if (mVis && (wpTier >= 3 || wpEnh >= 10) && this.meshes._haloRing) {
+      const baseRgb = mVis.haloCol || [1.0, 0.78, 0.30, 0.60];
+      const wRingCol = wpTier >= 5
+        ? [1.0, 0.34, 0.22, 0.64]
+        : (wpTier === 4 ? [0.28, 0.92, 1.0, 0.56] : [baseRgb[0], baseRgb[1], baseRgb[2], 0.44]);
+      const ringSc = wpTier >= 5 ? 1.72 : (wpTier === 4 ? 1.56 : 1.38);
+      this.setModelMatrix(u.x, groundY + 0.13, u.z, -now * (wpTier >= 5 ? 2.4 : 1.7), ringSc, ringSc, ringSc, Math.PI * 0.5, 0);
+      this.drawCharMesh('_haloRing', this.matModel, '', wRingCol, 1, 1, 0.78, 1, false, false);
+      if (wpTier >= 4 && this.meshes._orb) {
+        const orbCount = wpTier >= 5 ? 3 : 2;
+        const orbCol = wpTier >= 5 ? [1.0, 0.72, 0.24, 0.92] : [0.36, 0.96, 1.0, 0.88];
+        const orbRad = wpTier >= 5 ? 1.06 : 0.92;
+        for (let k = 0; k < orbCount; k++) {
+          const ang = -now * (wpTier >= 5 ? 3.2 : 2.5) + (k * Math.PI * 2) / orbCount;
+          const oy = groundY + 0.76 + Math.sin(now * 4.5 + k * 2.1) * 0.14;
+          const osc = wpTier >= 5 ? 0.125 : 0.105;
+          this.setModelMatrix(u.x + Math.cos(ang) * orbRad, oy, u.z + Math.sin(ang) * orbRad, 0, osc, osc, osc);
+          this.drawCharMesh('_orb', this.matModel, '', orbCol, 1, 1, 0.95, 1, false, false);
+        }
+      }
+    }
+
     if (!cos) return;
     const def = window.COSMETICS_DEF;
     if (!def) return;

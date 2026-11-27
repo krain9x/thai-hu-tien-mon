@@ -910,7 +910,14 @@
       const isEq = eq[sel.slot] === sel.id;
       const statsCur = engine.getEquipmentItemStats(sel.id, Math.max(1, selLv));
       const cost = engine.getGearCost(sel.id, selLv > 0);
-      const canAfford = st.coin >= cost.coin && (st.herb || 0) >= cost.herb && (st.core || 0) >= cost.core && (st.essence || 0) >= (cost.essence || 0);
+      const reqInfo = (selLv === 0 && engine.getGearForgeReq) ? engine.getGearForgeReq(sel.id) : { unlocked: true, checks: [] };
+      const canAfford = st.coin >= cost.coin
+        && (st.herb || 0) >= cost.herb
+        && (st.core || 0) >= cost.core
+        && (st.essence || 0) >= (cost.essence || 0)
+        && (st.chaosShard || 0) >= (cost.chaosShard || 0)
+        && (st.pill || 0) >= (cost.pill || 0);
+      const canForge = selLv === 0 ? (reqInfo.unlocked && canAfford) : canAfford;
       const subPool = window.GEAR_SUBSTAT_POOL || [];
       const gemDefs = window.GEMS_DEF || [];
       const gradeCfg = (window.GEAR_GRADES_CFG && window.GEAR_GRADES_CFG[sel.grade]) || { sockets: 2 };
@@ -946,7 +953,8 @@
             <span><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> <b>${fmt(st.coin)}</b></span>
             <span><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> <b>${fmt(st.herb || 0)}</b></span>
             <span><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> <b>${fmt(st.core || 0)}</b></span>
-            <span title="Tinh Thạch Luyện Khí (đập +16..30 & Tẩy Luyện)">💠 <b>${fmt(st.essence || 0)} Tinh Thạch</b></span>
+            <span title="Tinh Thạch Luyện Khí (đập trang bị cao cấp & +16..30)">💠 <b>${fmt(st.essence || 0)} Tinh Thạch</b></span>
+            <span title="Hỗn Độn Nguyên Tinh (rơi từ Boss Chương 20+, Tháp Tầng 10+, Bí Cảnh Lò Rèn 8+)">🌀 <b>${fmt(st.chaosShard || 0)} Nguyên Tinh</b></span>
             ${smithyLv > 0 ? `<span style="color:#1b6b45;font-weight:900;">Luyện Khí Lv.${smithyLv} (-${Math.min(55, smithyLv * 4)}%)</span>` : ''}
           </div>
           <div class="tm-eq-slots-bar" style="grid-template-columns:repeat(3,1fr);">
@@ -1020,6 +1028,11 @@
               </div>
             </div>
             <p style="font-size:12.5px;line-height:1.45;color:var(--ink-mid);margin:0 0 8px;">${sel.desc}</p>
+            ${sel.passive ? `<div class="tm-stat-box" style="margin-bottom:6px;background:rgba(128,45,26,0.08);border:1px solid ${sel.gradeCol}55;border-radius:8px;padding:7px 9px;">
+              <div style="font-size:11.5px;font-weight:900;color:${sel.gradeCol};">⚡ Thần Thông Vũ Khí: ${sel.passive.name}</div>
+              <div style="font-size:12px;line-height:1.42;color:var(--ink-dark);margin-top:2px;">${sel.passive.desc}</div>
+              ${sel.passive.vfxTag ? `<div style="font-size:11px;color:#8a4f16;margin-top:3px;font-weight:700;">✨ Hiệu ứng 3D: ${sel.passive.vfxTag}</div>` : ''}
+            </div>` : ''}
             <div class="tm-stat-box">
               <div style="font-size:11px;color:var(--ink-soft);font-weight:800;">CHỈ SỐ CƠ BẢN ${selLv > 0 ? `(+${selLv}/30)` : '(+1)'}</div>
               <div style="font-size:13px;font-weight:900;color:var(--jade-dark);margin-top:2px;">${statLine(statsCur)}</div>
@@ -1058,6 +1071,11 @@
                 </div>
               ` : ''}
             </div>
+            ${selLv === 0 && reqInfo.checks && reqInfo.checks.length ? `<div class="tm-stat-box" style="margin-top:6px;padding:7px 9px;border-radius:8px;background:${reqInfo.unlocked ? 'rgba(27,107,69,0.07)' : 'rgba(164,34,34,0.08)'};border:1px solid ${reqInfo.unlocked ? '#1b6b4544' : '#a4222244'};">
+              <div style="font-size:11px;font-weight:900;color:${reqInfo.unlocked ? '#1b6b45' : '#a42222'};margin-bottom:3px;">${reqInfo.unlocked ? '🔓 ĐỦ ĐIỀU KIỆN KHAI LÒ' : '🔒 ĐIỀU KIỆN KHAI LÒ CHƯA ĐẠT'}</div>
+              ${reqInfo.checks.map(c => `<div style="font-size:11.5px;line-height:1.35;color:${c.ok ? '#1b6b45' : '#9c1c1c'};">${c.ok ? '✓' : '✗'} ${c.text || c.label || ''}</div>`).join('')}
+              ${cost.chaosShard ? `<div style="font-size:10.8px;color:var(--ink-soft);margin-top:3px;">Nguồn 🌀 Nguyên Tinh: Boss Ải 20+, Tháp Tầng 10+, Bí Cảnh Lò Rèn 8+.</div>` : ''}
+            </div>` : ''}
             ${selLv < 30 ? `<div class="tm-cost-box" style="margin-top:6px;">
               <div style="font-size:11px;color:var(--ink-soft);font-weight:800;margin-bottom:4px;">NGUYÊN LIỆU ${selLv > 0 ? `CƯỜNG HÓA +${selLv + 1}` : 'KHAI LÒ RÈN'}</div>
               <div class="tm-cost-pills">
@@ -1065,13 +1083,15 @@
                 <span class="${(st.herb || 0) >= cost.herb ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> ${cost.herb}</span>
                 <span class="${(st.core || 0) >= cost.core ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> ${cost.core}</span>
                 ${cost.essence ? `<span class="${(st.essence || 0) >= cost.essence ? 'ok' : 'no'}">💠 ${cost.essence}</span>` : ''}
+                ${cost.pill ? `<span class="${(st.pill || 0) >= cost.pill ? 'ok' : 'no'}">💊 ${cost.pill}</span>` : ''}
+                ${cost.chaosShard ? `<span class="${(st.chaosShard || 0) >= cost.chaosShard ? 'ok' : 'no'}">🌀 ${cost.chaosShard} Nguyên Tinh</span>` : ''}
               </div>
             </div>` : '<div class="tm-stat-box"><b>Đã đạt cảnh giới Cường Hóa tối đa (+30)!</b></div>'}
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
-            ${selLv === 0 ? `<button class="btn-wuxia gold" id="btn-forge-gear" style="flex:1;" ${canAfford ? '' : 'disabled'}>Rèn & Đeo Ngay!</button>` : `
+            ${selLv === 0 ? `<button class="btn-wuxia gold" id="btn-forge-gear" style="flex:1;" ${canForge ? '' : 'disabled'}>${reqInfo.unlocked ? 'Rèn & Đeo Ngay!' : 'Chưa Đủ Điều Kiện Rèn'}</button>` : `
               ${!isEq ? `<button class="btn-wuxia jade" id="btn-equip-gear" style="flex:1;">Trang Bị</button>` : `<button class="btn-wuxia" disabled style="opacity:0.75;">Đang Đeo</button>`}
-              ${selLv < 30 ? `<button class="btn-wuxia gold" id="btn-forge-gear" style="flex:1;" ${canAfford ? '' : 'disabled'}>Đập +${selLv + 1}</button>` : ''}
+              ${selLv < 30 ? `<button class="btn-wuxia gold" id="btn-forge-gear" style="flex:1;" ${canForge ? '' : 'disabled'}>Đập +${selLv + 1}</button>` : ''}
               ${!isEq && sel.id !== 'wp_iron_jian' ? `<button class="btn-wuxia crimson" id="btn-salvage-gear" style="padding:6px 10px;">♻ Phân Giải</button>` : ''}
             `}
           </div>

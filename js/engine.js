@@ -341,6 +341,7 @@ class MurimEngine {
       discipleBond: {},
       lastSaveAt: Date.now(),
       essence: 24,
+      chaosShard: 0,
       gearOwned: { wp_iron_jian: 1 }, // itemId -> enhanceLv (1..30)
       gearEquipped: { weapon: 'wp_iron_jian', helm: null, armor: null, jade: null, ring: null, boots: null },
       gearSubstats: {}, // itemId -> [{ key, val, grade, locked }]
@@ -464,6 +465,7 @@ class MurimEngine {
             if (this.state.gearEquipped[sl] === undefined) this.state.gearEquipped[sl] = null;
           }
           if (typeof this.state.essence !== 'number') this.state.essence = 24;
+          if (typeof this.state.chaosShard !== 'number') this.state.chaosShard = 0;
           if (!this.state.gearSubstats) this.state.gearSubstats = {};
           if (!this.state.gearSockets) this.state.gearSockets = {};
           if (!this.state.gems) this.state.gems = { kim: [2, 0, 0, 0, 0], moc: [2, 0, 0, 0, 0], thuy: [1, 0, 0, 0, 0], hoa: [1, 0, 0, 0, 0], tho: [1, 0, 0, 0, 0] };
@@ -1800,12 +1802,14 @@ class MurimEngine {
     const tier = ((window.GEAR_GRADES_CFG && window.GEAR_GRADES_CFG[def.grade]) || { tier: 1 }).tier || 0;
     const essGain = (12 + tier * 14) + (lv - 1) * (4 + tier * 2);
     const coreGain = 3 + tier * 3 + Math.floor(lv / 2);
+    const chaosGain = tier >= 5 ? 3 : (tier === 4 ? 1 : 0);
     delete this.state.gearOwned[itemId];
     if (this.state.gearSubstats) delete this.state.gearSubstats[itemId];
     this.state.essence = (this.state.essence || 0) + essGain;
     this.state.core = (this.state.core || 0) + coreGain;
+    if (chaosGain > 0) this.state.chaosShard = (this.state.chaosShard || 0) + chaosGain;
     this.audio.playSfx('collect');
-    this.toast(`♻ Phân giải ${def.name} +${lv}: nhận +${essGain} Tinh Thạch & +${coreGain} Yêu Đan!`);
+    this.toast(`♻ Phân giải ${def.name} +${lv}: nhận +${essGain} Tinh Thạch, +${coreGain} Yêu Đan${chaosGain ? `, +${chaosGain} Hỗn Độn Nguyên Tinh` : ''}!`);
     this.saveState();
     if (this.onUiDirty) this.onUiDirty();
     return true;
@@ -1814,9 +1818,11 @@ class MurimEngine {
   grantRandomGearDrop(maxTier = 3, sourceLabel = 'Chiến Lợi Phẩm') {
     if (!this.state.gearOwned) this.state.gearOwned = { wp_iron_jian: 1 };
     const cfg = window.GEAR_GRADES_CFG || {};
+    // Cap random drops at Tiên Phẩm (tier 4); Hồng Mông (tier 5) must be earned & forged!
+    const effCap = Math.min(4, maxTier);
     const pool = EQUIPMENT_DEF.filter(e => {
       const t = (cfg[e.grade] && cfg[e.grade].tier) || 0;
-      return t >= 1 && t <= maxTier;
+      return t >= 1 && t <= effCap;
     });
     if (!pool.length) return '';
     const unowned = pool.filter(e => !this.state.gearOwned[e.id]);
@@ -1910,11 +1916,18 @@ class MurimEngine {
   getEquippedWeaponVisual() {
     const wid = (this.state && this.state.gearEquipped && this.state.gearEquipped.weapon) || 'wp_iron_jian';
     const def = EQUIPMENT_DEF.find(e => e.id === wid && e.slot === 'weapon') || EQUIPMENT_DEF[0];
+    const cfg = (window.GEAR_GRADES_CFG && window.GEAR_GRADES_CFG[def.grade]) || { tier: 0 };
+    const enhLv = (this.state && this.state.gearOwned && this.state.gearOwned[def.id]) || 1;
     return {
       id: def.id,
       name: def.name,
+      grade: def.grade,
+      gradeTier: cfg.tier || 0,
+      enhLv,
+      passive: def.passive || null,
       mesh: def.mesh || 'Weapon_Jian',
       ttMesh: def.ttMesh || 'TT_Wp_IronJian',
+      fallbackTtMesh: def.fallbackTtMesh || '',
       isCustomSword: !!def.isCustomSword,
       arrayKind: def.arrayKind || 'customSword',
       animStyle: def.animStyle || 'sword',
@@ -1925,17 +1938,51 @@ class MurimEngine {
     };
   }
 
+  getGearForgeReq(itemId) {
+    const def = EQUIPMENT_DEF.find(e => e.id === itemId);
+    if (!def) return { unlocked: false, checks: [] };
+    const st = this.state || {};
+    const tier = ((window.GEAR_GRADES_CFG && window.GEAR_GRADES_CFG[def.grade]) || { tier: 0 }).tier || 0;
+    const realmIdx = st.realmIdx || 0;
+    const maxStage = st.maxStage || 1;
+    const towerFl = st.towerFloor || 1;
+    const checks = [];
+    const tierRules = [
+      null,
+      { minRealm: 1, realmName: 'Luyện Khí', minStage: 4,  minTower: 0 },
+      { minRealm: 2, realmName: 'Trúc Cơ',   minStage: 11, minTower: 0 },
+      { minRealm: 3, realmName: 'Kim Đan',   minStage: 21, minTower: 6 },
+      { minRealm: 4, realmName: 'Nguyên Anh',minStage: 31, minTower: 12 },
+      { minRealm: 5, realmName: 'Hóa Thần',  minStage: 41, minTower: 18 }
+    ];
+    const r = tierRules[tier];
+    if (r) {
+      const okProg = realmIdx >= r.minRealm || maxStage >= r.minStage || (r.minTower > 0 && towerFl >= r.minTower);
+      const twTxt = r.minTower > 0 ? ` hoặc Tháp ${r.minTower}` : '';
+      checks.push({ ok: okProg, text: `Đạt ${r.realmName} (hoặc Ải ${r.minStage}${twTxt})` });
+    }
+    if (def.reqGearId) {
+      const reqDef = EQUIPMENT_DEF.find(e => e.id === def.reqGearId);
+      const hasPre = !!(st.gearOwned && st.gearOwned[def.reqGearId] > 0);
+      checks.push({ ok: hasPre, text: `Đã rèn phôi: ${reqDef ? reqDef.name : def.reqGearId}` });
+    }
+    return { unlocked: checks.every(c => c.ok), checks };
+  }
+
   getGearCost(itemId, isUpgrade = false) {
     const def = EQUIPMENT_DEF.find(e => e.id === itemId);
-    if (!def) return { coin: 0, herb: 0, core: 0, essence: 0 };
+    if (!def) return { coin: 0, herb: 0, core: 0, essence: 0, chaosShard: 0, pill: 0 };
     const smithyLv = (this.state.halls && this.state.halls.smithy && this.state.halls.smithy.lv) || 0;
     const disc = Math.max(0.45, 1 - smithyLv * 0.04); // Luyện Khí Đường giảm 4%/cấp!
+    const tier = ((window.GEAR_GRADES_CFG && window.GEAR_GRADES_CFG[def.grade]) || { tier: 0 }).tier || 0;
     if (!isUpgrade) {
       return {
         coin: Math.round((def.cost.coin || 0) * disc),
         herb: Math.max(def.cost.herb ? 1 : 0, Math.round((def.cost.herb || 0) * disc)),
         core: Math.max(def.cost.core ? 1 : 0, Math.round((def.cost.core || 0) * disc)),
-        essence: 0
+        essence: Math.round((def.cost.essence || 0) * (tier >= 4 ? Math.max(0.75, disc) : disc)),
+        chaosShard: def.cost.chaosShard || 0,
+        pill: def.cost.pill || 0
       };
     }
     const lv = (this.state.gearOwned && this.state.gearOwned[itemId]) || 1;
@@ -1944,7 +1991,9 @@ class MurimEngine {
       coin: Math.round(baseCoin * (1 + lv * 0.42) * disc),
       herb: Math.max(2, Math.round((3 + lv * 2) * disc)),
       core: Math.max(2, Math.round((2 + lv * 2) * disc)),
-      essence: lv >= 15 ? (lv - 13) * 4 : 0
+      essence: lv >= 15 ? (lv - 13) * 4 : (tier >= 4 ? lv * 2 : 0),
+      chaosShard: (tier >= 5 && lv >= 22 && (lv % 3 === 0)) ? 1 : 0,
+      pill: 0
     };
   }
 
@@ -1959,9 +2008,20 @@ class MurimEngine {
       return false;
     }
     const isUp = curLv > 0;
+    if (!isUp) {
+      const reqInfo = this.getGearForgeReq(itemId);
+      if (!reqInfo.unlocked) {
+        const miss = reqInfo.checks.find(x => !x.ok);
+        this.toast(`🔒 Chưa đủ điều kiện khai lò rèn ${def.name}: ${miss ? miss.text : ''}`);
+        this.audio.playSfx('ui_deny');
+        return false;
+      }
+    }
     const cost = this.getGearCost(itemId, isUp);
-    if (this.state.coin < cost.coin || (this.state.herb || 0) < cost.herb || (this.state.core || 0) < cost.core || (this.state.essence || 0) < (cost.essence || 0)) {
-      this.toast(`Thiếu nguyên liệu luyện khí! Cần ${cost.coin} Linh Thạch, ${cost.herb} Linh Thảo, ${cost.core} Yêu Đan${cost.essence ? `, ${cost.essence} Tinh Thạch` : ''}.`);
+    if (this.state.coin < cost.coin || (this.state.herb || 0) < cost.herb || (this.state.core || 0) < cost.core
+        || (this.state.essence || 0) < (cost.essence || 0) || (this.state.chaosShard || 0) < (cost.chaosShard || 0)
+        || (this.state.pill || 0) < (cost.pill || 0)) {
+      this.toast(`Thiếu nguyên liệu! Cần ${cost.coin} Linh Thạch, ${cost.herb} Thảo, ${cost.core} Yêu Đan${cost.essence ? `, ${cost.essence} Tinh Thạch` : ''}${cost.chaosShard ? `, ${cost.chaosShard} Hỗn Độn Nguyên Tinh` : ''}${cost.pill ? `, ${cost.pill} Đan Đột Phá` : ''}.`);
       this.audio.playSfx('ui_deny');
       return false;
     }
@@ -1969,6 +2029,8 @@ class MurimEngine {
     this.state.herb -= cost.herb;
     this.state.core -= cost.core;
     if (cost.essence) this.state.essence -= cost.essence;
+    if (cost.chaosShard) this.state.chaosShard -= cost.chaosShard;
+    if (cost.pill) this.state.pill -= cost.pill;
     this.state.gearOwned[itemId] = curLv + 1;
     if (!isUp) {
       this.rollSubstatsForGear(itemId, true);
@@ -1979,7 +2041,7 @@ class MurimEngine {
     this.audio.playSfx(isUp ? 'levelup' : 'recruit_gold');
     this.toast(isUp
       ? `🔨 Cường hóa thành công ${def.name} +${this.state.gearOwned[itemId]}!`
-      : `⚔ Đã rèn & trang bị ${def.name}! Vũ khí 3D & dàn Phi Binh đã đổi hình thái!`);
+      : `⚔ Khai lò thành công ${def.name}! Thần thông & hiệu ứng 3D đã kích hoạt!`);
     this.saveState();
     if (this.onUiDirty) this.onUiDirty();
     return true;
@@ -4087,6 +4149,10 @@ class MurimEngine {
         const lsHeal = Math.max(1, Math.round(dmg * ms.gearTotals.lifesteal));
         attacker.hp = Math.min(attacker.maxHp, attacker.hp + lsHeal);
       }
+      // Signature Weapon Passive Procs (unique mechanics per weapon!)
+      if (attacker.isMaster && sourceTag !== 'weaponProc' && !this._inWeaponProc) {
+        this.triggerWeaponPassive(attacker, target, dmg, isCrit, !sourceTag);
+      }
       // Live DPS Meter Breakdown!
       if (c && c.dpsStats) {
         if (sourceTag === 'swordArray') c.dpsStats.swordArray += dmg;
@@ -4136,6 +4202,140 @@ class MurimEngine {
         this.state.injured[target.id] = true;
         this.toast(`⚠ Đệ tử ${target.name} bị trọng thương — có thể trị thương bằng Đan Dược!`);
       }
+    }
+  }
+
+  triggerWeaponPassive(m, target, dmg, isCrit, isPrimary) {
+    const c = this.combat;
+    if (!c || !m || m.dead || !target) return;
+    const wid = (this.state && this.state.gearEquipped && this.state.gearEquipped.weapon) || 'wp_iron_jian';
+    const r = this.renderer;
+    const foes = (c.foes || []).filter(f => !f.dead);
+    this._inWeaponProc = true;
+    try {
+      m._wpHitCnt = (m._wpHitCnt || 0) + 1;
+      if (wid === 'wp_iron_jian') {
+        if (isPrimary && Math.random() < 0.20) {
+          this.state.qi = Math.min(this.state.qiMax || 100, (this.state.qi || 0) + 4);
+        }
+      } else if (wid === 'wp_frost_jian') {
+        if (target.statuses && target.statuses.slow && target.statuses.slow.t > 0 && !target.dead) {
+          this.dealDamage(m, target, 0.35, 0, false, 'weaponProc');
+        }
+        if (Math.random() < 0.32 && !target.dead) {
+          target.statuses.slow = { t: 2.2, stacks: 1 };
+          target.hasStatus = true;
+          if (r) {
+            r.pushVfx3D({ mesh: 'ring', style: 1, x: target.x, y: 0.14, z: target.z, s0: 0.25, s1: 1.8, color: '#4be8ff', dur: 0.32 });
+            r.addPopup(target.x, 1.35, target.z, '❄ HÀN BĂNG!', '#6ceeff', 0.92);
+          }
+        }
+      } else if (wid === 'wp_flame_dao') {
+        if (!target.dead) {
+          target.statuses.bleed = { t: 3.0, stacks: Math.min(5, ((target.statuses.bleed && target.statuses.bleed.stacks) || 0) + 1) };
+          target.hasStatus = true;
+        }
+        if (isCrit) {
+          if (r) {
+            r.pushVfx3D({ mesh: 'ring', style: 1, x: target.x, y: 0.14, z: target.z, s0: 0.4, s1: 3.1, color: '#ff5a24', dur: 0.38 });
+            r.addPopup(target.x, 1.45, target.z, '🔥 HỎA LONG BẠO!', '#ff7638', 1.05);
+          }
+          for (const f of foes) {
+            if (Math.hypot(f.x - target.x, f.z - target.z) <= 2.8) {
+              this.dealDamage(m, f, 0.80, 0.15, true, 'weaponProc');
+            }
+          }
+        }
+      } else if (wid === 'wp_jade_staff') {
+        if (m._wpHitCnt % 4 === 0) {
+          const sh = Math.round(m.maxHp * 0.12);
+          m.shieldHp = Math.min(Math.round(m.maxHp * 0.55), (m.shieldHp || 0) + sh);
+          if (r) {
+            r.pushVfx3D({ mesh: 'ring', style: 1, x: m.x, y: 0.12, z: m.z, s0: 0.5, s1: 3.6, color: '#ffd858', dur: 0.42 });
+            if (r.addGroundCrack) r.addGroundCrack(target.x, target.z, '#ffd858', 2.4);
+            r.addPopup(m.x, 1.55, m.z, `☸ KIM CANG CHẤN +${sh}`, '#ffe066', 1.08);
+          }
+          for (const f of foes) {
+            if (Math.hypot(f.x - target.x, f.z - target.z) <= 3.2) {
+              f.statuses.daze = { t: 0.9, stacks: 1 };
+              f.hasStatus = true;
+              this.dealDamage(m, f, 1.15, 0.15, true, 'weaponProc');
+            }
+          }
+        }
+      } else if (wid === 'wp_thunder_spear') {
+        if (Math.random() < 0.30) {
+          for (let s = 0; s < 4; s++) {
+            if (m.skillCds && m.skillCds[s] > 0) m.skillCds[s] = Math.max(0, m.skillCds[s] - 0.35);
+          }
+          const chain = foes.slice().sort((a, b) => Math.hypot(a.x - target.x, a.z - target.z) - Math.hypot(b.x - target.x, b.z - target.z)).slice(0, 3);
+          for (const cf of chain) {
+            if (r && r.spawnLightningBolt) r.spawnLightningBolt(cf.x, cf.z, '#b47cff', 1);
+            this.dealDamage(m, cf, 1.05, 0.20, true, 'weaponProc');
+          }
+          if (r) r.addPopup(target.x, 1.55, target.z, '⚡ CỬU TIÊU THIÊN LÔI!', '#c69cff', 1.08);
+        }
+      } else if (wid === 'wp_immortal_jian') {
+        if (m._wpHitCnt % 3 === 0) {
+          this.state.qi = Math.min(this.state.qiMax || 100, (this.state.qi || 0) + 6);
+          if (r && r.spawnFlyingSwordBarrage) r.spawnFlyingSwordBarrage(target.x, target.z, 3, '#48ffea', 2.4);
+          for (const f of foes.slice(0, 3)) {
+            if (!f.isBoss && !f.dead && Math.hypot(f.x - target.x, f.z - target.z) <= 3.2 || f === target) {
+              this.dealDamage(m, f, 0.75, 0.25, true, 'weaponProc');
+            }
+          }
+          if (r) r.addPopup(target.x, 1.6, target.z, '⚔ TRU TIÊN VẠN KIẾM!', '#58ffe8', 1.12);
+        }
+      } else if (wid === 'wp_chaos_sword') {
+        if (isCrit && !target.isBoss && !target.isRemotePlayer && !target.dead && (target.hp / Math.max(1, target.maxHp)) < 0.20) {
+          target.hp = 0;
+          target.dead = true;
+          target.corpseT = 0;
+          if (r) r.addPopup(target.x, 1.75, target.z, '💀 KHAI THIÊN TRẢM DIỆT!', '#ff4258', 1.25);
+          this.onFoeKilled(target);
+        }
+        if (m._wpHitCnt % 3 === 0) {
+          if (r) {
+            r.triggerShake && r.triggerShake(0.32, 0.22);
+            r.pushVfx3D({ mesh: 'pillar', style: 2, x: target.x, y: 0.05, z: target.z, s0: 0.65, s1: 1.5, sy: 6.0, color: '#ff4258', dur: 0.45 });
+            r.addSlashFx && r.addSlashFx(m.x, m.z, m.facing || 0, 3.8, '#ff4258', 'arc', 0.34, 0.12);
+            r.addPopup(target.x, 1.68, target.z, '🌟 HỒNG MÔNG PHÁ THIÊN!', '#ff5668', 1.22);
+          }
+          for (const f of foes) {
+            if (Math.hypot(f.x - target.x, f.z - target.z) <= 3.6) {
+              this.dealDamage(m, f, 2.0, 1.0, true, 'weaponProc');
+            }
+          }
+        }
+      } else if (wid === 'wp_chaos_dao') {
+        if (m.hp < m.maxHp) {
+          const heal = Math.max(1, Math.round(dmg * 0.08));
+          m.hp = Math.min(m.maxHp, m.hp + heal);
+        }
+        if (!target.dead) {
+          target.statuses.break = { t: 4.0, stacks: 2 };
+          target.hasStatus = true;
+        }
+        const lowHp = (m.hp / Math.max(1, m.maxHp)) < 0.60;
+        const trig = lowHp ? (m._wpHitCnt % 3 === 0) : (m._wpHitCnt % 4 === 0);
+        if (trig) {
+          const bossMul = (target.isBoss || target.isLeader) ? 1.45 : 1.0;
+          if (r) {
+            r.triggerShake && r.triggerShake(0.40, 0.26);
+            r.addSlashFx && r.addSlashFx(m.x, m.z, m.facing || 0, 4.2, '#ff2a3c', 'arc', 0.36, -0.35);
+            r.pushVfx3D({ mesh: 'ring', style: 1, x: target.x, y: 0.12, z: target.z, s0: 0.5, s1: 4.2, color: '#ff2a3c', dur: 0.45 });
+            if (r.addGroundCrack) r.addGroundCrack(target.x, target.z, '#ff3648', 3.0);
+            r.addPopup(target.x, 1.72, target.z, '🩸 MA ĐẾ HUYẾT NGUYỆT!', '#ff4058', 1.24);
+          }
+          for (const f of foes) {
+            if (Math.hypot(f.x - target.x, f.z - target.z) <= 3.6) {
+              this.dealDamage(m, f, 2.4 * bossMul, 0.35, true, 'weaponProc');
+            }
+          }
+        }
+      }
+    } finally {
+      this._inWeaponProc = false;
     }
   }
 
@@ -4222,10 +4422,15 @@ class MurimEngine {
         if (!c.mates || c.mates.length === 0) {
           this.state.featStats.soloWins = (this.state.featStats.soloWins || 0) + 1;
         }
-        // Chance to drop Tier-matched Equipment & Spirit Gem directly from Chapter Boss!
-        const dropTier = Math.min(5, 1 + Math.floor(c.stage / 12));
+        // Chance to drop Tier-matched Equipment, Essence & Hỗn Độn Nguyên Tinh from Chapter Boss!
+        const dropTier = Math.min(4, 1 + Math.floor(c.stage / 12));
         if (Math.random() < 0.72) {
           this.grantRandomGearDrop(dropTier, '🎁 Chiến Lợi Phẩm Thủ Lĩnh');
+        }
+        if (c.stage >= 20) {
+          const csGain = c.stage >= 40 ? 2 : 1;
+          this.state.chaosShard = (this.state.chaosShard || 0) + csGain;
+          this.toast(`🔥 Thủ Lĩnh rơi +${csGain} Hỗn Độn Nguyên Tinh (dùng rèn Thần Binh Hồng Mông)!`);
         }
         this.completeCombatVictory();
         return;
@@ -4470,10 +4675,16 @@ class MurimEngine {
         this.state.herb = (this.state.herb || 0) + herbG;
         this.state.core = (this.state.core || 0) + coreG;
         this.state.coin += coinG;
-        // High chance to drop Tier-matched Equipment & Spirit Gem directly from Luyện Khí Bí Cảnh!
-        const forgeTier = Math.min(5, 1 + Math.floor(lv / 4));
+        // High chance to drop Tier-matched Equipment, Essence & Chaos Shard from Luyện Khí Bí Cảnh!
+        const forgeTier = Math.min(4, 1 + Math.floor(lv / 4));
         const dropMsg = Math.random() < 0.80 ? (' · ' + this.grantRandomGearDrop(forgeTier, '🔥 Lò Luyện Bí Cảnh')) : '';
-        this.toast(`🔥 Hoàn thành Luyện Khí Bí Cảnh Bậc ${lv}: +${herbG} Linh Thảo, +${coreG} Yêu Đan, +${coinG.toLocaleString()} Linh Thạch${dropMsg}`);
+        let csMsg = '';
+        if (lv >= 8) {
+          const cs = lv >= 14 ? 2 : 1;
+          this.state.chaosShard = (this.state.chaosShard || 0) + cs;
+          csMsg = ` · +${cs} Hỗn Độn Nguyên Tinh`;
+        }
+        this.toast(`🔥 Hoàn thành Luyện Khí Bí Cảnh Bậc ${lv}: +${herbG} Linh Thảo, +${coreG} Yêu Đan, +${coinG.toLocaleString()} Linh Thạch${csMsg}${dropMsg}`);
       } else {
         this.state[dDef.res] += amt;
         this.toast(`Hoàn thành ${dDef.name}: +${amt.toLocaleString()}!`);
@@ -4489,10 +4700,16 @@ class MurimEngine {
       const jadeGain = isBossFl ? this.data.game.trial.tower.jadeBoss : this.data.game.trial.tower.jade;
       this.state.jade += jadeGain;
       this.state.scroll += this.data.game.trial.tower.scroll;
+      let towerExtra = '';
+      if (fl >= 10) {
+        const cs = isBossFl ? 2 : 1;
+        this.state.chaosShard = (this.state.chaosShard || 0) + cs;
+        towerExtra = `, +${cs} Hỗn Độn Nguyên Tinh`;
+      }
       this.state.towerFloor++;
       this.state.season.stats.tower++;
       if (this.state.guild) this.state.guild.borrowedId = null;
-      this.toast(`Vượt Thông Thiên Tháp tầng ${fl}: +${jadeGain} Tiên Ngọc, +2 Ngọc Giản!`);
+      this.toast(`Vượt Thông Thiên Tháp tầng ${fl}: +${jadeGain} Tiên Ngọc, +2 Ngọc Giản${towerExtra}!`);
       this.scheduleNextCombat(c, 'field', 1000);
     } else if (c.mode === 'jianghu') {
       if (!c.customOpts.isWander) {
@@ -5310,10 +5527,11 @@ class MurimEngine {
           m.facing = this.lerpAngle(m.facing || 0, Math.atan2(dx, dz), Math.min(1, dt * 16));
           m.moving = false;
           if (m.cd <= 0) {
-            m.cd = m.rate;
+            const wVis = this.getEquippedWeaponVisual();
+            const chaosHaste = (wVis.id === 'wp_chaos_sword' && ((this.state.qi || 0) / Math.max(1, this.state.qiMax || 100)) >= 0.45) ? 0.82 : 1.0;
+            m.cd = m.rate * chaosHaste;
             const stepIdx = m.comboIdx % 3;
             m.comboIdx++;
-            const wVis = this.getEquippedWeaponVisual();
             if (wVis.animStyle === 'dao') {
               m.animClip = stepIdx === 2 ? 'SaberCharged' : 'SaberSlash';
             } else if (wVis.animStyle === 'spear') {
