@@ -15,6 +15,19 @@ SERVER_DIR = Path(__file__).resolve().parent
 DB_PATH = SERVER_DIR / "tienmon_online.db"
 HOST = os.environ.get("TIENMON_HOST", "0.0.0.0")
 PORT = int(os.environ.get("TIENMON_PORT", "8089"))
+RESERVED_ADMIN_NAMES = {"admin", "administrator", "gm", "system", "mod", "moderator"}
+
+def safe_int(v, default=0):
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return default
+
+def safe_float(v, default=0.0):
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return default
 
 REALM_NAMES = [
     "Phàm Nhân", "Luyện Khí", "Trúc Cơ", "Kim Đan", "Nguyên Anh",
@@ -313,6 +326,19 @@ def init_db():
             "INSERT INTO world_boss (id, name, lv, hp, max_hp, respawn_at, dmg_board_json) VALUES (1, ?, 1, 2500000, 2500000, 0, '{}')",
             (WORLD_BOSS_POOL[0],)
         )
+    # Safe column migrations for ban / admin flag / payment txn dedupe
+    for ddl in (
+        "ALTER TABLE users ADD COLUMN banned INTEGER DEFAULT 0",
+        "ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0",
+        "ALTER TABLE topup_orders ADD COLUMN bank_txn_id TEXT DEFAULT ''"
+    ):
+        try:
+            cur.execute(ddl)
+        except sqlite3.OperationalError:
+            pass
+    cur.execute("UPDATE users SET is_admin=1 WHERE LOWER(username) IN ('krain9x', 'admin')")
+    cur.execute("DELETE FROM sessions WHERE expires_at < ?", (time.time(),))
+    DB.commit()
 
     # Seed realistic Xianxia rival cultivators & 3 starter Guilds + initial Auction items once
     if cur.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0:
@@ -494,11 +520,12 @@ def get_user_by_token(token: str):
         return None
     row = DB.execute("""
         SELECT u.id, u.username, u.sect_name, u.avatar, u.title, u.is_bot,
+               COALESCE(u.banned, 0) AS banned, COALESCE(u.is_admin, 0) AS is_admin,
                s.power, s.realm_idx, s.max_stage, s.tower_floor, s.arena_score, s.fame, s.rep, s.lap, s.snapshot_json
         FROM sessions sess
         JOIN users u ON u.id = sess.user_id
         LEFT JOIN saves s ON s.user_id = u.id
-        WHERE sess.token = ? AND sess.expires_at > ?
+        WHERE sess.token = ? AND sess.expires_at > ? AND COALESCE(u.banned, 0) = 0
     """, (token, time.time())).fetchone()
     return dict(row) if row else None
 
@@ -576,6 +603,8 @@ async def api_register(request: web.Request):
 
     if not username or len(username) < 3 or len(username) > 20 or not username.replace("_", "").isalnum():
         return web.json_response({"ok": False, "error": "Tên đạo hiệu dài 3–20 ký tự, chỉ gồm chữ/số/_!"}, status=400)
+    if username in RESERVED_ADMIN_NAMES:
+        return web.json_response({"ok": False, "error": "Tên đạo hiệu này được dành riêng cho hệ thống!"}, status=403)
     if len(password) < 4:
         return web.json_response({"ok": False, "error": "Mật khẩu tối thiểu 4 ký tự!"}, status=400)
     if DB.execute("SELECT 1 FROM users WHERE username=?", (username,)).fetchone():
@@ -583,10 +612,14 @@ async def api_register(request: web.Request):
 
     now = time.time()
     cur = DB.cursor()
-    cur.execute(
-        "INSERT INTO users (username, pass_hash, sect_name, title, is_bot, created_at, last_seen) VALUES (?, ?, ?, 'Tông Chủ Khai Phái', 0, ?, ?)",
-        (username, hash_password(password), sect_name[:28], now, now)
-    )
+    try:
+        cur.execute(
+            "INSERT INTO users (username, pass_hash, sect_name, title, is_bot, created_at, last_seen) VALUES (?, ?, ?, 'Tông Chủ Khai Phái', 0, ?, ?)",
+            (username, hash_password(password), sect_name[:28], now, now)
+        )
+    except sqlite3.IntegrityError:
+        DB.rollback()
+        return web.json_response({"ok": False, "error": "Đạo hiệu này đã tồn tại trên máy chủ!"}, status=409)
     uid = cur.lastrowid
     state_str = json.dumps(init_state, ensure_ascii=False) if isinstance(init_state, dict) else "{}"
     cur.execute(
@@ -611,6 +644,8 @@ async def api_login(request: web.Request):
     row = DB.execute("SELECT * FROM users WHERE username=? AND is_bot=0", (username,)).fetchone()
     if not row or not verify_password(password, row["pass_hash"]):
         return web.json_response({"ok": False, "error": "Sai tên đạo hiệu hoặc mật khẩu!"}, status=401)
+    if row["banned"]:
+        return web.json_response({"ok": False, "error": "Tài khoản này đã bị khóa bởi Thiên Đạo GM!"}, status=403)
     now = time.time()
     token = secrets.token_hex(32)
     DB.execute("INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)", (token, row["id"], now + 86400 * 30))
@@ -656,14 +691,16 @@ async def api_save_sync(request: web.Request):
 
     prev = DB.execute("SELECT realm_idx, arena_score FROM saves WHERE user_id=?", (user["id"],)).fetchone()
     prev_realm = prev["realm_idx"] if prev else 0
-    new_realm = int(st.get("realmIdx") or 0)
-    power = int(data.get("power") or snap.get("power") or 100)
-    max_stage = int(st.get("maxStage") or 1)
-    tower_floor = int(st.get("towerFloor") or 1)
-    arena_score = int(st.get("arenaScore") or (prev["arena_score"] if prev else 1000))
-    fame = int(st.get("fame") or 0)
-    rep = int(st.get("rep") or 0)
-    lap = int(st.get("lap") or 1)
+    prev_arena = prev["arena_score"] if prev else 1000
+    new_realm = max(0, safe_int(st.get("realmIdx"), 0))
+    power = max(1, safe_int(data.get("power") or snap.get("power"), 100))
+    max_stage = max(1, safe_int(st.get("maxStage"), 1))
+    tower_floor = max(1, safe_int(st.get("towerFloor"), 1))
+    client_arena = safe_int(st.get("arenaScore"), prev_arena)
+    arena_score = prev_arena if prev_arena != 1000 and client_arena == 1000 else max(prev_arena, client_arena)
+    fame = max(0, safe_int(st.get("fame"), 0))
+    rep = max(0, safe_int(st.get("rep"), 0))
+    lap = max(1, safe_int(st.get("lap"), 1))
     sect_name = str(data.get("sectName") or user["sect_name"]).strip()[:28]
 
     now = time.time()
@@ -900,10 +937,16 @@ async def api_friends_add(request: web.Request):
     if target["id"] == user["id"]:
         return web.json_response({"ok": False, "error": "Không thể tự kết bạn với chính mình!"}, status=400)
     now = time.time()
-    # Auto-accept if bot or if target already sent a request
+    # Auto-accept if bot or if target already sent a request (preserve last_gift_day!)
     if target["is_bot"] or DB.execute("SELECT 1 FROM friends WHERE user_id=? AND friend_id=?", (target["id"], user["id"])).fetchone():
-        DB.execute("INSERT OR REPLACE INTO friends (user_id, friend_id, status, created_at) VALUES (?, ?, 'accepted', ?)", (user["id"], target["id"], now))
-        DB.execute("INSERT OR REPLACE INTO friends (user_id, friend_id, status, created_at) VALUES (?, ?, 'accepted', ?)", (target["id"], user["id"], now))
+        DB.execute("""
+            INSERT INTO friends (user_id, friend_id, status, created_at) VALUES (?, ?, 'accepted', ?)
+            ON CONFLICT(user_id, friend_id) DO UPDATE SET status='accepted'
+        """, (user["id"], target["id"], now))
+        DB.execute("""
+            INSERT INTO friends (user_id, friend_id, status, created_at) VALUES (?, ?, 'accepted', ?)
+            ON CONFLICT(user_id, friend_id) DO UPDATE SET status='accepted'
+        """, (target["id"], user["id"], now))
         DB.commit()
         return web.json_response({"ok": True, "autoAccepted": True, "msg": f"Đã kết giao Đạo Hữu với {target['username']}!"})
     DB.execute("INSERT OR IGNORE INTO friends (user_id, friend_id, status, created_at) VALUES (?, ?, 'pending', ?)", (user["id"], target["id"], now))
@@ -915,10 +958,16 @@ async def api_friends_accept(request: web.Request):
     user = auth_user(request)
     if not user:
         return web.json_response({"ok": False, "error": "Unauthorized"}, status=401)
-    fid = int((await request.json()).get("friendId") or 0)
+    fid = safe_int((await request.json()).get("friendId"), 0)
+    pending = DB.execute("SELECT 1 FROM friends WHERE user_id=? AND friend_id=? AND status='pending'", (fid, user["id"])).fetchone()
+    if not pending:
+        return web.json_response({"ok": False, "error": "Không có lời mời kết bạn hợp lệ!"}, status=404)
     now = time.time()
     DB.execute("UPDATE friends SET status='accepted' WHERE user_id=? AND friend_id=?", (fid, user["id"]))
-    DB.execute("INSERT OR REPLACE INTO friends (user_id, friend_id, status, created_at) VALUES (?, ?, 'accepted', ?)", (user["id"], fid, now))
+    DB.execute("""
+        INSERT INTO friends (user_id, friend_id, status, created_at) VALUES (?, ?, 'accepted', ?)
+        ON CONFLICT(user_id, friend_id) DO UPDATE SET status='accepted'
+    """, (user["id"], fid, now))
     DB.commit()
     return web.json_response({"ok": True})
 
@@ -962,7 +1011,10 @@ async def api_mail_claim(request: web.Request):
     if mid == "all":
         rows = DB.execute("SELECT id, attachments_json FROM mails WHERE to_user_id=? AND claimed=0", (user["id"],)).fetchall()
     else:
-        rows = DB.execute("SELECT id, attachments_json FROM mails WHERE to_user_id=? AND id=? AND claimed=0", (user["id"], int(mid))).fetchall()
+        mid_int = safe_int(mid, -1)
+        if mid_int < 0:
+            return web.json_response({"ok": False, "error": "Invalid mailId"}, status=400)
+        rows = DB.execute("SELECT id, attachments_json FROM mails WHERE to_user_id=? AND id=? AND claimed=0", (user["id"], mid_int)).fetchall()
     total = {}
     for r in rows:
         att = json.loads(r["attachments_json"] or "{}")
@@ -1387,14 +1439,14 @@ async def ws_handler(request: web.Request):
                 await broadcast_presence()
 
             elif mtype == "plaza_move":
-                px = max(-14.0, min(14.0, float(data.get("x") or 0)))
-                pz = max(-14.0, min(14.0, float(data.get("z") or 0)))
-                pf = float(data.get("facing") or 0)
+                px = max(-14.0, min(14.0, safe_float(data.get("x"), 0.0)))
+                pz = max(-14.0, min(14.0, safe_float(data.get("z"), 0.0)))
+                pf = safe_float(data.get("facing"), 0.0)
                 PLAZA_POS[uid] = {"x": px, "z": pz, "facing": pf, "updated": time.time()}
                 await ws_broadcast({"type": "plaza_sync", "players": build_plaza_list()})
 
             elif mtype == "coop_create":
-                tier = max(1, min(3, int(data.get("tier") or 1)))
+                tier = max(1, min(3, safe_int(data.get("tier"), 1)))
                 tdef = COOP_TIERS[tier]
                 me = ONLINE_SOCKETS[uid]["user"]
                 # Leave any previous waiting room owned/joined
@@ -1484,7 +1536,7 @@ async def ws_handler(request: web.Request):
             elif mtype == "coop_state":
                 rid = str(data.get("roomId") or "")
                 rm = COOP_ROOMS.get(rid)
-                if not rm or rm["status"] != "fighting" or rm.get("ended"):
+                if not rm or rm["status"] != "fighting" or rm.get("ended") or uid not in rm["members"]:
                     continue
                 for mid in rm["members"]:
                     if mid != uid:
@@ -1497,9 +1549,9 @@ async def ws_handler(request: web.Request):
             elif mtype == "coop_hit":
                 rid = str(data.get("roomId") or "")
                 rm = COOP_ROOMS.get(rid)
-                if not rm or rm["status"] != "fighting" or rm.get("ended"):
+                if not rm or rm["status"] != "fighting" or rm.get("ended") or uid not in rm["members"]:
                     continue
-                dmg = max(0, min(rm["boss"]["maxHp"], int(data.get("dmg") or 0)))
+                dmg = max(0, min(rm["boss"]["maxHp"], safe_int(data.get("dmg"), 0)))
                 rm["boss"]["hp"] = max(0, rm["boss"]["hp"] - dmg)
                 rm["dmg"][uid] = rm["dmg"].get(uid, 0) + dmg
                 for mid in rm["members"]:
@@ -1533,7 +1585,7 @@ async def ws_handler(request: web.Request):
                     await broadcast_presence()
 
             elif mtype == "pk_invite":
-                tid = int(data.get("targetId") or 0)
+                tid = safe_int(data.get("targetId"), 0)
                 if tid == uid or tid not in ONLINE_SOCKETS:
                     await ws.send_json({"type": "toast", "msg": "Đạo Hữu này hiện không trực tuyến — hãy dùng Luận Kiếm Async!"})
                     continue
@@ -1551,13 +1603,15 @@ async def ws_handler(request: web.Request):
                 await ws.send_json({"type": "toast", "msg": f"⚔ Đã gửi Chiến Thư PK 1v1 tới {ONLINE_SOCKETS[tid]['user']['username']}!"})
 
             elif mtype == "pk_decline":
-                inv = PK_INVITES.pop(data.get("inviteId"), None)
-                if inv:
+                inv_key = str(data.get("inviteId") or "")
+                inv = PK_INVITES.pop(inv_key, None) if inv_key else None
+                if inv and inv.get("to_id") == uid:
                     await ws_send(inv["from_id"], {"type": "toast", "msg": f"❌ {ONLINE_SOCKETS[uid]['user']['username']} đã từ chối lời khiêu chiến 1v1."})
 
             elif mtype == "pk_accept":
-                inv = PK_INVITES.pop(data.get("inviteId"), None)
-                if not inv or inv["to_id"] != uid or inv["from_id"] not in ONLINE_SOCKETS:
+                inv_key = str(data.get("inviteId") or "")
+                inv = PK_INVITES.pop(inv_key, None) if inv_key else None
+                if not inv or inv["to_id"] != uid or inv["from_id"] not in ONLINE_SOCKETS or (time.time() - inv.get("created_at", 0)) > 90:
                     await ws.send_json({"type": "toast", "msg": "Chiến thư đã hết hạn!"})
                     continue
                 p1_id, p2_id = inv["from_id"], inv["to_id"]
@@ -1584,7 +1638,7 @@ async def ws_handler(request: web.Request):
 
             elif mtype == "pk_state":
                 room = PK_ROOMS.get(data.get("roomId"))
-                if not room or room["ended"]:
+                if not room or room["ended"] or uid not in (room["p1"], room["p2"]):
                     continue
                 opp_id = room["p2"] if room["p1"] == uid else room["p1"]
                 await ws_send(opp_id, {
@@ -1596,10 +1650,10 @@ async def ws_handler(request: web.Request):
 
             elif mtype == "pk_action":
                 room = PK_ROOMS.get(data.get("roomId"))
-                if not room or room["ended"]:
+                if not room or room["ended"] or uid not in (room["p1"], room["p2"]):
                     continue
                 opp_id = room["p2"] if room["p1"] == uid else room["p1"]
-                dmg = max(0, min(room["maxHp"][opp_id], int(data.get("dmg") or 0)))
+                dmg = max(0, min(room["maxHp"][opp_id], safe_int(data.get("dmg"), 0)))
                 room["hp"][opp_id] = max(0, room["hp"][opp_id] - dmg)
                 payload = {
                     "type": "pk_hit", "roomId": room["id"], "fromId": uid, "targetId": opp_id,
@@ -1638,15 +1692,21 @@ async def ws_handler(request: web.Request):
                     await broadcast_presence()
                     PK_ROOMS.pop(room["id"], None)
     finally:
-        PLAZA_POS.pop(uid, None)
-        for r_k, r_v in list(COOP_ROOMS.items()):
-            if uid in r_v["members"]:
-                r_v["members"] = [x for x in r_v["members"] if x != uid]
-                if not r_v["members"]:
-                    COOP_ROOMS.pop(r_k, None)
-                elif r_v["host_id"] == uid:
-                    r_v["host_id"] = r_v["members"][0]
         if ONLINE_SOCKETS.get(uid, {}).get("ws") is ws:
+            PLAZA_POS.pop(uid, None)
+            for pk_k, pk_r in list(PK_ROOMS.items()):
+                if not pk_r.get("ended") and uid in (pk_r["p1"], pk_r["p2"]):
+                    pk_r["ended"] = True
+                    opp_id = pk_r["p2"] if pk_r["p1"] == uid else pk_r["p1"]
+                    await ws_send(opp_id, {"type": "pk_end", "roomId": pk_r["id"], "win": True, "scoreDelta": 15, "honor": 20, "newScore": 1015})
+                    PK_ROOMS.pop(pk_k, None)
+            for r_k, r_v in list(COOP_ROOMS.items()):
+                if uid in r_v["members"]:
+                    r_v["members"] = [x for x in r_v["members"] if x != uid]
+                    if not r_v["members"]:
+                        COOP_ROOMS.pop(r_k, None)
+                    elif r_v["host_id"] == uid:
+                        r_v["host_id"] = r_v["members"][0]
             ONLINE_SOCKETS.pop(uid, None)
             await broadcast_presence()
             await ws_broadcast({"type": "plaza_sync", "players": build_plaza_list()})
@@ -1675,7 +1735,11 @@ def calc_vip_level(vip_exp: int) -> int:
             lv = t["lv"]
     return lv
 
-async def fulfill_topup_order(order_code: str):
+async def fulfill_topup_order(order_code: str, attach_rewards_in_mail: bool = False, bank_txn_id: str = ""):
+    if bank_txn_id:
+        dup = DB.execute("SELECT order_code FROM topup_orders WHERE bank_txn_id=? AND status='paid'", (bank_txn_id,)).fetchone()
+        if dup:
+            return None, "Mã giao dịch ngân hàng này đã được xử lý trước đó!"
     ord_row = DB.execute("SELECT * FROM topup_orders WHERE order_code=?", (order_code,)).fetchone()
     if not ord_row:
         return None, "Không tìm thấy mã đơn hàng!"
@@ -1688,6 +1752,8 @@ async def fulfill_topup_order(order_code: str):
     uid = ord_row["user_id"]
     b = ensure_billing(uid)
     first_packs = b["firstPacks"]
+    if pack.get("once") and first_packs.get(pack["id"]):
+        return None, "Gói giới hạn 1 lần này tài khoản đã sở hữu rồi!"
     is_first_this = bool(pack.get("firstX2")) and not first_packs.get(pack["id"])
     base_jade = int(pack.get("jade", 0))
     bonus_jade = base_jade if is_first_this else 0
@@ -1715,9 +1781,9 @@ async def fulfill_topup_order(order_code: str):
     """, (new_total_vnd, new_vip_exp, new_vip_lv, json.dumps(first_packs), new_pass_until, new_no_ads, new_sp, uid))
     DB.execute("""
         UPDATE topup_orders
-        SET status='paid', jade_granted=?, bonus_jade=?, vip_exp_added=?, paid_at=?
-        WHERE order_code=?
-    """, (base_jade, bonus_jade, pack["vipExp"], now, order_code))
+        SET status='paid', jade_granted=?, bonus_jade=?, vip_exp_added=?, paid_at=?, bank_txn_id=?
+        WHERE order_code=? AND status!='paid'
+    """, (base_jade, bonus_jade, pack["vipExp"], now, bank_txn_id, order_code))
     DB.commit()
 
     rewards = {}
@@ -1728,9 +1794,11 @@ async def fulfill_topup_order(order_code: str):
 
     u_row = DB.execute("SELECT username, sect_name FROM users WHERE id=?", (uid,)).fetchone()
     uname = u_row["username"] if u_row else str(uid)
+    mail_att = rewards if attach_rewards_in_mail else {}
+    mail_note = " Mở thư để nhận vật phẩm/Tiên Ngọc đính kèm." if attach_rewards_in_mail else ""
     send_mail(uid, "Tiên Bảo Các · Biên Lai Nạp", f"Thanh Toán Thành Công ({order_code})",
-              f"Đơn hàng {pack['name']} ({pack['vnd']:,}₫) đã được xác nhận! Cộng thẳng +{total_jade:,} Tiên Ngọc{f' (gồm +{bonus_jade:,} thưởng ×2 lần đầu)' if bonus_jade else ''} & +{pack['vipExp']} VIP EXP.",
-              {})
+              f"Đơn hàng {pack['name']} ({pack['vnd']:,}₫) đã được xác nhận! Cộng +{total_jade:,} Tiên Ngọc{f' (gồm +{bonus_jade:,} thưởng ×2 lần đầu)' if bonus_jade else ''} & +{pack['vipExp']} VIP EXP.{mail_note}",
+              mail_att)
     if new_vip_lv > old_vip_lv and new_vip_lv >= 2:
         t_info = next((x for x in VIP_TIERS if x["lv"] == new_vip_lv), None)
         await post_system_chat(f"👑 Chúc mừng Tông Chủ「{uname}」thăng cấp {t_info['title'] if t_info else f'VIP {new_vip_lv}'}! Toàn môn phái rực rỡ linh quang!")
@@ -1845,11 +1913,15 @@ async def api_topup_webhook(request: web.Request):
         return web.json_response({"ok": False, "error": "Invalid webhook signature"}, status=403)
     d = await request.json()
     content = str(d.get("content") or d.get("orderCode") or "").upper()
-    rows = DB.execute("SELECT order_code FROM topup_orders WHERE status='pending'").fetchall()
-    matched = next((r["order_code"] for r in rows if r["order_code"] in content), None)
+    rows = DB.execute("SELECT order_code, amount_vnd FROM topup_orders WHERE status='pending'").fetchall()
+    matched = next((r for r in rows if r["order_code"] in content), None)
     if not matched:
         return web.json_response({"ok": False, "error": "No matching pending order code"}, status=404)
-    res, err = await fulfill_topup_order(matched)
+    paid_amt = safe_int(d.get("amount") or d.get("transferAmount") or d.get("amount_vnd"), 0)
+    if paid_amt > 0 and paid_amt < matched["amount_vnd"]:
+        return web.json_response({"ok": False, "error": "Transferred amount less than order price"}, status=400)
+    txn_id = str(d.get("transactionId") or d.get("referenceCode") or d.get("id") or "").strip()[:80]
+    res, err = await fulfill_topup_order(matched["order_code"], attach_rewards_in_mail=True, bank_txn_id=txn_id)
     if err:
         return web.json_response({"ok": False, "error": err}, status=400)
     return web.json_response({"ok": True, **res})
@@ -1906,6 +1978,8 @@ async def api_giftcode_redeem(request: web.Request):
     gc = DB.execute("SELECT * FROM giftcodes WHERE code=?", (code,)).fetchone()
     if not gc:
         return web.json_response({"ok": False, "error": "Mã Giftcode không tồn tại hoặc đã hết hạn!"}, status=404)
+    if gc["expires_at"] and float(gc["expires_at"]) > 0 and time.time() > float(gc["expires_at"]):
+        return web.json_response({"ok": False, "error": "Mã Giftcode này đã hết hạn sử dụng!"}, status=400)
     if gc["used_count"] >= gc["max_uses"]:
         return web.json_response({"ok": False, "error": "Mã Giftcode này đã hết lượt sử dụng!"}, status=400)
     if DB.execute("SELECT 1 FROM giftcode_claims WHERE user_id=? AND code=?", (user["id"], code)).fetchone():
@@ -1917,12 +1991,17 @@ async def api_giftcode_redeem(request: web.Request):
     return web.json_response({"ok": True, "code": code, "title": gc["title"], "rewards": rws})
 
 # ==================== STATIC FILE SERVER (NO-CACHE FOR JS/CSS/HTML) ====================
+def is_gm_admin(user: dict) -> bool:
+    if not user:
+        return False
+    return bool(user.get("is_admin")) or user.get("username", "").lower() in ("krain9x", "admin")
+
 async def api_admin_overview(request: web.Request):
     user = auth_user(request)
-    if not user or user["username"].lower() not in ("krain9x", "admin"):
-        return web.json_response({"ok": False, "error": "Chỉ tài khoản GM Admin (krain9x) mới có quyền!"}, status=403)
+    if not is_gm_admin(user):
+        return web.json_response({"ok": False, "error": "Chỉ tài khoản GM Admin mới có quyền!"}, status=403)
     users = [dict(r) for r in DB.execute("""
-        SELECT u.id, u.username, u.sect_name, u.is_bot, u.last_seen,
+        SELECT u.id, u.username, u.sect_name, u.is_bot, COALESCE(u.banned, 0) AS banned, u.last_seen,
                s.power, s.realm_idx, s.max_stage, s.arena_score,
                COALESCE(b.vip_lv, 0) AS vip_lv, g.name AS guild_name, g.tag AS guild_tag
         FROM users u LEFT JOIN saves s ON s.user_id=u.id
@@ -1944,7 +2023,7 @@ async def api_admin_overview(request: web.Request):
 
 async def api_admin_action(request: web.Request):
     user = auth_user(request)
-    if not user or user["username"].lower() not in ("krain9x", "admin"):
+    if not is_gm_admin(user):
         return web.json_response({"ok": False, "error": "Forbidden"}, status=403)
     d = await request.json()
     kind = d.get("kind")
@@ -1956,30 +2035,49 @@ async def api_admin_action(request: web.Request):
         if tid == "__ALL__":
             ids = [r[0] for r in DB.execute("SELECT id FROM users WHERE is_bot=0").fetchall()]
         else:
-            ids = [int(tid)]
+            ids = [safe_int(tid, 0)]
         for x in ids:
             send_mail(x, "GM Thái Hư Tiên Môn", title, "Quà hỗ trợ trực tiếp từ Quản Trị Viên.", att)
         return web.json_response({"ok": True, "count": len(ids)})
     elif kind == "grant_vip":
-        tid = int(d.get("targetId"))
-        add_exp = int(d.get("addExp") or 0)
+        tid = safe_int(d.get("targetId"), 0)
+        add_exp = safe_int(d.get("addExp"), 0)
         b = ensure_billing(tid)
         new_exp = b["vip_exp"] + add_exp
         new_lv = calc_vip_level(new_exp)
         DB.execute("UPDATE user_billing SET vip_exp=?, vip_lv=? WHERE user_id=?", (new_exp, new_lv, tid))
         DB.commit()
         return web.json_response({"ok": True, "vipLv": new_lv})
+    elif kind == "toggle_ban":
+        tid = safe_int(d.get("targetId"), 0)
+        row = DB.execute("SELECT COALESCE(banned, 0) AS banned FROM users WHERE id=? AND is_bot=0", (tid,)).fetchone()
+        if not row:
+            return web.json_response({"ok": False, "error": "User not found"}, status=404)
+        new_ban = 0 if row["banned"] else 1
+        DB.execute("UPDATE users SET banned=? WHERE id=?", (new_ban, tid))
+        if new_ban:
+            DB.execute("DELETE FROM sessions WHERE user_id=?", (tid,))
+            sock = ONLINE_SOCKETS.pop(tid, None)
+            if sock and not sock["ws"].closed:
+                try:
+                    await sock["ws"].close()
+                except Exception:
+                    pass
+        DB.commit()
+        return web.json_response({"ok": True, "banned": bool(new_ban)})
     elif kind == "approve_order":
-        row, err = await fulfill_topup_order(str(d.get("orderCode") or ""))
+        row, err = await fulfill_topup_order(str(d.get("orderCode") or ""), attach_rewards_in_mail=True)
         if err:
             return web.json_response({"ok": False, "error": err}, status=400)
-        return web.json_response({"ok": True})
+        return web.json_response({"ok": True, "rewards": row.get("rewards")})
     elif kind == "create_giftcode":
         code = str(d.get("code") or "").strip().upper()
         if not code:
             return web.json_response({"ok": False, "error": "Missing code"}, status=400)
-        DB.execute("INSERT OR REPLACE INTO giftcodes (code, title, rewards_json, max_uses, used_count, expires_at) VALUES (?, ?, ?, ?, 0, 0)",
-                   (code, str(d.get("title") or code), json.dumps(d.get("rewards") or {}, ensure_ascii=False), int(d.get("maxUses") or 500)))
+        DB.execute("""
+            INSERT INTO giftcodes (code, title, rewards_json, max_uses, used_count, expires_at) VALUES (?, ?, ?, ?, 0, 0)
+            ON CONFLICT(code) DO UPDATE SET title=excluded.title, rewards_json=excluded.rewards_json, max_uses=excluded.max_uses
+        """, (code, str(d.get("title") or code), json.dumps(d.get("rewards") or {}, ensure_ascii=False), max(1, safe_int(d.get("maxUses"), 500))))
         DB.commit()
         return web.json_response({"ok": True})
     elif kind == "delete_giftcode":
@@ -2000,23 +2098,28 @@ async def api_admin_action(request: web.Request):
         return web.json_response({"ok": True})
     elif kind == "delete_item":
         if d.get("col") == "tm_chat":
-            DB.execute("DELETE FROM chat_messages WHERE id=?", (int(d.get("id")),))
+            DB.execute("DELETE FROM chat_messages WHERE id=?", (safe_int(d.get("id"), 0),))
             DB.commit()
         elif d.get("col") == "tm_coop_rooms":
             COOP_ROOMS.pop(str(d.get("id")), None)
         return web.json_response({"ok": True})
     return web.json_response({"ok": False, "error": "Unknown admin action"}, status=400)
 
+PUBLIC_STATIC_EXTS = {".html", ".js", ".css", ".json", ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico", ".wav", ".mp3", ".ogg", ".bin", ".ttf", ".woff", ".woff2"}
+
 async def static_handler(request: web.Request):
-    rel = request.match_info.get("path", "") or "index.html"
+    rel = (request.match_info.get("path", "") or "index.html").lstrip("/")
     if rel.endswith("/"):
         rel += "index.html"
+    parts = [p for p in Path(rel).parts if p not in ("", ".")]
+    if any(p.startswith(".") for p in parts) or (parts and parts[0].lower() in ("server", "__pycache__", ".git")):
+        return web.Response(status=403, text="Forbidden")
     fpath = (ROOT_DIR / rel).resolve()
     try:
         fpath.relative_to(ROOT_DIR)
     except ValueError:
         return web.Response(status=403, text="Forbidden")
-    if not fpath.is_file():
+    if fpath.suffix.lower() not in PUBLIC_STATIC_EXTS or not fpath.is_file():
         return web.Response(status=404, text="Not found")
     ctype, _ = mimetypes.guess_type(str(fpath))
     headers = {}

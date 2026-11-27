@@ -327,10 +327,13 @@
     }
 
     body.innerHTML = `<div style="padding:30px;text-align:center;color:#555;font-weight:700;">⏳ Đang đồng bộ dữ liệu máy chủ Thái Hư Tiên Giới...</div>`;
+    const reqSeq = (window.__onlineHubReqSeq = (window.__onlineHubReqSeq || 0) + 1);
+    const stillHere = () => reqSeq === window.__onlineHubReqSeq && body.isConnected;
 
     if (activeTab === 0) {
       // TAB 0: LEADERBOARD
       online.api(`/api/leaderboard?sort=${lbSort}`, 'GET').then(res => {
+        if (!stillHere()) return;
         if (!res || !res.ok) { body.innerHTML = `<div style="padding:20px;color:#b83227;">Không tải được Bảng Xếp Hạng!</div>`; return; }
         const list = res.list || [];
         const sorts = [
@@ -775,7 +778,8 @@
     } else if (activeTab === 6) {
       // TAB 6: PLAYER AUCTION HOUSE (TIÊN THỊ ĐẤU GIÁ)
       online.api('/api/market', 'GET').then(res => {
-        if (!res || !res.ok) return;
+        if (!stillHere()) return;
+        if (!res || !res.ok) { body.innerHTML = `<div style="padding:20px;color:#b83227;">Không tải được Tiên Thị!</div>`; return; }
         const listings = res.listings || [];
         const st = engine.state;
         body.className = 'panel-body';
@@ -784,14 +788,17 @@
             <div style="font-weight:900;font-size:15px;">🛍 Sạp Giao Dịch Người Chơi (Bạn có: ${fmtN(st.jade)} Tiên Ngọc)</div>
             ${listings.map(l => {
               const mine = l.seller_id === online.user.id;
+              const lidSafe = esc(l.id);
+              const qtySafe = parseInt(l.qty, 10) || 1;
+              const priceSafe = parseInt(l.price_jade, 10) || 0;
               return `<div class="item-row-card" style="padding:8px 12px;">
                 <div>
-                  <div class="item-row-title">${ITEM_LABELS[l.item_type] || l.item_type} ×<b>${l.qty}</b></div>
-                  <div class="item-row-sub">Người bán: <b>${esc(l.seller_name)}</b> · Giá: <b style="color:var(--jade-dark);">${l.price_jade} Tiên Ngọc</b></div>
+                  <div class="item-row-title">${ITEM_LABELS[l.item_type] || esc(l.item_type)} ×<b>${qtySafe}</b></div>
+                  <div class="item-row-sub">Người bán: <b>${esc(l.seller_name)}</b> · Giá: <b style="color:var(--jade-dark);">${priceSafe} Tiên Ngọc</b></div>
                 </div>
                 ${mine
-                  ? `<button class="btn-wuxia" data-mkt-cancel="${l.id}">Thu Hồi</button>`
-                  : `<button class="btn-wuxia jade" data-mkt-buy="${l.id}" data-mkt-price="${l.price_jade}" ${st.jade < l.price_jade ? 'disabled' : ''}>Mua (${l.price_jade} Ngọc)</button>`}
+                  ? `<button class="btn-wuxia" data-mkt-cancel="${lidSafe}">Thu Hồi</button>`
+                  : `<button class="btn-wuxia jade" data-mkt-buy="${lidSafe}" data-mkt-price="${priceSafe}" ${st.jade < priceSafe ? 'disabled' : ''}>Mua (${priceSafe} Ngọc)</button>`}
               </div>`;
             }).join('')}
           </div>
@@ -868,6 +875,7 @@
     } else {
       // TAB 7: FRIENDS + MAIL + ACCOUNT CLOUD SAVE
       Promise.all([online.api('/api/friends', 'GET'), online.api('/api/mail', 'GET')]).then(([fRes, mRes]) => {
+        if (!stillHere()) return;
         const friends = (fRes && fRes.friends) || [];
         const reqs = (fRes && fRes.requests) || [];
         const mails = (mRes && mRes.mails) || [];
@@ -1198,14 +1206,15 @@
     // Auto-login if returning player
     online.tryAutoLogin().then(res => {
       if (res && res.state && typeof res.state === 'object' && Object.keys(res.state).length > 5 && engine.state) {
-        if ((res.state.maxStage || 1) >= (engine.state.maxStage || 1)) {
+        if ((res.state.maxStage || 1) > (engine.state.maxStage || 1) || ((res.state.maxStage || 1) === (engine.state.maxStage || 1) && (res.state.coin || 0) > (engine.state.coin || 0))) {
           engine.state = Object.assign(engine.createDefaultState(), res.state);
           engine.saveState();
+          engine.setupCombat(engine.state.prologueDone ? 'field' : 'prologue');
         }
       }
       updateOnlineHudChrome();
       renderLiveChatMessages();
-    });
+    }).catch(() => {});
     setInterval(updateOnlineHudChrome, 2000);
   }
 

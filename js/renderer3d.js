@@ -230,6 +230,17 @@ class MurimRenderer3D {
     if (this.gl) {
       this.initGL();
     }
+    this.glCanvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      this.bloomReady = false;
+    }, false);
+    this.glCanvas.addEventListener('webglcontextrestored', () => {
+      this._bloomW = 0;
+      this._bloomH = 0;
+      this.bloomReady = false;
+      this.initGL();
+      this.resize();
+    }, false);
     this.preload2DIcons();
     this.setupTownDrag();
     this.resize();
@@ -372,6 +383,19 @@ class MurimRenderer3D {
     const w = Math.max(64, this.glCanvas.width);
     const h = Math.max(64, this.glCanvas.height);
     if (this._bloomW === w && this._bloomH === h && this.bloomReady) return;
+    // Free previous FBO/textures before reallocating on resize or orientation change
+    for (const tex of [this.sceneColorTex, this.bloomTexA, this.bloomTexB]) {
+      if (tex) try { gl.deleteTexture(tex); } catch (_) {}
+    }
+    if (this.sceneDepthRb) try { gl.deleteRenderbuffer(this.sceneDepthRb); } catch (_) {}
+    for (const fbo of [this.sceneFbo, this.bloomFboA, this.bloomFboB]) {
+      if (fbo) try { gl.deleteFramebuffer(fbo); } catch (_) {}
+    }
+    this.sceneColorTex = this.bloomTexA = this.bloomTexB = null;
+    this.sceneDepthRb = null;
+    this.sceneFbo = this.bloomFboA = this.bloomFboB = null;
+    this.bloomReady = false;
+
     this._bloomW = w;
     this._bloomH = h;
     const bw = Math.max(32, w >> 1);
@@ -408,9 +432,11 @@ class MurimRenderer3D {
     this.bloomFboB = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.bloomFboB);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.bloomTexB, 0);
-
+    const fboOk = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.sceneFbo);
+    const sceneOk = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    this.bloomReady = true;
+    this.bloomReady = !!(fboOk && sceneOk);
   }
 
   compileProgram(vsSrc, fsSrc) {

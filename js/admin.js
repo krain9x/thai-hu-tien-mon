@@ -163,34 +163,43 @@
         <div class="gm-tbl-wrap">
           <table>
             <thead><tr><th>Đạo Hiệu</th><th>Tông Môn</th><th>Chiến Lực</th><th>Ải / ELO</th><th>VIP</th><th>Bang Hội</th><th>Thao Tác</th></tr></thead>
-            <tbody>
-              ${filtered.map(u => `
-                <tr>
-                  <td><b>${esc(u.username)}</b> ${u.is_bot ? '<span class="gm-badge" style="color:#ffd257;">BOT</span>' : ''} ${u.banned ? '<span class="gm-badge" style="color:var(--red);">BANNED</span>' : ''}</td>
-                  <td>${esc(u.sect_name)}</td>
-                  <td><b>${fmtN(u.power)}</b></td>
-                  <td>Ải ${u.max_stage || 1} · ${u.arena_score || 1000}</td>
-                  <td>VIP ${u.vip_lv || 0}</td>
-                  <td>${u.guild_tag ? `[${esc(u.guild_tag)}] ${esc(u.guild_name)}` : '-'}</td>
-                  <td>
-                    ${!u.is_bot ? `<button class="gm-btn" style="padding:5px 9px;font-size:11.5px;" data-pick-gift="${esc(u.id)}">🎁 Chọn Bơm</button>
-                    <button class="gm-btn ${u.banned ? 'jade' : 'red'}" style="padding:5px 9px;font-size:11.5px;" data-toggle-ban="${esc(u.id)}">${u.banned ? 'Mở Khóa' : 'Khóa'}</button>` : '-'}
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
+            <tbody id="gm-players-tbody"></tbody>
           </table>
         </div>
       `;
-      document.getElementById('gm-search-u').oninput = (e) => { searchQ = e.target.value; renderPanel(); };
-      document.getElementById('gm-chk-bots').onchange = (e) => { includeBots = e.target.checked; renderPanel(); };
-      body.querySelectorAll('[data-pick-gift]').forEach(b => {
-        b.onclick = () => {
-          document.getElementById('gm-gift-target').value = b.getAttribute('data-pick-gift');
-          document.getElementById('gm-vip-target').value = b.getAttribute('data-pick-gift');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-      });
+      const renderPlayerRows = () => {
+        const q = searchQ.toLowerCase();
+        const filtered = cache.users.filter(u => (includeBots || !u.is_bot) && (!q || String(u.username).toLowerCase().includes(q) || String(u.sect_name).toLowerCase().includes(q)));
+        const tbody = document.getElementById('gm-players-tbody');
+        if (!tbody) return;
+        tbody.innerHTML = filtered.map(u => `
+          <tr>
+            <td><b>${esc(u.username)}</b> ${u.is_bot ? '<span class="gm-badge" style="color:#ffd257;">BOT</span>' : ''} ${u.banned ? '<span class="gm-badge" style="color:var(--red);">BANNED</span>' : ''}</td>
+            <td>${esc(u.sect_name)}</td>
+            <td><b>${fmtN(u.power)}</b></td>
+            <td>Ải ${u.max_stage || 1} · ${u.arena_score || 1000}</td>
+            <td>VIP ${u.vip_lv || 0}</td>
+            <td>${u.guild_tag ? `[${esc(u.guild_tag)}] ${esc(u.guild_name)}` : '-'}</td>
+            <td>
+              ${!u.is_bot ? `<button class="gm-btn" style="padding:5px 9px;font-size:11.5px;" data-pick-gift="${esc(u.id)}">🎁 Chọn Bơm</button>
+              <button class="gm-btn ${u.banned ? 'jade' : 'red'}" style="padding:5px 9px;font-size:11.5px;" data-toggle-ban="${esc(u.id)}">${u.banned ? 'Mở Khóa' : 'Khóa'}</button>` : '-'}
+            </td>
+          </tr>
+        `).join('');
+        tbody.querySelectorAll('[data-pick-gift]').forEach(b => {
+          b.onclick = () => {
+            document.getElementById('gm-gift-target').value = b.getAttribute('data-pick-gift');
+            document.getElementById('gm-vip-target').value = b.getAttribute('data-pick-gift');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          };
+        });
+        tbody.querySelectorAll('[data-toggle-ban]').forEach(b => {
+          b.onclick = () => adminToggleBan(b.getAttribute('data-toggle-ban'));
+        });
+      };
+      renderPlayerRows();
+      document.getElementById('gm-search-u').oninput = (e) => { searchQ = e.target.value; renderPlayerRows(); };
+      document.getElementById('gm-chk-bots').onchange = (e) => { includeBots = e.target.checked; renderPlayerRows(); };
       document.getElementById('btn-gm-send-gift').onclick = async () => {
         const target = document.getElementById('gm-gift-target').value;
         const att = {};
@@ -207,9 +216,6 @@
         if (!uid || exp <= 0) return;
         await adminGrantVip(uid, exp);
       };
-      body.querySelectorAll('[data-toggle-ban]').forEach(b => {
-        b.onclick = () => adminToggleBan(b.getAttribute('data-toggle-ban'));
-      });
     } else if (activeTab === 'orders') {
       body.innerHTML = `
         <div style="font-weight:900;color:var(--gold);margin-bottom:10px;">💳 Danh Sách Đơn Nạp Thẻ / VietQR / MoMo (${cache.orders.length})</div>
@@ -364,36 +370,77 @@
     if (!u) return;
     if (backendMode === 'firebase') {
       await db.collection('tm_users').doc(uid).update({ banned: !u.banned });
+      toast(!u.banned ? `🚫 Đã khóa ${u.username}` : `✅ Đã mở khóa ${u.username}`);
     } else {
-      await pyApi('/api/admin/action', 'POST', { kind: 'toggle_ban', targetId: uid });
+      const r = await pyApi('/api/admin/action', 'POST', { kind: 'toggle_ban', targetId: uid });
+      if (!r || !r.ok) { toast((r && r.error) || 'Lỗi khóa tài khoản'); return; }
+      toast(r.banned ? `🚫 Đã khóa ${u.username}` : `✅ Đã mở khóa ${u.username}`);
     }
-    toast(!u.banned ? `🚫 Đã khóa ${u.username}` : `✅ Đã mở khóa ${u.username}`);
     loadAllData();
   }
+
+  const GM_PACK_REWARDS = {
+    jade_20k:       { vnd: 20000,   vipExp: 200,   jade: 300 },
+    jade_50k:       { vnd: 50000,   vipExp: 500,   jade: 800 },
+    jade_100k:      { vnd: 100000,  vipExp: 1000,  jade: 1700 },
+    jade_200k:      { vnd: 200000,  vipExp: 2000,  jade: 3600 },
+    jade_500k:      { vnd: 500000,  vipExp: 5000,  jade: 9500 },
+    jade_1000k:     { vnd: 1000000, vipExp: 10000, jade: 20000 },
+    starter_pack:   { vnd: 49000,   vipExp: 500,   jade: 1200, extra: { coin: 30000, pill: 10, scroll: 15 }, once: true },
+    monthly_card:   { vnd: 99000,   vipExp: 1000,  jade: 1000, flag: 'pass30' },
+    season_pass:    { vnd: 129000,  vipExp: 1300,  jade: 500,  flag: 'seasonPass', once: true },
+    privilege_card: { vnd: 199000,  vipExp: 2000,  jade: 1500, flag: 'noAds', once: true }
+  };
 
   async function adminApproveOrder(orderCode) {
     if (backendMode === 'firebase') {
       const ordRef = db.collection('tm_orders').doc(orderCode);
-      const oDoc = await ordRef.get();
-      if (!oDoc.exists || oDoc.data().status === 'paid') return;
-      const ord = oDoc.data();
-      const uid = ord.user_id;
-      const now = Date.now() / 1000;
-      const estJade = Math.round((ord.amount_vnd || 20000) / 50);
-      const estVip = Math.round((ord.amount_vnd || 20000) / 100);
-      const bRef = db.collection('tm_billing').doc(uid);
-      const b = (await bRef.get()).data() || { total_vnd: 0, vip_exp: 0, vip_lv: 0 };
-      const newExp = (b.vip_exp || 0) + estVip;
-      const newLv = calcVip(newExp);
-      await bRef.set({ ...b, total_vnd: (b.total_vnd || 0) + (ord.amount_vnd || 0), vip_exp: newExp, vip_lv: newLv }, { merge: true });
-      await db.collection('tm_users').doc(uid).update({ vip_lv: newLv });
-      await ordRef.update({ status: 'paid', jade_granted: estJade, paid_at: now });
+      const res = await db.runTransaction(async tx => {
+        const oDoc = await tx.get(ordRef);
+        if (!oDoc.exists) throw new Error('Không tìm thấy đơn');
+        const ord = oDoc.data();
+        if (ord.status === 'paid') throw new Error('Đơn đã duyệt trước đó!');
+        const uid = ord.user_id;
+        const pDef = GM_PACK_REWARDS[ord.pack_id] || null;
+        const bRef = db.collection('tm_billing').doc(uid);
+        const bSnap = await tx.get(bRef);
+        const b = bSnap.exists ? bSnap.data() : { total_vnd: 0, vip_exp: 0, vip_lv: 0, first_packs: {} };
+        const fp = { ...(b.first_packs || {}) };
+        let baseJade = pDef ? pDef.jade : Math.round((ord.amount_vnd || 20000) / 50);
+        let bonusJade = 0;
+        if (pDef && !pDef.once && !fp[ord.pack_id]) {
+          bonusJade = baseJade;
+          fp[ord.pack_id] = true;
+        }
+        const totalJade = baseJade + bonusJade;
+        const vipGain = pDef ? pDef.vipExp : Math.round((ord.amount_vnd || 20000) / 100);
+        const newExp = (b.vip_exp || 0) + vipGain;
+        const newLv = calcVip(newExp);
+        const now = Date.now() / 1000;
+        const nextB = {
+          ...b,
+          total_vnd: (b.total_vnd || 0) + (ord.amount_vnd || 0),
+          vip_exp: newExp,
+          vip_lv: newLv,
+          firstPacks: fp,
+          first_packs: fp
+        };
+        if (pDef && pDef.flag === 'noAds') nextB.no_ads = 1;
+        if (pDef && pDef.flag === 'seasonPass') nextB.season_pass = 1;
+        if (pDef && pDef.flag === 'pass30') nextB.pass_30_until = Math.max(now, b.pass_30_until || 0) + 30 * 86400;
+        tx.set(bRef, nextB, { merge: true });
+        tx.update(db.collection('tm_users').doc(uid), { vip_lv: newLv });
+        tx.update(ordRef, { status: 'paid', jade_granted: totalJade, paid_at: now });
+        const att = { jade: totalJade, ...(pDef && pDef.extra ? pDef.extra : {}) };
+        return { uid, ord, totalJade, vipGain, att, now };
+      }).catch(e => ({ err: e.message }));
+      if (res && res.err) { toast(`⚠ ${res.err}`); return; }
       await db.collection('tm_mails').add({
-        to_user_id: uid, from_name: 'GM Thanh Toán', title: `Duyệt Đơn ${orderCode}`,
-        body: `Đơn nạp ${ord.pack_name} đã được duyệt! Nhận ngay Tiên Ngọc đính kèm:`,
-        attachments: { jade: estJade }, claimed: false, created_at: now
+        to_user_id: res.uid, from_name: 'GM Thanh Toán', title: `Duyệt Đơn ${orderCode}`,
+        body: `Đơn nạp ${res.ord.pack_name} đã được duyệt! Nhận ngay phần thưởng đính kèm:`,
+        attachments: res.att, claimed: false, created_at: res.now
       });
-      toast(`✅ Đã duyệt đơn ${orderCode}: gửi +${fmtN(estJade)} Ngọc & +${estVip} VIP EXP!`);
+      toast(`✅ Đã duyệt đơn ${orderCode}: gửi +${fmtN(res.totalJade)} Ngọc & +${res.vipGain} VIP EXP!`);
     } else {
       const r = await pyApi('/api/admin/action', 'POST', { kind: 'approve_order', orderCode });
       toast(r.ok ? `✅ Đã duyệt đơn ${orderCode}!` : (r.error || 'Lỗi'));

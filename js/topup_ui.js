@@ -168,21 +168,27 @@
         const errEl = document.getElementById('co-err');
         errEl.classList.add('hidden');
         bCreate.disabled = true;
-        const payload = { packId: pack.id, method };
-        if (method === 'card') {
-          payload.telco = document.getElementById('co-telco').value;
-          payload.serial = document.getElementById('co-serial').value.trim();
-          payload.pin = document.getElementById('co-pin').value.trim();
-        }
-        const r = await online.api('/api/topup/order', 'POST', payload);
-        bCreate.disabled = false;
-        if (!r || !r.ok) {
-          errEl.textContent = (r && r.error) || 'Không tạo được đơn thanh toán!';
+        try {
+          const payload = { packId: pack.id, method };
+          if (method === 'card') {
+            payload.telco = document.getElementById('co-telco').value;
+            payload.serial = document.getElementById('co-serial').value.trim();
+            payload.pin = document.getElementById('co-pin').value.trim();
+          }
+          const r = await online.api('/api/topup/order', 'POST', payload);
+          if (!r || !r.ok) {
+            errEl.textContent = (r && r.error) || 'Không tạo được đơn thanh toán!';
+            errEl.classList.remove('hidden');
+            return;
+          }
+          createdOrder = r.order;
+          renderCheckout();
+        } catch (err) {
+          errEl.textContent = 'Lỗi kết nối mạng khi tạo đơn!';
           errEl.classList.remove('hidden');
-          return;
+        } finally {
+          bCreate.disabled = false;
         }
-        createdOrder = r.order;
-        renderCheckout();
       };
 
       const bSand = document.getElementById('btn-co-sandbox-pay');
@@ -190,17 +196,23 @@
         const errEl = document.getElementById('co-err');
         errEl.classList.add('hidden');
         bSand.disabled = true;
-        const r = await online.api('/api/topup/confirm', 'POST', { orderCode: createdOrder.orderCode });
-        bSand.disabled = false;
-        if (!r || !r.ok) {
-          errEl.textContent = (r && r.error) || 'Lỗi xác nhận đơn hàng!';
+        try {
+          const r = await online.api('/api/topup/confirm', 'POST', { orderCode: createdOrder.orderCode });
+          if (!r || !r.ok) {
+            errEl.textContent = (r && r.error) || 'Lỗi xác nhận đơn hàng!';
+            errEl.classList.remove('hidden');
+            return;
+          }
+          applyBillingRewards(engine, r.rewards, r.unlockFlags, audio, null);
+          engine.toast(`💎 Thanh toán thành công ${pack.name}! +${fmtN(r.rewards.jade || 0)} Tiên Ngọc${r.bonusJade ? ` (gồm ×2 +${fmtN(r.bonusJade)}!)` : ''}`);
+          modal.classList.add('hidden');
+          if (onComplete) onComplete();
+        } catch (err) {
+          errEl.textContent = 'Lỗi kết nối mạng khi xác nhận đơn!';
           errEl.classList.remove('hidden');
-          return;
+        } finally {
+          bSand.disabled = false;
         }
-        applyBillingRewards(engine, r.rewards, r.unlockFlags, audio, null);
-        engine.toast(`💎 Thanh toán thành công ${pack.name}! +${fmtN(r.rewards.jade || 0)} Tiên Ngọc${r.bonusJade ? ` (gồm ×2 +${fmtN(r.bonusJade)}!)` : ''}`);
-        modal.classList.add('hidden');
-        if (onComplete) onComplete();
       };
     };
     renderCheckout();
@@ -224,10 +236,12 @@
     body.className = 'panel-body single-col';
     body.innerHTML = `<div style="padding:28px;text-align:center;color:#555;font-weight:700;">⏳ Đang tải bảng giá Tiên Bảo Các từ máy chủ...</div>`;
 
+    const reqSeq = (window.__topupReqSeq = (window.__topupReqSeq || 0) + 1);
     const reload = () => window.renderTopupShopPanel(body, activeTab, setModalHeader, closePanel, updateHud);
 
     const fetchInfo = online ? online.api('/api/topup/info', 'GET') : Promise.resolve(null);
     fetchInfo.then(info => {
+      if (reqSeq !== window.__topupReqSeq || !body.isConnected) return;
       if (!info || !info.ok) {
         body.innerHTML = `<div style="padding:24px;color:#b83227;font-weight:800;">Không kết nối được cổng Tiên Bảo Các máy chủ!</div>`;
         return;

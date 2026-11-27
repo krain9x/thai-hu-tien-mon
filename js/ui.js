@@ -20,6 +20,16 @@
   let selectedRegionIdx = 0;
   let selectedNodeId = 'in';
 
+  // V50 iOS Touch Stability: keep HUD nodes intact across 150ms ticks & guard modals from mid-tap DOM wipes
+  let lastMatesStructKey = null;
+  let lastSkillsStructKey = null;
+  let touchHoldUntil = 0;
+  let allowImmediateModalUntil = 0;
+  let pendingModalDirty = false;
+  let lastModalDirtyRenderAt = 0;
+  let bootReady = false;
+  const escHtml = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
   // ==================== TOAST & CUT-IN & STORY OVERLAY ====================
   engine.onToast = (msg) => {
     const box = document.getElementById('toast-container');
@@ -409,60 +419,83 @@
         btn.classList.toggle('locked-feat', !engine.isFeatureUnlocked(feat));
       });
 
-      // Guided Progression Banner (Exact APK 6-Step Guide)
+      // Guided Progression Banner (Exact APK 6-Step Guide — stable single handler)
       const gStep = engine.getGuideStatus();
       if (guideBtn) {
+        if (!guideBtn.dataset.bound) {
+          guideBtn.dataset.bound = '1';
+          guideBtn.onclick = () => {
+            const cur = engine.getGuideStatus();
+            if (!cur) return;
+            if (cur.done) {
+              engine.claimGuideStep();
+            } else if (cur.panel === 'town_scene') {
+              setSceneMode('town');
+            } else if (cur.panel) {
+              openPanel(cur.panel, cur.tab || 0);
+            } else {
+              engine.toast(cur.desc);
+            }
+          };
+        }
         if (gStep && !isPro) {
           guideBtn.classList.remove('hidden');
           guideBtn.classList.toggle('ready-claim', gStep.done);
           document.getElementById('hud-guide-tag').textContent = gStep.done ? `${gStep.tag} · XONG!` : gStep.tag;
           document.getElementById('hud-guide-reward').textContent = gStep.done ? '🎁 Bấm Nhận Thưởng' : gStep.rewardTxt;
           document.getElementById('hud-guide-desc').textContent = gStep.desc;
-          guideBtn.onclick = () => {
-            if (gStep.done) {
-              engine.claimGuideStep();
-            } else if (gStep.panel === 'town_scene') {
-              setSceneMode('town');
-            } else if (gStep.panel) {
-              openPanel(gStep.panel, gStep.tab || 0);
-            } else {
-              engine.toast(gStep.desc);
-            }
-          };
         } else {
           guideBtn.classList.add('hidden');
         }
       }
 
-      // 4 Circular Mate Slots (Mate0..Mate3 with b_ring.png)
-      let matesHtml = '';
-      for (let i = 0; i < 4; i++) {
-        const mt = c.mates[i];
-        if (mt) {
-          const pct = Math.max(0, Math.min(100, (mt.hp / Math.max(1, mt.maxHp)) * 100));
-          matesHtml += `<div class="fh-mate-slot" data-mate-click="1" title="${mt.name}">
-            <div class="fh-mate-ring">
-              <img class="face" src="assets/img/pt_${mt.id}.png" alt="${mt.name}" />
-              <img class="fh-ring-frame" src="assets/img/b_ring.png" alt="" />
-            </div>
-            <div class="fh-mate-hp"><div style="width:${pct}%"></div></div>
-          </div>`;
-        } else {
-          matesHtml += `<div class="fh-mate-slot empty-mate" data-mate-click="1" title="Bấm để chiêu mộ & xuất trận đệ tử">
-            <div class="fh-mate-ring">
-              <div class="empty-plus">+</div>
-              <img class="fh-ring-frame" src="assets/img/b_ring.png" alt="" />
-            </div>
-          </div>`;
+      // 4 Circular Mate Slots — only rebuild DOM when lineup structure changes (never mid-tap!)
+      if (!matesRow.dataset.bound) {
+        matesRow.dataset.bound = '1';
+        matesRow.onclick = (e) => {
+          if (e.target.closest('[data-mate-click]')) openPanel('disciple', 0);
+        };
+      }
+      const matesStructKey = Array.from({ length: 4 }, (_, i) => (c.mates[i] ? c.mates[i].id : '_')).join('|');
+      if (matesStructKey !== lastMatesStructKey) {
+        lastMatesStructKey = matesStructKey;
+        let matesHtml = '';
+        for (let i = 0; i < 4; i++) {
+          const mt = c.mates[i];
+          if (mt) {
+            const pct = Math.max(0, Math.min(100, (mt.hp / Math.max(1, mt.maxHp)) * 100));
+            matesHtml += `<div class="fh-mate-slot" data-mate-click="1" title="${mt.name}">
+              <div class="fh-mate-ring">
+                <img class="face" src="assets/img/pt_${mt.id}.png" alt="${mt.name}" />
+                <img class="fh-ring-frame" src="assets/img/b_ring.png" alt="" />
+              </div>
+              <div class="fh-mate-hp"><div data-mate-hp="${i}" style="width:${pct}%"></div></div>
+            </div>`;
+          } else {
+            matesHtml += `<div class="fh-mate-slot empty-mate" data-mate-click="1" title="Bấm để chiêu mộ & xuất trận đệ tử">
+              <div class="fh-mate-ring">
+                <div class="empty-plus">+</div>
+                <img class="fh-ring-frame" src="assets/img/b_ring.png" alt="" />
+              </div>
+            </div>`;
+          }
+        }
+        matesRow.innerHTML = matesHtml;
+      } else {
+        for (let i = 0; i < 4; i++) {
+          const mt = c.mates[i];
+          if (!mt) continue;
+          const bar = matesRow.querySelector(`[data-mate-hp="${i}"]`);
+          if (bar) {
+            const pct = Math.max(0, Math.min(100, (mt.hp / Math.max(1, mt.maxHp)) * 100));
+            bar.style.width = `${pct}%`;
+          }
         }
       }
-      matesRow.innerHTML = matesHtml;
-      matesRow.querySelectorAll('[data-mate-click]').forEach(el => {
-        el.onclick = () => openPanel('disciple', 0);
-      });
 
-      // KitChip Resonance + 4 Skill Slots (with logical slot locks) + Ultimate
+      // KitChip Resonance + 4 Skill Slots + Ultimate — stable DOM + single delegated handler
       const skBar = document.getElementById('hud-skills-bar');
+      const lockHints = ['Xong Mở Đầu', 'Chỉ Dẫn 1 (Tu Luyện)', 'Vượt Ải 1', 'Chỉ Dẫn 5 (Chiêu Mộ)'];
       const unlockedSlots = engine.getUnlockedSkillSlots();
       const ultUnlocked = engine.isUltUnlocked();
       const reso = engine.getSchoolResonance();
@@ -473,82 +506,124 @@
         ? 'Kiếm Pháp Cơ Bản'
         : (maxCnt >= 2 && fams[bestFam] ? `${fams[bestFam].name} (${maxCnt}/4)` : 'Thái Hư Ngự Kiếm');
 
+      if (!skBar.dataset.bound) {
+        skBar.dataset.bound = '1';
+        skBar.onclick = (e) => {
+          const lockBtn = e.target.closest('[data-locked-slot]');
+          if (lockBtn) {
+            const idx = parseInt(lockBtn.getAttribute('data-locked-slot'), 10);
+            engine.toast(`Ô Kỹ Năng ${idx + 1} mở khóa khi: ${lockHints[idx]}!`);
+            audio.playSfx('ui_deny');
+            return;
+          }
+          if (e.target.closest('[data-open-arts-slot]')) {
+            openPanel('arts', 0);
+            return;
+          }
+          const skBtn = e.target.closest('[data-skill-slot]');
+          if (skBtn) {
+            const idx = parseInt(skBtn.getAttribute('data-skill-slot'), 10);
+            if (!engine.state.equippedSkills[idx]) openPanel('arts');
+            else engine.castSkillSlot(idx);
+            return;
+          }
+          if (e.target.closest('#btn-cast-ult')) {
+            if (!engine.isUltUnlocked()) {
+              engine.toast('Tuyệt Kỹ mở khóa sau Chỉ Dẫn 5 (Chiêu Mộ) hoặc Vượt Ải 2!');
+              audio.playSfx('ui_deny');
+            } else {
+              engine.castUltimate();
+            }
+          }
+        };
+      }
+
       const ultIconMap = ['mg_ult_kwae', 'mg_ult_seon', 'mg_ult_pae', 'mg_ult_naega'];
       const ultImg = reso.activeFamIdx >= 0 ? ultIconMap[reso.activeFamIdx] : 'mg_ult_base';
       const ultReady = ultUnlocked && c.master.ultCharge >= c.master.ultMax;
       const ultPct = Math.floor((c.master.ultCharge / c.master.ultMax) * 100);
+      const skillsStructKey = isPro
+        ? 'PRO'
+        : `${unlockedSlots}|${ultUnlocked ? 1 : 0}|${st.equippedSkills.slice(0, 4).map(x => x || '').join(',')}|${ultImg}`;
 
-      const lockHints = ['Xong Mở Đầu', 'Chỉ Dẫn 1 (Tu Luyện)', 'Vượt Ải 1', 'Chỉ Dẫn 5 (Chiêu Mộ)'];
-      let skHtml = '';
-      if (!isPro) {
-        for (let i = 0; i < 4; i++) {
-          if (i >= unlockedSlots) {
-            skHtml += `<button class="skill-slot-btn locked-slot" data-locked-slot="${i}" title="Mở khóa tại: ${lockHints[i]}">
+      if (skillsStructKey !== lastSkillsStructKey) {
+        lastSkillsStructKey = skillsStructKey;
+        let skHtml = '';
+        if (!isPro) {
+          for (let i = 0; i < 4; i++) {
+            if (i >= unlockedSlots) {
+              skHtml += `<button class="skill-slot-btn locked-slot" data-locked-slot="${i}" title="Mở khóa tại: ${lockHints[i]}">
+                <span>🔒</span>
+                <span class="skill-key-hint">${i + 1}</span>
+              </button>`;
+              continue;
+            }
+            const sid = st.equippedSkills[i];
+            const sk = sid ? engine.data.game.fight.skills.find(s => s.id === sid) : null;
+            if (!sk) {
+              skHtml += `<button class="skill-slot-btn empty-skill-slot" data-open-arts-slot="${i}" title="Ô Tiên Pháp ${i + 1} đang trống — Bấm để chọn & gắn chiêu!">
+                <span class="empty-slot-plus">+ Gắn</span>
+                <span class="skill-key-hint">${i + 1}</span>
+              </button>`;
+              continue;
+            }
+            const icon = sk.icon || `mg_${sk.id}`;
+            skHtml += `<button class="skill-slot-btn" data-skill-slot="${i}" title="${sk.name}">
+              <img src="assets/img/${icon}.png" alt="" onerror="this.src='assets/img/sk_wave.png'" />
+              <div class="skill-cd-mask" style="display:none"></div>
+              <span class="skill-key-hint">${i + 1}</span>
+            </button>`;
+          }
+          if (ultUnlocked) {
+            skHtml += `<button class="skill-slot-btn ult-slot" id="btn-cast-ult" style="--ult-pct:${ultPct}%" title="Tuyệt Kỹ: ${(reso.activeUlt && reso.activeUlt.name) || 'Thái Hư Vạn Kiếm Quyết'} (Phím R)">
+              <span class="ult-charge-ring"></span>
+              <img src="assets/img/${ultImg}.png" alt="Tuyệt Kỹ" />
+              <div class="skill-cd-mask ult-pct-mask">${ultPct}%</div>
+              <span class="skill-key-hint">R</span>
+            </button>`;
+          } else {
+            skHtml += `<button class="skill-slot-btn ult-slot locked-slot" id="btn-cast-ult" title="Hoàn thành Mở Đầu để mở Tuyệt Kỹ">
               <span>🔒</span>
-              <span class="skill-key-hint">${i + 1}</span>
+              <span class="skill-key-hint">TUYỆT</span>
             </button>`;
-            continue;
           }
-          const sid = st.equippedSkills[i];
-          const sk = sid ? engine.data.game.fight.skills.find(s => s.id === sid) : null;
-          const cd = c.master.skillCds[i] || 0;
-          if (!sk) {
-            skHtml += `<button class="skill-slot-btn empty-skill-slot" data-open-arts-slot="${i}" title="Ô Tiên Pháp ${i + 1} đang trống — Bấm để chọn & gắn chiêu!">
-              <span class="empty-slot-plus">+ Gắn</span>
-              <span class="skill-key-hint">${i + 1}</span>
-            </button>`;
-            continue;
-          }
-          const icon = sk.icon || `mg_${sk.id}`;
-          const hasTelegraph = c.telegraphs && c.telegraphs.length > 0 && cd <= 0;
-          skHtml += `<button class="skill-slot-btn ${hasTelegraph ? 'combo-glow' : ''}" data-skill-slot="${i}" title="${sk.name}">
-            <img src="assets/img/${icon}.png" alt="" onerror="this.src='assets/img/sk_wave.png'" />
-            ${cd > 0.05 ? `<div class="skill-cd-mask">${cd.toFixed(1)}</div>` : ''}
-            <span class="skill-key-hint">${i + 1}</span>
-          </button>`;
         }
-        if (ultUnlocked) {
-          skHtml += `<button class="skill-slot-btn ult-slot ${ultReady ? 'combo-glow ult-ready' : ''}" id="btn-cast-ult" style="--ult-pct:${ultPct}%" title="Tuyệt Kỹ: ${(reso.activeUlt && reso.activeUlt.name) || 'Thái Hư Vạn Kiếm Quyết'} (Phím R)">
-            <span class="ult-charge-ring"></span>
-            <img src="assets/img/${ultImg}.png" alt="Tuyệt Kỹ" />
-            ${!ultReady ? `<div class="skill-cd-mask ult-pct-mask">${ultPct}%</div>` : ''}
-            <span class="skill-key-hint">R</span>
-          </button>`;
-        } else {
-          skHtml += `<button class="skill-slot-btn ult-slot locked-slot" id="btn-cast-ult" title="Hoàn thành Mở Đầu để mở Tuyệt Kỹ">
-            <span>🔒</span>
-            <span class="skill-key-hint">TUYỆT</span>
-          </button>`;
+        skBar.innerHTML = skHtml;
+      }
+
+      if (!isPro) {
+        const hasTel = !!(c.telegraphs && c.telegraphs.length > 0);
+        for (let i = 0; i < 4; i++) {
+          const btn = skBar.querySelector(`[data-skill-slot="${i}"]`);
+          if (!btn) continue;
+          const cd = c.master.skillCds[i] || 0;
+          btn.classList.toggle('combo-glow', hasTel && cd <= 0);
+          const mask = btn.querySelector('.skill-cd-mask');
+          if (mask) {
+            if (cd > 0.05) {
+              mask.style.display = '';
+              mask.textContent = cd.toFixed(1);
+            } else {
+              mask.style.display = 'none';
+            }
+          }
+        }
+        const ultBtn = document.getElementById('btn-cast-ult');
+        if (ultBtn && ultUnlocked) {
+          ultBtn.classList.toggle('combo-glow', ultReady);
+          ultBtn.classList.toggle('ult-ready', ultReady);
+          ultBtn.style.setProperty('--ult-pct', `${ultPct}%`);
+          const mask = ultBtn.querySelector('.ult-pct-mask');
+          if (mask) {
+            if (!ultReady) {
+              mask.style.display = '';
+              mask.textContent = `${ultPct}%`;
+            } else {
+              mask.style.display = 'none';
+            }
+          }
         }
       }
-      skBar.innerHTML = skHtml;
-
-      skBar.querySelectorAll('[data-locked-slot]').forEach(btn => {
-        btn.onclick = () => {
-          const idx = parseInt(btn.getAttribute('data-locked-slot'), 10);
-          engine.toast(`Ô Kỹ Năng ${idx + 1} mở khóa khi: ${lockHints[idx]}!`);
-          audio.playSfx('ui_deny');
-        };
-      });
-      skBar.querySelectorAll('[data-open-arts-slot]').forEach(btn => {
-        btn.onclick = () => openPanel('arts', 0);
-      });
-      skBar.querySelectorAll('[data-skill-slot]').forEach(btn => {
-        btn.onclick = () => {
-          const idx = parseInt(btn.getAttribute('data-skill-slot'), 10);
-          if (!st.equippedSkills[idx]) openPanel('arts');
-          else engine.castSkillSlot(idx);
-        };
-      });
-      const ultBtn = document.getElementById('btn-cast-ult');
-      if (ultBtn) ultBtn.onclick = () => {
-        if (!ultUnlocked) {
-          engine.toast('Tuyệt Kỹ mở khóa sau Chỉ Dẫn 5 (Chiêu Mộ) hoặc Vượt Ải 2!');
-          audio.playSfx('ui_deny');
-        } else {
-          engine.castUltimate();
-        }
-      };
     }
 
     // TownHud & Floating 3D Hall Tags when in 3D Sect Courtyard mode
@@ -581,8 +656,77 @@
         bldBox.classList.add('hidden');
       }
 
+      if (!townLayer.dataset.bound) {
+        townLayer.dataset.bound = '1';
+        townLayer.onclick = (e) => {
+          const insp = e.target.closest('[data-inspect-pid]');
+          if (insp) {
+            e.stopPropagation();
+            const raw = insp.getAttribute('data-inspect-pid');
+            const pid = /^\d+$/.test(raw) ? parseInt(raw, 10) : raw;
+            if (window.openInspectPlayerModal) window.openInspectPlayerModal(pid);
+            return;
+          }
+          const dChip = e.target.closest('[data-town-disc]');
+          if (dChip) {
+            e.stopPropagation();
+            const did = dChip.getAttribute('data-town-disc');
+            const dDef = engine.data.game.disciples.find(d => d.id === did);
+            const curBond = (engine.state.discipleBond && engine.state.discipleBond[did]) || 0;
+            const hasQi = engine.state.pills && engine.state.pills.qi > 0;
+            playStorySequence({
+              title: `Nhân Duyên Đồng Môn · ${dDef ? dDef.name : did} (Thân Thiết Cấp ${curBond}/10)`,
+              lines: [{
+                who: dDef ? `${dDef.title} · ${dDef.name}` : did,
+                fig: `full_${did}`,
+                text: `Tham kiến Tông Chủ! Đệ tử đang tĩnh tâm tu luyện tại sơn môn.\nĐộ thân thiết hiện tại: Cấp ${curBond}/10 (+${curBond * 2}% Công & Máu toàn phái).`
+              }],
+              choices: [
+                { label: hasQi ? '🎁 Tặng 1 Tụ Khí Đan (+1 Thân Thiết)' : '🎁 Tặng 120 Linh Thạch (+1 Thân Thiết)', onPick: () => engine.giftDisciplePill(did) },
+                { label: 'Tiếp Tục Tu Luyện', onPick: () => {} }
+              ]
+            });
+            return;
+          }
+          const harv = e.target.closest('[data-harvest-id]');
+          if (harv) {
+            e.stopPropagation();
+            engine.collectHall(harv.getAttribute('data-harvest-id'));
+            return;
+          }
+          const hallEl = e.target.closest('[data-hall-id]');
+          if (hallEl) {
+            selectedItem = hallEl.getAttribute('data-hall-id');
+            openPanel('town', 0);
+          }
+        };
+      }
+
       const resIconMap = { coin: 'coin', xp: 'ut_daily_xp', scroll: 'res_scroll', pill: 'res_pill', core: 'res_core', herb: 'res_herb' };
-      let tagsHtml = '';
+      const existingNodes = new Map();
+      Array.from(townLayer.children).forEach(ch => {
+        if (ch.dataset && ch.dataset.tkey) existingNodes.set(ch.dataset.tkey, ch);
+      });
+      const seenKeys = new Set();
+      const upsertTownEl = (key, tag, cls, x, y, attrs, innerHtml, contentKey) => {
+        seenKeys.add(key);
+        let el = existingNodes.get(key);
+        if (!el) {
+          el = document.createElement(tag);
+          el.className = cls;
+          el.dataset.tkey = key;
+          for (const [ak, av] of Object.entries(attrs)) el.setAttribute(ak, av);
+          el.innerHTML = innerHtml;
+          el.dataset.ckey = contentKey;
+          townLayer.appendChild(el);
+        } else if (el.dataset.ckey !== contentKey) {
+          el.innerHTML = innerHtml;
+          el.dataset.ckey = contentKey;
+        }
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+      };
+
       for (const hDef of engine.data.game.halls) {
         const sp = renderer.hallScreenPos[hDef.id];
         if (!sp || sp.x < -60 || sp.x > renderer.width + 60 || sp.y < -40 || sp.y > renderer.height + 60) continue;
@@ -590,10 +734,8 @@
         const building = hSt.buildEnd > Date.now();
         const remSec = building ? Math.ceil((hSt.buildEnd - Date.now()) / 1000) : 0;
         const storedAmt = Math.floor(hSt.stored || 0);
-
         const safeTop = (hDef.id === 'main' || (sp.x > 260 && sp.x < 680)) ? Math.max(96, sp.y) : Math.max(76, sp.y);
-        tagsHtml += `<div class="town-hall-tag" style="left:${sp.x}px;top:${safeTop}px;" data-hall-id="${hDef.id}">
-          ${storedAmt >= 1 ? `<div class="town-harvest-bubble" data-harvest-id="${hDef.id}">
+        const hallInner = `${storedAmt >= 1 ? `<div class="town-harvest-bubble" data-harvest-id="${hDef.id}">
             <img src="assets/img/${resIconMap[hDef.res] || 'coin'}.png" alt="" />
             <span>+${fmt(storedAmt)}</span>
           </div>` : ''}
@@ -603,79 +745,68 @@
           ${!hDef.locked && hSt.lv === 0 && !building ? `<div class="town-rebuild-badge">
             <img src="assets/img/rebuild.png" alt="" />
             <span>Tái Thiết</span>
-          </div>` : ''}
-        </div>`;
+          </div>` : ''}`;
+        const cKey = `${hSt.lv}|${building ? remSec : 0}|${storedAmt}`;
+        upsertTownEl(`hall:${hDef.id}`, 'div', 'town-hall-tag', sp.x, safeTop, { 'data-hall-id': hDef.id }, hallInner, cKey);
       }
-      // Clickable 3D Town Disciple Affinity Chips (gift pill/coin directly in 3D Sect Courtyard!)
+
+      // Clickable 3D Town Disciple Affinity Chips
       const npcPos = renderer.townNpcScreenPos || {};
       for (const [did, sp] of Object.entries(npcPos)) {
         if (!sp || sp.x < 40 || sp.x > renderer.width - 40 || sp.y < 60 || sp.y > renderer.height - 80) continue;
         const dDef = engine.data.game.disciples.find(d => d.id === did);
         if (!dDef) continue;
         const bondLv = (st.discipleBond && st.discipleBond[did]) || 0;
-        tagsHtml += `<button class="town-disc-chip" style="left:${sp.x}px;top:${sp.y}px;" data-town-disc="${did}" title="Bấm tặng lễ cho ${dDef.name} (+2% Công/Máu toàn phái mỗi cấp)">
-          💚 ${dDef.name} ${bondLv > 0 ? `♥${bondLv}` : ''}
-        </button>`;
+        const cKey = `${dDef.name}|${bondLv}`;
+        upsertTownEl(`disc:${did}`, 'button', 'town-disc-chip', sp.x, sp.y, {
+          'data-town-disc': did,
+          title: `Bấm tặng lễ cho ${dDef.name} (+2% Công/Máu toàn phái mỗi cấp)`
+        }, `💚 ${dDef.name} ${bondLv > 0 ? `♥${bondLv}` : ''}`, cKey);
       }
-      // Multiplayer Shared 3D Town Plaza Cultivator Chips (Click to Inspect 6-Slot Gear!)
+
+      // Multiplayer Shared 3D Town Plaza Cultivator Chips
       const plazaPos = renderer.townPlazaScreenPos || [];
       for (const pp of plazaPos) {
         if (!pp || pp.x < 45 || pp.x > renderer.width - 45 || pp.y < 60 || pp.y > renderer.height - 90) continue;
         const vipTag = pp.vipLv > 0 ? `<span class="plz-vip">VIP${pp.vipLv}</span>` : '';
-        tagsHtml += `<button class="town-plaza-chip" style="left:${pp.x}px;top:${pp.y}px;" data-inspect-pid="${pp.id}" title="Bấm soi trang bị & ngoại trang của ${pp.username}">
-          <span class="on-dot ${pp.online ? 'live' : ''}"></span>${vipTag} <b>${pp.username}</b> · ⚡${fmt(pp.power)}
-        </button>`;
+        const cKey = `${pp.online ? 1 : 0}|${pp.vipLv}|${pp.username}|${pp.power}`;
+        upsertTownEl(`plaza:${pp.id}`, 'button', 'town-plaza-chip', pp.x, pp.y, {
+          'data-inspect-pid': String(pp.id),
+          title: `Bấm soi trang bị & ngoại trang của ${escHtml(pp.username)}`
+        }, `<span class="on-dot ${pp.online ? 'live' : ''}"></span>${vipTag} <b>${escHtml(pp.username)}</b> · ⚡${fmt(pp.power)}`, cKey);
       }
-      townLayer.innerHTML = tagsHtml;
-      townLayer.querySelectorAll('[data-inspect-pid]').forEach(el => {
-        el.onclick = (e) => {
-          e.stopPropagation();
-          const raw = el.getAttribute('data-inspect-pid');
-          const pid = /^\d+$/.test(raw) ? parseInt(raw, 10) : raw;
-          if (window.openInspectPlayerModal) window.openInspectPlayerModal(pid);
-        };
-      });
-      townLayer.querySelectorAll('[data-town-disc]').forEach(el => {
-        el.onclick = (e) => {
-          e.stopPropagation();
-          const did = el.getAttribute('data-town-disc');
-          const dDef = engine.data.game.disciples.find(d => d.id === did);
-          const bondLv = (st.discipleBond && st.discipleBond[did]) || 0;
-          const hasQi = st.pills && st.pills.qi > 0;
-          playStorySequence({
-            title: `Nhân Duyên Đồng Môn · ${dDef ? dDef.name : did} (Thân Thiết Cấp ${bondLv}/10)`,
-            lines: [{
-              who: dDef ? `${dDef.title} · ${dDef.name}` : did,
-              fig: `full_${did}`,
-              text: `Tham kiến Tông Chủ! Đệ tử đang tĩnh tâm tu luyện tại sơn môn.\nĐộ thân thiết hiện tại: Cấp ${bondLv}/10 (+${bondLv * 2}% Công & Máu toàn phái).`
-            }],
-            choices: [
-              { label: hasQi ? '🎁 Tặng 1 Tụ Khí Đan (+1 Thân Thiết)' : '🎁 Tặng 120 Linh Thạch (+1 Thân Thiết)', onPick: () => engine.giftDisciplePill(did) },
-              { label: 'Tiếp Tục Tu Luyện', onPick: () => {} }
-            ]
-          });
-        };
-      });
-      townLayer.querySelectorAll('[data-harvest-id]').forEach(el => {
-        el.onclick = (e) => {
-          e.stopPropagation();
-          engine.collectHall(el.getAttribute('data-harvest-id'));
-        };
-      });
-      townLayer.querySelectorAll('[data-hall-id]').forEach(el => {
-        el.onclick = () => {
-          selectedItem = el.getAttribute('data-hall-id');
-          openPanel('town', 0);
-        };
-      });
+
+      for (const [k, node] of existingNodes.entries()) {
+        if (!seenKeys.has(k)) node.remove();
+      }
     } else {
       townLayer.classList.add('hidden');
     }
   }
 
+  function flushPendingModalDirty() {
+    if (!pendingModalDirty || !activePanel) return;
+    pendingModalDirty = false;
+    lastModalDirtyRenderAt = performance.now();
+    renderModalContent();
+  }
+
   engine.onUiDirty = () => {
     updateHud();
-    if (activePanel) renderModalContent();
+    if (!activePanel) return;
+    const now = performance.now();
+    // Never destroy open modal DOM mid-tap (touchstart..click), and throttle background combat ticks
+    if (now < touchHoldUntil) {
+      pendingModalDirty = true;
+      return;
+    }
+    if (now > allowImmediateModalUntil && (now - lastModalDirtyRenderAt) < 500) {
+      pendingModalDirty = true;
+      return;
+    }
+    pendingModalDirty = false;
+    lastModalDirtyRenderAt = now;
+    renderModalContent();
   };
 
   // ==================== MODAL PANEL SYSTEM ====================
@@ -3443,6 +3574,7 @@
 
   // Click on 3D Arena ground to move Master manually (clamped to walkable ground, never into water/walls)!
   fxCanvas.addEventListener('pointerdown', (e) => {
+    if (e.target !== fxCanvas && e.target !== glCanvas) return;
     if (renderer.mode !== 'field' || activePanel || storyOpen || !gameEntered) return;
     const wp = renderer.screenToGround(e.clientX, e.clientY);
     if (wp && engine.combat) {
@@ -3451,6 +3583,71 @@
       engine.combat.moveTarget = { x: safe.x, z: safe.z };
     }
   });
+
+  // V50 iOS Safari Fast-Tap Guard: prevent mid-tap modal wipes & recover taps swallowed by scroll/canvas
+  (function installIosFastTap() {
+    const TAP_SEL = 'button, [role="button"], .fh-menu-btn, .fh-cont-card, .fh-mini-pill, .fh-online-pill, .fh-mail-btn, .fh-burger-btn, .fh-guide-card, .fh-master-cluster, .fh-mate-slot, .skill-slot-btn, .town-harvest-bubble, .town-hall-tag, .town-disc-chip, .town-plaza-chip, .panel-tab, .btn-wuxia, .btn-close-panel, .lc-tab, .lc-toggle, .fd-start-btn, .fd-newgame-btn, .story-skip-top';
+    let downTap = null;
+    let lastNativeClickAt = 0;
+    let lastSynthTarget = null;
+    let lastSynthAt = 0;
+
+    document.addEventListener('pointerdown', (e) => {
+      if (e.target && e.target.closest && e.target.closest('#modal-panel, .hud-interactive, #town-tags-layer, #live-chat-dock')) {
+        touchHoldUntil = performance.now() + 900;
+      }
+      if (e.pointerType !== 'touch') return;
+      const hit = e.target && e.target.closest ? e.target.closest(TAP_SEL) : null;
+      if (!hit || hit.disabled) { downTap = null; return; }
+      const tag = hit.tagName;
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') { downTap = null; return; }
+      downTap = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), target: hit };
+    }, { capture: true, passive: true });
+
+    document.addEventListener('click', (e) => {
+      // Dedupe late native click if synthetic fast-tap already fired for this exact touch
+      if (e.isTrusted && lastSynthTarget && (performance.now() - lastSynthAt) < 420) {
+        const hit = e.target && e.target.closest ? e.target.closest(TAP_SEL) : e.target;
+        if (hit === lastSynthTarget || (lastSynthTarget.contains && lastSynthTarget.contains(e.target))) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          lastSynthTarget = null;
+          return;
+        }
+      }
+      lastNativeClickAt = performance.now();
+      touchHoldUntil = 0;
+      if (e.target && e.target.closest && e.target.closest('#modal-panel')) {
+        allowImmediateModalUntil = performance.now() + 180;
+      }
+    }, { capture: true });
+
+    document.addEventListener('pointercancel', () => {
+      touchHoldUntil = 0;
+      downTap = null;
+      setTimeout(flushPendingModalDirty, 60);
+    }, { capture: true, passive: true });
+
+    document.addEventListener('pointerup', (e) => {
+      touchHoldUntil = 0;
+      setTimeout(flushPendingModalDirty, 60);
+      if (e.pointerType !== 'touch' || !downTap || downTap.id !== e.pointerId) return;
+      const dtTap = performance.now() - downTap.t;
+      const dist = Math.hypot(e.clientX - downTap.x, e.clientY - downTap.y);
+      const target = downTap.target;
+      downTap = null;
+      if (dtTap > 480 || dist > 14 || !target || !target.isConnected || target.disabled) return;
+      const snapClick = lastNativeClickAt;
+      setTimeout(() => {
+        if (lastNativeClickAt === snapClick && target.isConnected && !target.disabled) {
+          lastSynthTarget = target;
+          lastSynthAt = performance.now();
+          allowImmediateModalUntil = performance.now() + 180;
+          target.click();
+        }
+      }, 65);
+    }, { capture: true, passive: true });
+  })();
 
   // Click anywhere on story dialog card to advance to next line smoothly
   document.getElementById('story-overlay').addEventListener('click', (e) => {
@@ -3502,9 +3699,13 @@
     });
   }
 
-  // Start Game (FrontDoor)
+  // Start Game (FrontDoor) — guarded until boot finishes loading assets/JSON
   function enterGameFromFrontDoor() {
     if (gameEntered) return;
+    if (!bootReady || !engine.state || !engine.data || !engine.data.story) {
+      engine.toast('⏳ Đang tải Linh Khí & dữ liệu Tiên Giới, vui lòng chờ 1 giây...');
+      return;
+    }
     gameEntered = true;
     audio.unlocked = true;
     audio.playSfx('clear');
@@ -3580,12 +3781,32 @@
 
   // Boot Everything!
   (async function boot() {
-    await Promise.all([renderer.loadAssets(), engine.init()]);
-    if (engine.state && engine.state.prologueDone) {
-      document.getElementById('btn-enter-game').textContent = 'TIẾP TỤC HÀNH TẨU';
-      if (btnNewGameFd) btnNewGameFd.classList.remove('hidden');
+    const enterBtn = document.getElementById('btn-enter-game');
+    if (enterBtn) { enterBtn.disabled = true; enterBtn.textContent = '⏳ ĐANG KHỞI TẠO TIÊN GIỚI...'; }
+    try {
+      await Promise.all([renderer.loadAssets(), engine.init()]);
+      bootReady = true;
+      if (enterBtn) {
+        enterBtn.disabled = false;
+        enterBtn.textContent = (engine.state && engine.state.prologueDone)
+          ? 'TIẾP TỤC HÀNH TẨU'
+          : 'CHẠM ĐỂ XUYÊN KHÔNG KHAI TÔNG';
+      }
+      if (engine.state && engine.state.prologueDone && btnNewGameFd) {
+        btnNewGameFd.classList.remove('hidden');
+      }
+      updateHud();
+    } catch (err) {
+      console.error('Boot failed:', err);
+      const stEl = document.getElementById('fd-online-status');
+      if (stEl) stEl.textContent = '⚠ Lỗi tải dữ liệu game. Vui lòng bấm Tải Lại Trang.';
+      if (enterBtn) {
+        enterBtn.disabled = false;
+        enterBtn.textContent = '🔄 TẢI LẠI TIÊN GIỚI';
+        enterBtn.onclick = () => location.reload();
+      }
+      return;
     }
-    updateHud();
 
     let lastTime = performance.now();
     let hudAcc = 0;

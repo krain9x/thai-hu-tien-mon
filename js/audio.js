@@ -10,6 +10,7 @@ class MurimAudio {
     this.voiceVol = 1.25; // 0..1.5 user multiplier on top of 3.0x WebAudio preamp!
     this.voiceOn = true;
     this.unlocked = false;
+    this.bgmPendingRetry = false;
     this.currentBgmName = '';
     this.currentBgm = null;
     this.duckUntil = 0;
@@ -36,9 +37,10 @@ class MurimAudio {
     const unlock = () => {
       if (this.isPageHidden) return;
       this.ensureAudioContext();
-      if (this.unlocked) return;
+      const firstUnlock = !this.unlocked;
       this.unlocked = true;
-      if (this.currentBgmName) {
+      if ((firstUnlock || this.bgmPendingRetry) && this.currentBgmName) {
+        this.bgmPendingRetry = false;
         this.playBgm(this.currentBgmName, true);
       }
     };
@@ -218,7 +220,8 @@ class MurimAudio {
     const audio = new Audio(this.resolveBgmSrc(name));
     audio.loop = true;
     audio.volume = this.bgmVol;
-    audio.play().catch(() => {});
+    this.bgmPendingRetry = false;
+    audio.play().catch(() => { this.bgmPendingRetry = true; });
     this.currentBgm = audio;
   }
 

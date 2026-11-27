@@ -78,6 +78,38 @@ button, .fh-stage-plate, .fh-sect-name, .fh-power-val, .fh-kills-txt, .fh-res-pi
   letter-spacing: 0.15px;
 }
 
+button, a, input, select, [role="button"],
+.hud-interactive, .fh-menu-btn, .fh-cont-card, .fh-mini-pill,
+.fh-master-cluster, .fh-mate-slot, .skill-slot-btn,
+.town-hall-tag, .town-harvest-bubble, .town-disc-chip, .town-plaza-chip,
+.panel-tab, .btn-wuxia, .btn-close-panel, .fd-start-btn, .fd-newgame-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.hud-layer, #town-tags-layer, #front-door, .panel-header, .panel-tabs {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.fh-menu-btn:active, .fh-cont-card:active, .fh-mini-pill:active,
+.skill-slot-btn:active, .panel-tab:active, .btn-wuxia:active,
+.town-disc-chip:active, .town-plaza-chip:active, .town-harvest-bubble:active,
+.fh-guide-card:active, .fh-online-pill:active, .fh-mail-btn:active, .fh-burger-btn:active {
+  transform: scale(0.95);
+  filter: brightness(0.94);
+}
+@media (hover: none) {
+  .fh-cont-card:hover, .fh-menu-btn:hover, .tm-swform-btn:hover, .fd-start-btn:hover {
+    transform: none;
+  }
+}
+
+.fh-menu-btn img, .fh-menu-btn span,
+.fh-cont-card img, .fh-cont-card span,
+.skill-slot-btn img, .skill-slot-btn span, .skill-cd-mask, .ult-charge-ring,
+.fh-mini-pill img, .fh-guide-card *, .fh-master-cluster * {
+  pointer-events: none;
+}
 .hidden {
   display: none !important;
 }
@@ -3027,14 +3059,14 @@ button, .fh-stage-plate, .fh-sect-name, .fh-power-val, .fh-kills-txt, .fh-res-pi
     height: 58px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
+    touch-action: pan-x;
     justify-content: flex-start;
     gap: 4px;
     padding: 4px 6px;
     border-radius: 14px;
     box-shadow: inset -14px 0 12px -10px rgba(72, 240, 200, 0.35), 0 6px 18px rgba(0, 0, 0, 0.5);
   }
-  .fh-menu-btn { min-width: 54px; width: 54px; height: 48px; flex-shrink: 0; padding: 2px; scroll-snap-align: start; }
+  .fh-menu-btn { min-width: 54px; width: 54px; height: 48px; flex-shrink: 0; padding: 2px; touch-action: pan-x; }
   .fh-menu-btn img { width: 28px; height: 28px; }
   .fh-menu-btn span { font-size: 9.5px; }
 

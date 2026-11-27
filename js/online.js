@@ -181,7 +181,11 @@ class OnlineClient {
   }
 
   wsSend(obj) {
-    if (this.fb) { this.fb.wsSend(obj); return true; }
+    if (this.fb) {
+      if (!this.fb.uid()) return false;
+      Promise.resolve(this.fb.wsSend(obj)).catch(err => console.warn('[fb wsSend]', err));
+      return true;
+    }
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(obj));
       return true;

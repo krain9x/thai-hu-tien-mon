@@ -74,6 +74,7 @@
       this.lastPlazaSend = 0;
       this.startedCoopId = null;
       this.startedPkId = null;
+      this.lastPkHp = {};
       this.seededDone = false;
     }
 
@@ -82,11 +83,10 @@
     }
 
     async ensureSeeded() {
-      if (this.seededDone) return;
-      this.seededDone = true;
+      if (this.seededDone || !this.auth.currentUser) return;
       try {
         const wbSnap = await this.db.collection('tm_meta').doc('world_boss').get();
-        if (wbSnap.exists) return;
+        if (wbSnap.exists) { this.seededDone = true; return; }
         const now = Date.now() / 1000;
         const batch = this.db.batch();
         batch.set(this.db.collection('tm_meta').doc('world_boss'), {
@@ -152,6 +152,7 @@
           realm_name: 'Hệ Thống', text: '🌟 Cụm Tiên Giới Firebase Cloud đã khai mở! Chư vị đạo hữu có thể lưu tiến độ vĩnh viễn và lập tổ đội ngay!', created_at: now - 30
         });
         await batch.commit();
+        this.seededDone = true;
       } catch (_) {}
     }
 
@@ -247,10 +248,12 @@
       // 5. Real-time PK Invites & Active PK Rooms
       this.unsubs.push(
         this.db.collection('tm_pk_invites').where('to_id', '==', myUid).onSnapshot(snap => {
+          const nowS = Date.now() / 1000;
           snap.docChanges().forEach(ch => {
             if (ch.type === 'added') {
               const inv = ch.doc.data();
-              if (inv.status === 'pending' && this.client.onPkInvite) {
+              const age = nowS - (inv.created_at || 0);
+              if (inv.status === 'pending' && age < 120 && this.client.onPkInvite) {
                 this.client.onPkInvite({ inviteId: ch.doc.id, from: inv.from });
               }
             }
@@ -258,13 +261,14 @@
         }, () => {})
       );
       this.unsubs.push(
-        this.db.collection('tm_pk_rooms').limit(20).onSnapshot(snap => {
+        this.db.collection('tm_pk_rooms').where('ended', '==', false).limit(20).onSnapshot(snap => {
           for (const d of snap.docs) {
             const rm = d.data();
             if (rm.p1 !== myUid && rm.p2 !== myUid) continue;
             const oppId = rm.p1 === myUid ? rm.p2 : rm.p1;
             if (!rm.ended && this.startedPkId !== d.id) {
               this.startedPkId = d.id;
+              this.lastPkHp[d.id] = { ...(rm.hp || {}) };
               if (this.client.onPkStart) {
                 this.client.onPkStart({
                   roomId: d.id, side: rm.p1 === myUid ? 0 : 1,
@@ -276,13 +280,24 @@
               this.client.onPkOppState({ roomId: d.id, ...rm.states[oppId] });
             }
             if (!rm.ended && rm.hp && this.client.onPkHit) {
-              this.client.onPkHit({ roomId: d.id, hpMap: rm.hp, dmg: 0, targetId: myUid });
+              const prevHp = this.lastPkHp[d.id] || {};
+              const myDrop = Math.max(0, (prevHp[myUid] || 0) - (rm.hp[myUid] || 0));
+              const oppDrop = Math.max(0, (prevHp[oppId] || 0) - (rm.hp[oppId] || 0));
+              this.lastPkHp[d.id] = { ...(rm.hp || {}) };
+              if (myDrop > 0 || oppDrop > 0) {
+                const targetId = myDrop >= oppDrop ? myUid : oppId;
+                this.client.onPkHit({ roomId: d.id, hpMap: rm.hp, dmg: Math.max(myDrop, oppDrop), targetId });
+              }
             }
             if (rm.ended && this.startedPkId === d.id) {
               this.startedPkId = null;
+              delete this.lastPkHp[d.id];
               const win = rm.winner_id === myUid;
+              const nextScore = Math.max(100, (this.client.user.arena_score || 1000) + (win ? 35 : -18));
+              this.client.user.arena_score = nextScore;
+              this.db.collection('tm_users').doc(myUid).update({ arena_score: nextScore }).catch(() => {});
               if (this.client.onPkEnd) {
-                this.client.onPkEnd({ roomId: d.id, win, scoreDelta: win ? 35 : -18, honor: win ? 35 : 10, newScore: (this.client.user.arena_score || 1000) + (win ? 35 : -18) });
+                this.client.onPkEnd({ roomId: d.id, win, scoreDelta: win ? 35 : -18, honor: win ? 35 : 10, newScore: nextScore });
               }
             }
           }
@@ -321,21 +336,29 @@
     }
 
     async tryAutoLogin() {
-      await this.ensureSeeded();
       return new Promise(resolve => {
         const unsub = this.auth.onAuthStateChanged(async fbUser => {
           unsub();
           if (!fbUser) { resolve(null); return; }
-          const res = await this.loadMe(fbUser.uid);
-          resolve(res);
+          try {
+            const res = await this.loadMe(fbUser.uid);
+            resolve(res && res.ok ? res : null);
+          } catch (_) {
+            resolve(null);
+          }
         });
       });
     }
 
     async loadMe(uid) {
+      await this.ensureSeeded();
       const uDoc = await this.db.collection('tm_users').doc(uid).get();
       if (!uDoc.exists) return null;
       const u = uDoc.data();
+      if (u.banned) {
+        try { await this.auth.signOut(); } catch (_) {}
+        return { ok: false, error: 'Tài khoản đã bị khóa bởi Thiên Đạo GM!' };
+      }
       const sDoc = await this.db.collection('tm_saves').doc(uid).get();
       const st = sDoc.exists ? (sDoc.data().state || null) : null;
       const gDoc = u.guild_id ? await this.db.collection('tm_guilds').doc(u.guild_id).get() : null;
@@ -366,18 +389,19 @@
     }
 
     async register(username, password, sectName, initialState = null) {
-      await this.ensureSeeded();
       const uname = String(username || '').trim().toLowerCase();
       if (!uname || uname.length < 3 || uname.length > 20 || !/^[a-z0-9_]+$/.test(uname)) {
         return { ok: false, error: 'Tên đạo hiệu dài 3–20 ký tự, chỉ gồm chữ không dấu / số / _!' };
       }
+      if (['admin', 'administrator', 'gm', 'system', 'mod', 'moderator'].includes(uname)) {
+        return { ok: false, error: 'Đạo hiệu này thuộc về hệ thống, vui lòng chọn tên khác!' };
+      }
       if (!password || password.length < 6) {
         return { ok: false, error: 'Mật khẩu tối thiểu 6 ký tự trên hệ thống Cloud!' };
       }
-      const existing = await this.db.collection('tm_users').where('username', '==', uname).limit(1).get();
-      if (!existing.empty) return { ok: false, error: 'Đạo hiệu này đã tồn tại!' };
-
       try {
+        const existing = await this.db.collection('tm_users').where('username', '==', uname).limit(1).get();
+        if (!existing.empty) return { ok: false, error: 'Đạo hiệu này đã tồn tại!' };
         const cred = await this.auth.createUserWithEmailAndPassword(`${uname}@tienmon.local`, password);
         const uid = cred.user.uid;
         const now = Date.now() / 1000;
@@ -409,11 +433,12 @@
     }
 
     async login(username, password) {
-      await this.ensureSeeded();
       const uname = String(username || '').trim().toLowerCase();
       try {
         const cred = await this.auth.signInWithEmailAndPassword(`${uname}@tienmon.local`, password);
-        return await this.loadMe(cred.user.uid);
+        const me = await this.loadMe(cred.user.uid);
+        if (!me) return { ok: false, error: 'Không tìm thấy hồ sơ đạo hữu trên Cloud!' };
+        return me;
       } catch (err) {
         return { ok: false, error: 'Sai tên Đạo Hiệu hoặc mật khẩu!' };
       }
@@ -788,20 +813,35 @@
 
       if (cleanPath === '/api/guilds/join') {
         if (!uid || !u) return { ok: false, error: 'Unauthorized' };
+        if (u.guild_id) return { ok: false, error: 'Bạn đã ở trong Liên Minh rồi!' };
         const gid = String(body.guildId);
         const gRef = this.db.collection('tm_guilds').doc(gid);
-        const gDoc = await gRef.get();
-        if (!gDoc.exists) return { ok: false, error: 'Minh không tồn tại!' };
-        const g = gDoc.data();
-        await gRef.update({ member_count: (g.member_count || 1) + 1 });
-        await this.db.collection('tm_users').doc(uid).update({ guild_id: gid, guild_name: g.name, guild_tag: g.tag });
-        u.guild_id = gid; u.guild_name = g.name; u.guild_tag = g.tag;
-        this.client.myGuild = g;
+        let errMsg = null, gJoined = null;
+        await this.db.runTransaction(async tx => {
+          const gDoc = await tx.get(gRef);
+          if (!gDoc.exists) { errMsg = 'Minh không tồn tại!'; return; }
+          const g = gDoc.data();
+          if ((g.member_count || 1) >= 30) { errMsg = 'Liên Minh đã đủ tối đa 30 thành viên!'; return; }
+          tx.update(gRef, { member_count: (g.member_count || 1) + 1 });
+          gJoined = { ...g, member_count: (g.member_count || 1) + 1 };
+        });
+        if (errMsg) return { ok: false, error: errMsg };
+        await this.db.collection('tm_users').doc(uid).update({ guild_id: gid, guild_name: gJoined.name, guild_tag: gJoined.tag });
+        u.guild_id = gid; u.guild_name = gJoined.name; u.guild_tag = gJoined.tag;
+        this.client.myGuild = gJoined;
         return { ok: true };
       }
 
       if (cleanPath === '/api/guilds/leave') {
         if (!uid || !u) return { ok: false, error: 'Unauthorized' };
+        const oldGid = u.guild_id;
+        if (oldGid) {
+          const gRef = this.db.collection('tm_guilds').doc(oldGid);
+          await this.db.runTransaction(async tx => {
+            const gDoc = await tx.get(gRef);
+            if (gDoc.exists) tx.update(gRef, { member_count: Math.max(0, (gDoc.data().member_count || 1) - 1) });
+          }).catch(() => {});
+        }
         await this.db.collection('tm_users').doc(uid).update({ guild_id: null, guild_name: '', guild_tag: '' });
         u.guild_id = null; u.guild_name = ''; u.guild_tag = '';
         this.client.myGuild = null;
@@ -812,21 +852,39 @@
         if (!uid || !u || !u.guild_id) return { ok: false, error: 'Bạn chưa vào Liên Minh!' };
         const ref = this.db.collection('tm_guilds').doc(u.guild_id);
         const doc = await ref.get();
+        if (!doc.exists) return { ok: false, error: 'Liên Minh không tồn tại!' };
         const g = doc.data();
         if (body.kind === 'donate') {
-          await ref.update({ exp: (g.exp || 0) + 50, week_score: (g.week_score || 0) + 60 });
+          await ref.update({ exp: (g.exp || 0) + 50, week_score: (g.week_score || 0) + 350 });
           return { ok: true, merit: 25 };
+        }
+        if (body.kind === 'cheer') {
+          await ref.update({ exp: (g.exp || 0) + 30, week_score: (g.week_score || 0) + 250 });
+          return { ok: true, merit: 15 };
+        }
+        if (body.kind === 'boss_hit') {
+          const dmg = Math.max(1000, Math.min(250000, Number(body.dmg) || Math.round((u.power || 500) * 1.8)));
+          const newHp = (g.boss_hp || g.boss_max_hp || 160000) - dmg;
+          if (newHp <= 0) {
+            const nextLv = (g.boss_lv || 1) + 1;
+            const nextMax = Math.round(160000 * Math.pow(1.45, nextLv - 1));
+            await ref.update({ boss_lv: nextLv, boss_hp: nextMax, boss_max_hp: nextMax, week_score: (g.week_score || 0) + 1200 });
+            return { ok: true, dmg, killed: true, bossLv: nextLv, hp: nextMax, maxHp: nextMax, rewards: { jade: 35, essence: 6 } };
+          }
+          await ref.update({ boss_hp: newHp, week_score: (g.week_score || 0) + 120 });
+          return { ok: true, dmg, killed: false, bossLv: g.boss_lv || 1, hp: newHp, maxHp: g.boss_max_hp || 160000 };
         }
         if (body.kind === 'upgrade_bld') {
           const bld = g.bld || { hall: 1, yard: 1, store: 1 };
           const bid = body.bldId || 'hall';
-          const need = (bld[bid] || 1) * 150;
+          const lv = bld[bid] || 1;
+          const need = Math.min(2000, lv * 150);
           if ((g.exp || 0) < need) return { ok: false, error: `Cần ${need} EXP Minh Hội!` };
-          bld[bid] = (bld[bid] || 1) + 1;
+          bld[bid] = lv + 1;
           await ref.update({ exp: g.exp - need, bld });
           return { ok: true, bld };
         }
-        return { ok: true };
+        return { ok: false, error: 'Thao tác Minh Hội không hợp lệ!' };
       }
 
       if (cleanPath === '/api/guildwar') {
@@ -879,8 +937,12 @@
           const v = d.data();
           const cKey = `${uid}_${d.id}_${today}`;
           const cRef = this.db.collection('tm_vein_claims').doc(cKey);
-          if (!(await cRef.get()).exists) {
-            await cRef.set({ user_id: uid, vein_id: d.id, day_key: today });
+          const claimedNow = await this.db.runTransaction(async tx => {
+            if ((await tx.get(cRef)).exists) return false;
+            tx.set(cRef, { user_id: uid, vein_id: d.id, day_key: today });
+            return true;
+          }).catch(() => false);
+          if (claimedNow) {
             jade += v.reward_jade || 0;
             essence += v.reward_essence || 0;
             names.push(v.name);
@@ -923,10 +985,17 @@
       if (cleanPath === '/api/market/cancel') {
         if (!uid) return { ok: false, error: 'Unauthorized' };
         const ref = this.db.collection('tm_market').doc(String(body.listingId));
-        const d = await ref.get();
-        if (!d.exists || d.data().seller_id !== uid || d.data().status !== 'open') return { ok: false, error: 'Không thể thu hồi!' };
-        await ref.update({ status: 'cancelled' });
-        return { ok: true, itemType: d.data().item_type, qty: d.data().qty };
+        let res = null;
+        await this.db.runTransaction(async tx => {
+          const d = await tx.get(ref);
+          if (!d.exists || d.data().seller_id !== uid || d.data().status !== 'open') {
+            res = { ok: false, error: 'Không thể thu hồi!' };
+            return;
+          }
+          tx.update(ref, { status: 'cancelled' });
+          res = { ok: true, itemType: d.data().item_type, qty: d.data().qty };
+        });
+        return res;
       }
 
       if (cleanPath === '/api/friends') {
@@ -1029,11 +1098,16 @@
         if (!uid) return { ok: false, error: 'Unauthorized' };
         const pack = TOPUP_PACKS.find(p => p.id === body.packId);
         if (!pack) return { ok: false, error: 'Gói nạp không hợp lệ!' };
+        if (pack.once) {
+          const bPre = (await this.db.collection('tm_billing').doc(uid).get()).data() || {};
+          if (bPre.firstPacks && bPre.firstPacks[pack.id]) return { ok: false, error: 'Gói giới hạn 1 lần này bạn đã sở hữu rồi!' };
+        }
         const code = `TH${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
         const ord = {
           order_code: code, orderCode: code, user_id: uid, pack_id: pack.id, pack_name: pack.name,
           amount_vnd: pack.vnd, method: body.method || 'vietqr',
-          transferContent: `NAP ${code}`, qrImageUrl: `https://img.vietqr.io/image/MB-0988886688-compact2.png?amount=${pack.vnd}&addInfo=${encodeURIComponent('NAP ' + code)}`,
+          transferNote: `NAP ${code}`, transferContent: `NAP ${code}`,
+          qrImageUrl: `https://img.vietqr.io/image/MB-0988886688-compact2.png?amount=${pack.vnd}&addInfo=${encodeURIComponent('NAP ' + code)}`,
           status: 'pending', created_at: now
         };
         await this.db.collection('tm_orders').doc(code).set(ord);
@@ -1043,31 +1117,43 @@
       if (cleanPath === '/api/topup/confirm') {
         if (!uid) return { ok: false, error: 'Unauthorized' };
         const ordRef = this.db.collection('tm_orders').doc(String(body.orderCode));
-        const oDoc = await ordRef.get();
-        if (!oDoc.exists || oDoc.data().status === 'paid') return { ok: false, error: 'Đơn hàng không hợp lệ hoặc đã thanh toán!' };
-        const ord = oDoc.data();
-        const pack = TOPUP_PACKS.find(p => p.id === ord.pack_id);
         const bRef = this.db.collection('tm_billing').doc(uid);
-        const bDoc = await bRef.get();
-        const b = bDoc.exists ? bDoc.data() : { total_vnd: 0, vip_exp: 0, vip_lv: 0, first_topup_claimed: 0, firstPacks: {}, vipClaimed: {}, pass_30_until: 0 };
-        const isFirst = !!(pack.firstX2 && !(b.firstPacks && b.firstPacks[pack.id]));
-        const bonusJade = isFirst ? pack.jade : 0;
-        const firstPacks = { ...(b.firstPacks || {}), ...(isFirst || pack.once ? { [pack.id]: true } : {}) };
-        const newExp = (b.vip_exp || 0) + (pack.vipExp || 0);
-        const newVip = calcVipLv(newExp);
-        const passUntil = pack.passDays ? Math.max(now, b.pass_30_until || 0) + pack.passDays * 86400 : (b.pass_30_until || 0);
-        await bRef.set({
-          ...b, total_vnd: (b.total_vnd || 0) + pack.vnd, vip_exp: newExp, vip_lv: newVip,
-          firstPacks, pass_30_until: passUntil, no_ads: pack.noAds ? 1 : (b.no_ads || 0), season_pass: pack.seasonPass ? 1 : (b.season_pass || 0)
-        }, { merge: true });
-        await ordRef.update({ status: 'paid', jade_granted: pack.jade, bonus_jade: bonusJade, paid_at: now });
-        await this.db.collection('tm_users').doc(uid).update({ vip_lv: newVip });
-        if (u) u.vip_lv = newVip;
-        const rewards = { jade: pack.jade + bonusJade };
-        if (pack.coin) rewards.coin = pack.coin;
-        if (pack.pill) rewards.pill = pack.pill;
-        if (pack.scroll) rewards.scroll = pack.scroll;
-        return { ok: true, rewards, bonusJade, unlockFlags: { vipLv: newVip, seasonPass: !!pack.seasonPass, noAds: !!pack.noAds, passDaysLeft: passUntil > now ? 30 : 0 } };
+        let out = null;
+        await this.db.runTransaction(async tx => {
+          const oDoc = await tx.get(ordRef);
+          if (!oDoc.exists || oDoc.data().user_id !== uid || oDoc.data().status === 'paid') {
+            out = { ok: false, error: 'Đơn hàng không hợp lệ hoặc đã thanh toán!' };
+            return;
+          }
+          const ord = oDoc.data();
+          const pack = TOPUP_PACKS.find(p => p.id === ord.pack_id);
+          if (!pack) { out = { ok: false, error: 'Gói không hợp lệ!' }; return; }
+          const bDoc = await tx.get(bRef);
+          const b = bDoc.exists ? bDoc.data() : { total_vnd: 0, vip_exp: 0, vip_lv: 0, first_topup_claimed: 0, firstPacks: {}, vipClaimed: {}, pass_30_until: 0 };
+          if (pack.once && b.firstPacks && b.firstPacks[pack.id]) {
+            out = { ok: false, error: 'Gói giới hạn 1 lần này đã được kích hoạt trước đó!' };
+            return;
+          }
+          const isFirst = !!(pack.firstX2 && !(b.firstPacks && b.firstPacks[pack.id]));
+          const bonusJade = isFirst ? pack.jade : 0;
+          const firstPacks = { ...(b.firstPacks || {}), ...(isFirst || pack.once ? { [pack.id]: true } : {}) };
+          const newExp = (b.vip_exp || 0) + (pack.vipExp || 0);
+          const newVip = calcVipLv(newExp);
+          const passUntil = pack.passDays ? Math.max(now, b.pass_30_until || 0) + pack.passDays * 86400 : (b.pass_30_until || 0);
+          tx.set(bRef, {
+            ...b, total_vnd: (b.total_vnd || 0) + pack.vnd, vip_exp: newExp, vip_lv: newVip,
+            firstPacks, pass_30_until: passUntil, no_ads: pack.noAds ? 1 : (b.no_ads || 0), season_pass: pack.seasonPass ? 1 : (b.season_pass || 0)
+          }, { merge: true });
+          tx.update(ordRef, { status: 'paid', jade_granted: pack.jade, bonus_jade: bonusJade, paid_at: now });
+          tx.update(this.db.collection('tm_users').doc(uid), { vip_lv: newVip });
+          if (u) u.vip_lv = newVip;
+          const rewards = { jade: pack.jade + bonusJade };
+          if (pack.coin) rewards.coin = pack.coin;
+          if (pack.pill) rewards.pill = pack.pill;
+          if (pack.scroll) rewards.scroll = pack.scroll;
+          out = { ok: true, rewards, bonusJade, unlockFlags: { vipLv: newVip, seasonPass: !!pack.seasonPass, noAds: !!pack.noAds, passDaysLeft: passUntil > now ? 30 : 0 } };
+        });
+        return out;
       }
 
       if (cleanPath === '/api/topup/claim_first') {
@@ -1109,7 +1195,7 @@
           const dGc = await this.db.collection('tm_giftcodes').doc(code).get();
           if (dGc.exists) {
             const gData = dGc.data();
-            if ((gData.used_count || 0) < (gData.max_uses || 99999)) {
+            if ((!gData.expires_at || now < gData.expires_at) && (gData.used_count || 0) < (gData.max_uses || 99999)) {
               gc = { title: gData.title || code, rewards: gData.rewards || {}, _ref: dGc.ref, _used: gData.used_count || 0 };
             }
           }
