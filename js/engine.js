@@ -142,52 +142,79 @@ const TT_CHAPTER_MOBS = [
   ]
 ];
 
-// ==================== 3 PHÁP BẢO 3D HỘ THÂN (KỸ SƯ HIỆN ĐẠI × TU TIÊN) ====================
+// ==================== 3 PHÁP BẢO 3D HỘ THÂN (CỔNG CẢNH GIỚI × ĐỘT PHÁ TẾ LUYỆN × TAM TÀI CỘNG HƯỞNG) ====================
 const ARTIFACTS_DEF = [
   {
     id: 'mirror',
     name: 'Thái Hư Kim Chung',
     tier: 'Kim Chung Hộ Thể',
+    maxLv: 15,
     img: 'art_mirror',
     color: '#ffd966',
     desc: 'Kim Chung tiên gia xoay quanh Tông Chủ, mỗi 8.5 giây tạo Hộ Thuẫn Linh Lực hấp thụ sát thương & chống Thiên Kiếp.',
     statTxt: (lv) => `+${lv * 10}% Thủ · Tạo Hộ Thuẫn ${14 + lv * 4}% Máu tối đa`,
-    cost: (lv) => ({ coin: 220 * (lv + 1), herb: 8 * (lv + 1), core: 5 * (lv + 1) })
+    awakeTxt: 'Lv.5: Hồi +5 Linh Khí khi kích · Lv.10: Chấn Sóng Kim Chung (150% Thủ + Choáng 0.8s)',
+    cost: (lv) => {
+      const n = lv + 1;
+      const base = { coin: Math.round(320 * Math.pow(n, 1.38)), herb: 8 + Math.round(n * 3.5), core: 6 + Math.round(n * 2.8), essence: n >= 4 ? n * 3 : 0, chaosShard: 0, pill: 0 };
+      if (lv === 4) { base.essence = 18; base.pill = 1; }
+      else if (lv === 9) { base.essence = 55; base.chaosShard = 3; base.pill = 2; }
+      else if (lv >= 10) { base.essence = 22 + n * 4; base.chaosShard = (lv % 2 === 0) ? 1 : 0; }
+      return base;
+    }
   },
   {
     id: 'orb',
     name: 'Tử Tiêu Lôi Đăng',
     tier: 'Lôi Điện Cảm Ứng',
+    maxLv: 15,
     img: 'art_orb',
     color: '#b584ff',
     desc: 'Linh đăng Tử Tiêu xoay vòng bên người, mỗi 5.2 giây dẫn Cửu Thiên Thần Lôi 3D giáng thẳng xuống tối đa 3 yêu thú và gây Choáng.',
     statTxt: (lv) => `+${lv * 3}% Bạo Kích · Giáng Lôi 3D (${Math.round((1.65 + lv * 0.35) * 100)}% Công)`,
-    cost: (lv) => ({ coin: 280 * (lv + 1), herb: 10 * (lv + 1), core: 7 * (lv + 1) })
+    awakeTxt: 'Lv.5: Sét gây Phá Giáp -25% Thủ · Lv.10: Rút ngắn 0.5s hồi toàn bộ Tiên Pháp',
+    cost: (lv) => {
+      const n = lv + 1;
+      const base = { coin: Math.round(400 * Math.pow(n, 1.38)), herb: 10 + Math.round(n * 4), core: 8 + Math.round(n * 3.2), essence: n >= 4 ? n * 4 : 0, chaosShard: 0, pill: 0 };
+      if (lv === 4) { base.essence = 22; base.pill = 1; }
+      else if (lv === 9) { base.essence = 60; base.chaosShard = 3; base.pill = 2; }
+      else if (lv >= 10) { base.essence = 25 + n * 4; base.chaosShard = (lv % 2 === 0) ? 1 : 0; }
+      return base;
+    }
   },
   {
     id: 'furnace',
     name: 'Hồng Liên Nghiệp Hỏa',
     tier: 'Hồng Liên Hồi Phục',
+    maxLv: 15,
     img: 'art_furnace',
     color: '#ff7038',
     desc: 'Đài sen Hồng Liên cháy rực quanh thân, mỗi 7 giây bộc phát hỏa hoàn thiêu đốt yêu thú và hồi Sinh Lực cho toàn bộ Đệ Tử.',
     statTxt: (lv) => `+${lv * 8}% Sinh Lực · Hồi ${7 + lv * 2}% Máu toàn đội + Hỏa Hoàn`,
-    cost: (lv) => ({ coin: 260 * (lv + 1), herb: 12 * (lv + 1), core: 6 * (lv + 1) })
+    awakeTxt: 'Lv.5: Hỏa hoàn gây Xuất Huyết · Lv.10: Kích nổ Cuồng Viêm +18% ATK toàn đội 4s',
+    cost: (lv) => {
+      const n = lv + 1;
+      const base = { coin: Math.round(360 * Math.pow(n, 1.38)), herb: 12 + Math.round(n * 4.2), core: 7 + Math.round(n * 3.0), essence: n >= 4 ? n * 3 : 0, chaosShard: 0, pill: 0 };
+      if (lv === 4) { base.essence = 20; base.pill = 1; }
+      else if (lv === 9) { base.essence = 58; base.chaosShard = 3; base.pill = 2; }
+      else if (lv >= 10) { base.essence = 24 + n * 4; base.chaosShard = (lv % 2 === 0) ? 1 : 0; }
+      return base;
+    }
   }
 ];
 
-// ==================== HỆ THỐNG RIÊNG: NGỰ KIẾM TRẬN (PHI BINH SAU LƯNG 0 → 9 CÂY!) ====================
+// ==================== HỆ THỐNG RIÊNG: NGỰ KIẾM TRẬN (PHI BINH SAU LƯNG 0 → 9 CÂY + TẾ LUYỆN TRẬN NHÃN!) ====================
 const SWORD_ARRAY_TIERS = [
-  { lv: 0, name: 'Chưa Khai Mở', count: 0, volley: 0, cd: 0, dmgMul: 0, atkPct: 0, cost: { coin: 0, herb: 0, core: 0 } },
-  { lv: 1, name: 'Nhất Kiếm Ngự Không', count: 1, volley: 1, cd: 1.65, dmgMul: 1.25, atkPct: 6, cost: { coin: 160, herb: 6, core: 4 } },
-  { lv: 2, name: 'Song Kiếm Hợp Bích', count: 2, volley: 1, cd: 1.50, dmgMul: 1.40, atkPct: 12, cost: { coin: 260, herb: 9, core: 6 } },
-  { lv: 3, name: 'Tam Tài Kiếm Trận', count: 3, volley: 2, cd: 1.38, dmgMul: 1.55, atkPct: 18, cost: { coin: 380, herb: 12, core: 9 } },
-  { lv: 4, name: 'Tứ Tượng Kiếm Trận', count: 4, volley: 2, cd: 1.28, dmgMul: 1.72, atkPct: 24, cost: { coin: 520, herb: 16, core: 12 } },
-  { lv: 5, name: 'Ngũ Hành Kiếm Trận', count: 5, volley: 2, cd: 1.18, dmgMul: 1.90, atkPct: 32, cost: { coin: 700, herb: 20, core: 16 } },
-  { lv: 6, name: 'Lục Hợp Kiếm Trận', count: 6, volley: 3, cd: 1.08, dmgMul: 2.10, atkPct: 40, cost: { coin: 920, herb: 25, core: 20 } },
-  { lv: 7, name: 'Thất Tinh Bắc Đẩu Trận', count: 7, volley: 3, cd: 0.98, dmgMul: 2.35, atkPct: 50, cost: { coin: 1200, herb: 32, core: 26 } },
-  { lv: 8, name: 'Bát Quái Chu Thiên Trận', count: 8, volley: 3, cd: 0.90, dmgMul: 2.60, atkPct: 60, cost: { coin: 1550, herb: 40, core: 32 } },
-  { lv: 9, name: 'Cửu Kiếm Quy Tông Đại Trận', count: 9, volley: 4, cd: 0.80, dmgMul: 3.00, atkPct: 75, cost: { coin: 2000, herb: 50, core: 42 } }
+  { lv: 0, name: 'Chưa Khai Mở',             count: 0, volley: 0, cd: 0,    dmgMul: 0,    atkPct: 0,  reqRealm: 0, reqStage: 1,  reqTower: 0,  cost: { coin: 0, herb: 0, core: 0, essence: 0, chaosShard: 0, pill: 0 }, awake: '' },
+  { lv: 1, name: 'Nhất Kiếm Ngự Không',      count: 1, volley: 1, cd: 1.65, dmgMul: 1.25, atkPct: 6,  reqRealm: 0, reqStage: 1,  reqTower: 0,  cost: { coin: 450,   herb: 10,  core: 6,   essence: 0,   chaosShard: 0, pill: 0 }, awake: '' },
+  { lv: 2, name: 'Song Kiếm Hợp Bích',       count: 2, volley: 1, cd: 1.50, dmgMul: 1.40, atkPct: 12, reqRealm: 1, reqStage: 4,  reqTower: 0,  cost: { coin: 1100,  herb: 22,  core: 14,  essence: 0,   chaosShard: 0, pill: 0 }, awake: '' },
+  { lv: 3, name: 'Tam Tài Kiếm Trận',        count: 3, volley: 2, cd: 1.38, dmgMul: 1.58, atkPct: 18, reqRealm: 1, reqStage: 8,  reqTower: 0,  cost: { coin: 2200,  herb: 36,  core: 24,  essence: 8,   chaosShard: 0, pill: 0 }, awake: 'Thần Thông I: Phi Kiếm tích Kiếm Ngân (+Bạo Kích)' },
+  { lv: 4, name: 'Tứ Tượng Kiếm Trận',       count: 4, volley: 2, cd: 1.28, dmgMul: 1.78, atkPct: 26, reqRealm: 2, reqStage: 12, reqTower: 0,  cost: { coin: 3800,  herb: 52,  core: 38,  essence: 18,  chaosShard: 0, pill: 1 }, awake: '' },
+  { lv: 5, name: 'Ngũ Hành Kiếm Trận',       count: 5, volley: 2, cd: 1.18, dmgMul: 2.00, atkPct: 35, reqRealm: 2, reqStage: 18, reqTower: 0,  cost: { coin: 6200,  herb: 75,  core: 55,  essence: 32,  chaosShard: 0, pill: 1 }, awake: '' },
+  { lv: 6, name: 'Lục Hợp Kiếm Trận',        count: 6, volley: 3, cd: 1.08, dmgMul: 2.25, atkPct: 45, reqRealm: 3, reqStage: 24, reqTower: 6,  cost: { coin: 9500,  herb: 100, core: 78,  essence: 48,  chaosShard: 0, pill: 2 }, awake: 'Thần Thông II: Phi Kiếm luôn Phá Giáp (-25% Thủ 4s)' },
+  { lv: 7, name: 'Thất Tinh Bắc Đẩu Trận',   count: 7, volley: 3, cd: 0.98, dmgMul: 2.55, atkPct: 56, reqRealm: 4, reqStage: 32, reqTower: 10, cost: { coin: 14500, herb: 135, core: 105, essence: 70,  chaosShard: 2, pill: 2 }, awake: '' },
+  { lv: 8, name: 'Bát Quái Chu Thiên Trận',  count: 8, volley: 3, cd: 0.90, dmgMul: 2.88, atkPct: 68, reqRealm: 4, reqStage: 38, reqTower: 14, cost: { coin: 22000, herb: 175, core: 140, essence: 95,  chaosShard: 4, pill: 3 }, awake: '' },
+  { lv: 9, name: 'Cửu Kiếm Quy Tông Đại Trận', count: 9, volley: 4, cd: 0.80, dmgMul: 3.30, atkPct: 85, reqRealm: 5, reqStage: 42, reqTower: 18, cost: { coin: 34000, herb: 240, core: 190, essence: 135, chaosShard: 7, pill: 4 }, awake: 'Thần Thông III: Mỗi 5 lượt giáng Cửu Kiếm Thiên Trảm 260% AoE' }
 ];
 
 // 3 Trận Hình Ngự Kiếm Trận (đổi tư thế 3D sau lưng + cơ chế chiến đấu riêng!)
@@ -201,27 +228,57 @@ const SWORD_ARRAY_FORMATIONS = [
 const SPIRIT_PETS_DEF = [
   {
     id: 'jiuwei', name: 'Tiên Hoa Ngọc Thỏ', grade: 'Linh Phẩm', stars: '★★', rarity: 'rarity-linh', gradeCol: '#38b27a', elem: 'Linh · Hồi Phục & Rơi Đồ', color: '#ff8cc8',
+    reqRealm: 0, reqStage: 1, reqTower: 0,
     desc: 'Linh thú nhập môn dễ khế ước nhất — Ngọc Thỏ đội tiên hoa nhảy nhót tụ linh khí, tăng sản lượng rơi đồ & hồi Máu toàn đội mỗi 6.5s.',
-    statTxt: (lv) => `+${15 + lv * 4}% Tỉ Lệ Rơi · Hồi ${5 + lv}% Máu toàn đội / 6.5s`,
-    cost: (lv) => ({ coin: 160 * (lv + 1), herb: 4 * (lv + 1), core: 3 * (lv + 1) })
+    statTxt: (lv) => `+${15 + lv * 4}% Tỉ Lệ Rơi · Hồi ${5 + lv}% Máu toàn đội / ${lv >= 5 ? '5.2s' : '6.5s'}${lv >= 10 ? ' (+6 Linh Khí)' : ''}`,
+    cost: (lv) => {
+      const n = lv + 1;
+      const b = { coin: Math.round(240 * Math.pow(n, 1.32)), herb: 6 + n * 3, core: 4 + n * 2, essence: n >= 5 ? n * 2 : 0, chaosShard: 0, pill: 0 };
+      if (lv === 4) { b.essence = 15; b.pill = 1; }
+      else if (lv === 9) { b.essence = 45; b.chaosShard = 1; b.pill = 2; }
+      return b;
+    }
   },
   {
     id: 'qingluan', name: 'Thanh Ngọc Tuyết Cú', grade: 'Địa Phẩm', stars: '★★★', rarity: 'rarity-dia', gradeCol: '#2da8e8', elem: 'Phong · Tiên Hỏa', color: '#42ffe8',
-    desc: 'Linh điểu Địa Phẩm tốc độ linh hoạt, tăng Tấn Công & mỗi 4.5s phóng 3 lông vũ thanh hỏa thiêu đốt yêu thú.',
-    statTxt: (lv) => `+${lv * 4}% Công · Phóng 3 Hỏa Vũ (${Math.round((1.15 + lv * 0.22) * 100)}% Công / 4.5s)`,
-    cost: (lv) => ({ coin: 260 * (lv + 1), herb: 7 * (lv + 1), core: 6 * (lv + 1) })
+    reqRealm: 2, reqStage: 10, reqTower: 0,
+    desc: 'Linh điểu Địa Phẩm tốc độ linh hoạt, tăng Tấn Công & mỗi 4.5s phóng lông vũ thanh hỏa thiêu đốt yêu thú.',
+    statTxt: (lv) => `+${lv * 4}% Công · Phóng ${lv >= 10 ? 5 : 3} Hỏa Vũ (${Math.round((1.15 + lv * 0.22) * 100)}% Công${lv >= 10 ? ' + Phá Giáp' : ''})`,
+    cost: (lv) => {
+      const n = lv + 1;
+      const b = { coin: Math.round(420 * Math.pow(n, 1.35)), herb: 10 + n * 4, core: 8 + n * 3, essence: n >= 4 ? n * 3 : 0, chaosShard: 0, pill: 0 };
+      if (lv === 4) { b.essence = 22; b.pill = 1; }
+      else if (lv === 9) { b.essence = 55; b.chaosShard = 2; b.pill = 2; }
+      return b;
+    }
   },
   {
     id: 'xuanwu', name: 'Huyền Vũ Cổ Tùng Quy', grade: 'Thiên Phẩm', stars: '★★★★', rarity: 'rarity-thien', gradeCol: '#9b5de5', elem: 'Thổ · Hộ Thuẫn', color: '#52e898',
-    desc: 'Thần thú Thiên Phẩm mang cổ tùng trên mai vững như bàn thạch, tăng mạnh Sinh Lực/Thủ & mỗi 7.5s tạo Hộ Thuẫn Linh Lực dày đặc.',
-    statTxt: (lv) => `+${lv * 6}% Máu & Thủ · Hộ Thuẫn ${12 + Math.round(lv * 2.5)}% Máu / 7.5s`,
-    cost: (lv) => ({ coin: 380 * (lv + 1), herb: 11 * (lv + 1), core: 9 * (lv + 1) })
+    reqRealm: 3, reqStage: 20, reqTower: 6,
+    desc: 'Thần thú Thiên Phẩm mang cổ tùng trên mai vững như bàn thạch, tăng mạnh Sinh Lực/Thủ & tạo Hộ Thuẫn Linh Lực dày đặc.',
+    statTxt: (lv) => `+${lv * 6}% Máu & Thủ · Hộ Thuẫn ${12 + Math.round(lv * 2.5)}% Máu${lv >= 10 ? ' + Chấn Địa 140% Thủ' : ''}`,
+    cost: (lv) => {
+      const n = lv + 1;
+      const b = { coin: Math.round(680 * Math.pow(n, 1.36)), herb: 15 + n * 5, core: 12 + n * 4, essence: n >= 4 ? n * 4 : 0, chaosShard: 0, pill: 0 };
+      if (lv === 4) { b.essence = 32; b.pill = 1; }
+      else if (lv === 9) { b.essence = 75; b.chaosShard = 3; b.pill = 2; }
+      return b;
+    }
   },
   {
     id: 'leilong', name: 'Cửu Tiêu Lôi Kỳ Lân', grade: 'Tiên Phẩm', stars: '★★★★★', rarity: 'rarity-tien', gradeCol: '#e6a817', elem: 'Lôi · Chí Tôn Phá Giáp', color: '#64d8ff',
-    desc: 'Thánh thú Tiên Phẩm tối thượng! Lôi Kỳ Lân lam điện tăng mạnh Công + Bạo Kích & mỗi 4.5s giáng Thiên Lôi diện rộng lên 3 yêu thú, phá giáp cực mạnh!',
-    statTxt: (lv) => `+${lv * 5}% Công · +${(lv * 2.0).toFixed(1)}% Bạo Kích · Thiên Lôi 3 Mục Tiêu (${Math.round((1.8 + lv * 0.35) * 100)}% Công / 4.5s)`,
-    cost: (lv) => ({ coin: 560 * (lv + 1), herb: 16 * (lv + 1), core: 14 * (lv + 1) })
+    reqRealm: 4, reqStage: 30, reqTower: 12,
+    desc: 'Thánh thú Tiên Phẩm tối thượng! Lôi Kỳ Lân lam điện tăng mạnh Công + Bạo Kích & giáng Thiên Lôi diện rộng phá giáp cực mạnh!',
+    statTxt: (lv) => `+${lv * 5}% Công · +${(lv * 2.0).toFixed(1)}% Bạo Kích · Thiên Lôi ${lv >= 10 ? 5 : 3} Mục Tiêu (${Math.round((1.8 + lv * 0.35) * 100)}% Công)`,
+    cost: (lv) => {
+      const n = lv + 1;
+      const b = { coin: Math.round(1050 * Math.pow(n, 1.38)), herb: 22 + n * 6, core: 18 + n * 5, essence: n >= 2 ? n * 5 : 0, chaosShard: 0, pill: 0 };
+      if (lv === 0) { b.essence = 18; b.pill = 1; }
+      else if (lv === 4) { b.essence = 45; b.chaosShard = 2; b.pill = 2; }
+      else if (lv === 9) { b.essence = 95; b.chaosShard = 5; b.pill = 3; }
+      else if (lv >= 10) { b.chaosShard = (lv % 2 === 0) ? 1 : 0; }
+      return b;
+    }
   }
 ];
 
@@ -1392,10 +1449,12 @@ class MurimEngine {
     const plaqueMul = 1 + hangCount * 0.04;
     const art = this.state.artifacts || {};
     const swTier = this.getSwordArrayTier();
-    const artAtkBonus = (swTier.atkPct || 0) / 100;
-    const artDefBonus = ((art.mirror && art.mirror.lv) || 0) * 0.10;
+    const swRefine = (this.state && this.state.swordArray && this.state.swordArray.refine) || 0;
+    const artReso = this.getArtifactResonance ? this.getArtifactResonance() : { pct: 0 };
+    const artAtkBonus = (swTier.atkPct || 0) / 100 + swRefine * 0.03 + (artReso.pct || 0);
+    const artDefBonus = ((art.mirror && art.mirror.lv) || 0) * 0.10 + (artReso.pct || 0);
     const artCritBonus = ((art.orb && art.orb.lv) || 0) * 0.03;
-    const artHpBonus = ((art.furnace && art.furnace.lv) || 0) * 0.08;
+    const artHpBonus = ((art.furnace && art.furnace.lv) || 0) * 0.08 + (artReso.pct || 0);
     const furyMul = (this.state.atkBuffT > 0) ? 1.5 : 1.0;
     const gSum = this.getEquipmentStatTotals();
     const gSet = this.getGearSetBonus();
@@ -1511,6 +1570,42 @@ class MurimEngine {
     return 1.0 + mult;
   }
 
+  getArtifactResonance() {
+    const art = (this.state && this.state.artifacts) || {};
+    const lvs = ['mirror', 'orb', 'furnace'].map(id => (art[id] && art[id].lv) || 0);
+    const minLv = Math.min(...lvs);
+    if (minLv >= 10) return { tier: 3, minLv, name: 'Tam Tài Hộ Đạo Chí Tôn', pct: 0.28 };
+    if (minLv >= 6) return { tier: 2, minLv, name: 'Tam Tài Linh Bảo Tế Luyện', pct: 0.16 };
+    if (minLv >= 3) return { tier: 1, minLv, name: 'Tam Tài Đồng Nguyên', pct: 0.08 };
+    return { tier: 0, minLv, name: 'Chưa Kích Hoạt Tam Tài', pct: 0 };
+  }
+
+  getPetReq(petId, curLv) {
+    const def = SPIRIT_PETS_DEF.find(p => p.id === petId);
+    if (!def) return { unlocked: false, checks: [] };
+    const st = this.state || {};
+    const realms = (this.data && this.data.game && this.data.game.realms) || [];
+    const rName = (idx) => (realms[idx] && realms[idx].name) || `Cảnh Giới ${idx + 1}`;
+    const rIdx = st.realmIdx || 0, maxSt = st.maxStage || 1, bestTw = Math.max(st.towerFloor || 1, st.towerBest || 0);
+    const checks = [];
+    if (curLv === 0 && (def.reqRealm > 0 || def.reqStage > 1 || def.reqTower > 0)) {
+      const ok = rIdx >= def.reqRealm || maxSt >= def.reqStage || (def.reqTower > 0 && bestTw >= def.reqTower);
+      const parts = [rName(def.reqRealm), `Ải ${def.reqStage}`];
+      if (def.reqTower > 0) parts.push(`Tháp ${def.reqTower}`);
+      checks.push({ ok, text: `Khế ước: Đạt ${parts.join(' (hoặc ')}${def.reqTower > 0 ? '))' : ')'}` });
+    } else if (curLv === 4) {
+      const needR = Math.max(1, def.reqRealm + 1);
+      const needS = Math.max(6, def.reqStage + 6);
+      checks.push({ ok: rIdx >= needR || maxSt >= needS, text: `Tiến hóa Thành Thể (Lv.5): ${rName(needR)} hoặc Ải ${needS}` });
+    } else if (curLv === 9) {
+      const needR = Math.min(5, Math.max(3, def.reqRealm + 1));
+      const needS = Math.max(22, def.reqStage + 12);
+      const needT = Math.max(8, def.reqTower + 6);
+      checks.push({ ok: rIdx >= needR || maxSt >= needS || bestTw >= needT, text: `Tiến hóa Thánh Thú (Lv.10): ${rName(needR)} / Ải ${needS} / Tháp ${needT}` });
+    }
+    return { unlocked: checks.every(c => c.ok), checks };
+  }
+
   feedOrUnlockPet(petId) {
     const def = SPIRIT_PETS_DEF.find(p => p.id === petId);
     if (!def) return false;
@@ -1520,15 +1615,26 @@ class MurimEngine {
       this.toast(`${def.name} đã đạt Thánh Thú tối đa (Lv.15)!`);
       return false;
     }
+    const req = this.getPetReq(petId, cur.lv);
+    if (!req.unlocked) {
+      this.toast(`🔒 ${req.checks.map(c => c.text).join(' · ')}`);
+      this.audio.playSfx('ui_deny');
+      return false;
+    }
     const cost = def.cost(cur.lv);
-    if (this.state.coin < cost.coin || (this.state.herb || 0) < cost.herb || (this.state.core || 0) < cost.core) {
-      this.toast(`Thiếu nguyên liệu nuôi Linh Thú! Cần ${cost.coin} Linh Thạch, ${cost.herb} Linh Thảo, ${cost.core} Yêu Đan.`);
+    if (this.state.coin < cost.coin || (this.state.herb || 0) < cost.herb || (this.state.core || 0) < cost.core
+        || (this.state.essence || 0) < (cost.essence || 0) || (this.state.chaosShard || 0) < (cost.chaosShard || 0)
+        || (this.state.pill || 0) < (cost.pill || 0)) {
+      this.toast(`Thiếu nguyên liệu nuôi Linh Thú! Cần ${cost.coin} Linh Thạch, ${cost.herb} Thảo, ${cost.core} Yêu Đan${cost.essence ? `, ${cost.essence} Tinh Thạch` : ''}${cost.chaosShard ? `, ${cost.chaosShard} Nguyên Tinh` : ''}${cost.pill ? `, ${cost.pill} Đan Đột Phá` : ''}.`);
       this.audio.playSfx('ui_deny');
       return false;
     }
     this.state.coin -= cost.coin;
     this.state.herb -= cost.herb;
     this.state.core -= cost.core;
+    if (cost.essence) this.state.essence -= cost.essence;
+    if (cost.chaosShard) this.state.chaosShard -= cost.chaosShard;
+    if (cost.pill) this.state.pill -= cost.pill;
     cur.lv++;
     this.state.pets[petId] = cur;
     if (cur.lv === 1 && !this.state.petActive) this.state.petActive = petId;
@@ -1620,23 +1726,85 @@ class MurimEngine {
     return SWORD_ARRAY_TIERS[lv] || SWORD_ARRAY_TIERS[0];
   }
 
+  getSwordArrayReq(targetLv) {
+    const next = SWORD_ARRAY_TIERS[targetLv];
+    if (!next) return { unlocked: false, checks: [] };
+    const st = this.state || {};
+    const realms = (this.data && this.data.game && this.data.game.realms) || [];
+    const rName = (realms[next.reqRealm] && realms[next.reqRealm].name) || `Cảnh Giới ${next.reqRealm + 1}`;
+    const rIdx = st.realmIdx || 0, maxSt = st.maxStage || 1, bestTw = Math.max(st.towerFloor || 1, st.towerBest || 0);
+    const checks = [];
+    if (next.reqRealm > 0 || next.reqStage > 1 || next.reqTower > 0) {
+      const ok = rIdx >= next.reqRealm || maxSt >= next.reqStage || (next.reqTower > 0 && bestTw >= next.reqTower);
+      const parts = [rName, `Ải ${next.reqStage}`];
+      if (next.reqTower > 0) parts.push(`Thông Thiên Tháp ${next.reqTower}`);
+      checks.push({ ok, text: `Đạt ${parts.join(' hoặc ')}` });
+    }
+    return { unlocked: checks.every(c => c.ok), checks };
+  }
+
+  getSwordRefineCost() {
+    const rf = (this.state && this.state.swordArray && this.state.swordArray.refine) || 0;
+    return { coin: 1200 + rf * 950, core: 10 + rf * 5, essence: 8 + rf * 6, chaosShard: rf >= 5 ? 1 : 0 };
+  }
+
+  refineSwordArray() {
+    if (!this.state.swordArray || (this.state.swordArray.lv || 0) <= 0) {
+      this.toast('Hãy khai mở Ngự Kiếm Trận trước khi tế luyện Trận Nhãn!');
+      return false;
+    }
+    const rf = this.state.swordArray.refine || 0;
+    if (rf >= 10) {
+      this.toast('Trận Nhãn Kiếm Tâm đã đạt viên mãn +10/10!');
+      return false;
+    }
+    const cost = this.getSwordRefineCost();
+    if (this.state.coin < cost.coin || (this.state.core || 0) < cost.core || (this.state.essence || 0) < cost.essence || (this.state.chaosShard || 0) < cost.chaosShard) {
+      this.toast(`Thiếu nguyên liệu tế luyện! Cần ${cost.coin} Linh Thạch, ${cost.core} Yêu Đan, ${cost.essence} Tinh Thạch${cost.chaosShard ? `, ${cost.chaosShard} Nguyên Tinh` : ''}.`);
+      this.audio.playSfx('ui_deny');
+      return false;
+    }
+    this.state.coin -= cost.coin;
+    this.state.core -= cost.core;
+    this.state.essence -= cost.essence;
+    if (cost.chaosShard) this.state.chaosShard -= cost.chaosShard;
+    this.state.swordArray.refine = rf + 1;
+    this.syncMasterStatsLive();
+    this.audio.playSfx('recruit_gold');
+    this.toast(`💠 Tế luyện Trận Nhãn Kiếm Tâm +${rf + 1}/10 thành công (+${(rf + 1) * 8}% ST Phi Kiếm)!`);
+    this.saveState();
+    if (this.onUiDirty) this.onUiDirty();
+    return true;
+  }
+
   upgradeSwordArray() {
-    if (!this.state.swordArray) this.state.swordArray = { lv: 0, active: true };
+    if (!this.state.swordArray) this.state.swordArray = { lv: 0, active: true, refine: 0 };
     const curLv = this.state.swordArray.lv || 0;
     if (curLv >= 9) {
       this.toast('Ngự Kiếm Trận đã đạt cảnh giới tối đa 9/9 (Cửu Kiếm Quy Tông)!');
       return false;
     }
     const next = SWORD_ARRAY_TIERS[curLv + 1];
+    const req = this.getSwordArrayReq(curLv + 1);
+    if (!req.unlocked) {
+      this.toast(`🔒 Chưa đủ điều kiện đột phá Cấp ${next.lv}: ${req.checks.map(c => c.text).join(' · ')}`);
+      this.audio.playSfx('ui_deny');
+      return false;
+    }
     const c = next.cost;
-    if (this.state.coin < c.coin || (this.state.herb || 0) < c.herb || (this.state.core || 0) < c.core) {
-      this.toast(`Thiếu nguyên liệu! Cần ${c.coin} Linh Thạch, ${c.herb} Linh Thảo, ${c.core} Yêu Đan.`);
+    if (this.state.coin < c.coin || (this.state.herb || 0) < c.herb || (this.state.core || 0) < c.core
+        || (this.state.essence || 0) < (c.essence || 0) || (this.state.chaosShard || 0) < (c.chaosShard || 0)
+        || (this.state.pill || 0) < (c.pill || 0)) {
+      this.toast(`Thiếu nguyên liệu! Cần ${c.coin} Linh Thạch, ${c.herb} Thảo, ${c.core} Yêu Đan${c.essence ? `, ${c.essence} Tinh Thạch` : ''}${c.chaosShard ? `, ${c.chaosShard} Nguyên Tinh` : ''}${c.pill ? `, ${c.pill} Đan Đột Phá` : ''}.`);
       this.audio.playSfx('ui_deny');
       return false;
     }
     this.state.coin -= c.coin;
     this.state.herb -= c.herb;
     this.state.core -= c.core;
+    if (c.essence) this.state.essence -= c.essence;
+    if (c.chaosShard) this.state.chaosShard -= c.chaosShard;
+    if (c.pill) this.state.pill -= c.pill;
     this.state.swordArray.lv = curLv + 1;
     this.state.swordArray.active = true;
     this.syncMasterStatsLive();
@@ -2132,26 +2300,57 @@ class MurimEngine {
     return st.swordFlightOn;
   }
 
+  getArtifactReq(artId, curLv) {
+    const st = this.state || {};
+    const realms = (this.data && this.data.game && this.data.game.realms) || [];
+    const rName = (idx) => (realms[idx] && realms[idx].name) || `Cảnh Giới ${idx + 1}`;
+    const rIdx = st.realmIdx || 0, maxSt = st.maxStage || 1, bestTw = Math.max(st.towerFloor || 1, st.towerBest || 0);
+    const checks = [];
+    if (curLv === 4) {
+      checks.push({ ok: rIdx >= 2 || maxSt >= 11, text: `Tế Luyện Bậc 2 (Lv.5): ${rName(2)} hoặc Ải 11` });
+    } else if (curLv === 9) {
+      checks.push({ ok: rIdx >= 4 || maxSt >= 30 || bestTw >= 10, text: `Khai Phong Tiên Bảo (Lv.10): ${rName(4)} / Ải 30 / Tháp 10` });
+    }
+    return { unlocked: checks.every(c => c.ok), checks };
+  }
+
   craftOrUpgradeArtifact(artId) {
     const def = ARTIFACTS_DEF.find(a => a.id === artId);
     if (!def) return false;
     if (!this.state.artifacts) this.state.artifacts = {};
     const cur = this.state.artifacts[artId] || { lv: 0, eq: false };
+    const maxLv = def.maxLv || 15;
+    if (cur.lv >= maxLv) {
+      this.toast(`${def.name} đã đạt cảnh giới Khai Phong tối đa (Lv.${maxLv})!`);
+      return false;
+    }
+    const req = this.getArtifactReq(artId, cur.lv);
+    if (!req.unlocked) {
+      this.toast(`🔒 ${req.checks.map(c => c.text).join(' · ')}`);
+      this.audio.playSfx('ui_deny');
+      return false;
+    }
     const cost = def.cost(cur.lv);
-    if (this.state.coin < cost.coin || (this.state.herb || 0) < cost.herb || (this.state.core || 0) < cost.core) {
-      this.toast(`Thiếu nguyên liệu! Cần ${cost.coin} Linh Thạch, ${cost.herb} Linh Thảo, ${cost.core} Yêu Đan.`);
+    if (this.state.coin < cost.coin || (this.state.herb || 0) < cost.herb || (this.state.core || 0) < cost.core
+        || (this.state.essence || 0) < (cost.essence || 0) || (this.state.chaosShard || 0) < (cost.chaosShard || 0)
+        || (this.state.pill || 0) < (cost.pill || 0)) {
+      this.toast(`Thiếu nguyên liệu! Cần ${cost.coin} Linh Thạch, ${cost.herb} Thảo, ${cost.core} Yêu Đan${cost.essence ? `, ${cost.essence} Tinh Thạch` : ''}${cost.chaosShard ? `, ${cost.chaosShard} Nguyên Tinh` : ''}${cost.pill ? `, ${cost.pill} Đan Đột Phá` : ''}.`);
       this.audio.playSfx('ui_deny');
       return false;
     }
     this.state.coin -= cost.coin;
     this.state.herb -= cost.herb;
     this.state.core -= cost.core;
+    if (cost.essence) this.state.essence -= cost.essence;
+    if (cost.chaosShard) this.state.chaosShard -= cost.chaosShard;
+    if (cost.pill) this.state.pill -= cost.pill;
     cur.lv = (cur.lv || 0) + 1;
     if (cur.lv === 1) cur.eq = true;
     this.state.artifacts[artId] = cur;
     this.syncMasterStatsLive();
-    this.audio.playSfx('levelup');
-    this.toast(`✨ Đã luyện thành ${def.name} Cấp ${cur.lv}! Pháp Bảo đã hiển hiện 3D quanh Tông Chủ!`);
+    this.audio.playSfx((cur.lv === 5 || cur.lv === 10 || cur.lv === 15) ? 'recruit_gold' : 'levelup');
+    const awTag = cur.lv === 5 ? ' ⚡ THỨC TỈNH BẬC 2!' : (cur.lv === 10 ? ' 🌟 KHAI PHONG TIÊN BẢO!' : '');
+    this.toast(`✨ Đã luyện thành ${def.name} Cấp ${cur.lv}!${awTag}`);
     this.saveState();
     if (this.onUiDirty) this.onUiDirty();
     return true;
@@ -2284,7 +2483,8 @@ class MurimEngine {
   getTrainCost(id) {
     const def = this.data.game.train.find(x => x.id === id);
     const lv = this.state.train[id] || 0;
-    return Math.round(def.costBase + lv * def.costStep);
+    const tierMul = 1 + Math.floor(lv / 25) * 0.55 + Math.floor(lv / 80) * 0.75;
+    return Math.round((def.costBase + lv * def.costStep) * tierMul);
   }
 
   upgradeStat(id, count = 1) {
@@ -5308,16 +5508,36 @@ class MurimEngine {
             const sortedF = livingFoes.slice().sort((a, b) => Math.hypot(a.x - m.x, a.z - m.z) - Math.hypot(b.x - m.x, b.z - m.z));
             c.backSlotCursor = c.backSlotCursor || 0;
 
+            const swRefineMul = 1 + (((this.state.swordArray && this.state.swordArray.refine) || 0) * 0.08);
+            const swRefineCrit = ((this.state.swordArray && this.state.swordArray.refine) || 0) * 0.015;
+            if (swTier.lv >= 9) {
+              c.swProcSeq = (c.swProcSeq || 0) + 1;
+              if (c.swProcSeq % 5 === 0) {
+                if (this.renderer.spawnFlyingSwordBarrage) this.renderer.spawnFlyingSwordBarrage(m.x, m.z, 6, wVis.trailHex || '#52fff0', 3.8);
+                for (const ff of livingFoes.slice(0, 5)) {
+                  if (Math.hypot(ff.x - m.x, ff.z - m.z) <= 5.5) this.dealDamage(m, ff, 2.60 * swRefineMul, 0.25, true, 'swordArray');
+                }
+                this.renderer.addPopup(m.x, 1.75, m.z, '⚔ CỬU KIẾM QUY TÔNG TRẢM!', wVis.trailHex || '#52fff0', 1.25);
+              }
+            }
             for (let k = 0; k < Math.min(nLaunch, sortedF.length); k++) {
               const tf = sortedF[k];
               const slotIdx = (c.backSlotCursor++) % Math.max(1, totalSlots);
-              const baseMul = (wVis.id === 'wp_immortal_jian' ? 1.25 : 1.0) * swTier.dmgMul;
-              const extraCrit = wVis.id === 'wp_immortal_jian' ? 0.25 : 0.12;
+              const baseMul = (wVis.id === 'wp_immortal_jian' ? 1.25 : 1.0) * swTier.dmgMul * swRefineMul;
+              const extraCrit = (wVis.id === 'wp_immortal_jian' ? 0.25 : 0.12) + swRefineCrit;
               const onBackHit = (hx, hz) => {
                 if (!c || c.ended) return;
                 const col = wVis.trailHex || '#52fff0';
                 this.renderer.pushVfx3D({ mesh: 'ring', style: 1, x: hx, y: 0.10, z: hz, s0: 0.32, s1: 1.9, color: col, alpha: 0.46, dur: 0.28 });
                 this.renderer.addHitSparks(hx, 0.9, hz, col, 6);
+                if (swTier.lv >= 3 && tf && !tf.dead) {
+                  tf.statuses.scar = { t: 5.0, stacks: Math.min(5, ((tf.statuses.scar && tf.statuses.scar.stacks) || 0) + 1) };
+                  tf.hasStatus = true;
+                }
+                if (swTier.lv >= 6 && tf && !tf.dead) {
+                  tf.statuses.break = { t: 4.0, stacks: 1 };
+                  tf.hasStatus = true;
+                }
                 if (wVis.arrayKind === 'dao') {
                   for (const foe of c.foes) {
                     if (!foe.dead && Math.hypot(foe.x - hx, foe.z - hz) <= 2.4) {
@@ -5369,18 +5589,19 @@ class MurimEngine {
           c.petCd = (c.petCd ?? 3.0) - dt;
           if (c.petCd <= 0) {
             c.petCastT = 0.45;
+            const petCdMul = plv >= 5 ? 0.80 : 1.0;
             if (pid === 'qingluan' && livingFoes.length > 0) {
-              c.petCd = 4.5;
-              const tgts = livingFoes.slice(0, 3);
+              c.petCd = 4.5 * petCdMul;
+              const tgts = livingFoes.slice(0, plv >= 10 ? 5 : 3);
               for (const tf of tgts) {
                 this.renderer.pushVfx3D({ mesh: 'ring', style: 1, x: tf.x, y: 0.12, z: tf.z, s0: 0.3, s1: 1.85, color: '#42ffe8', alpha: 0.48, dur: 0.30 });
+                if (plv >= 10) { tf.statuses.break = { t: 3.5, stacks: 1 }; tf.hasStatus = true; }
                 this.dealDamage(m, tf, 1.15 + plv * 0.22, 0.10, false, 'pet');
               }
               this.renderer.addPopup(m.x, 1.65, m.z, '🐾 TUYẾT CÚ HỎA VŨ!', '#42ffe8', 1.05);
             } else if (pid === 'leilong' && livingFoes.length > 0) {
-              // Tiên Phẩm Chí Tôn: Cửu Tiêu Lôi Kỳ Lân strikes up to 3 foes with heavy AoE Thunder + Armor Break!
-              c.petCd = 4.5;
-              const tgts = livingFoes.slice(0, 3);
+              c.petCd = 4.5 * petCdMul;
+              const tgts = livingFoes.slice(0, plv >= 10 ? 5 : 3);
               for (const tf of tgts) {
                 this.renderer.spawnLightningBolt(tf.x, tf.z, '#b47cff', 2);
                 tf.statuses.break = { t: 5.0, stacks: 1 };
@@ -5389,13 +5610,23 @@ class MurimEngine {
               }
               this.renderer.addPopup(tgts[0].x, 1.55, tgts[0].z, '⚡ THIÊN LÔI KỲ LÂN!', '#c49aff', 1.16);
             } else if (pid === 'xuanwu') {
-              c.petCd = 7.5;
+              c.petCd = 7.5 * petCdMul;
               const sh = Math.round(m.maxHp * (0.12 + plv * 0.025));
               m.shieldHp = Math.min(Math.round(m.maxHp * 0.70), (m.shieldHp || 0) + sh);
               this.renderer.pushVfx3D({ mesh: 'ring', style: 1, x: m.x, y: 0.12, z: m.z, s0: 0.5, s1: 2.8, color: '#52e898', dur: 0.45 });
+              if (plv >= 10) {
+                for (const tf of livingFoes) {
+                  if (Math.hypot(tf.x - m.x, tf.z - m.z) <= 3.6) {
+                    const sdmg = Math.max(15, Math.round(m.def * 1.4));
+                    tf.hp = Math.max(1, tf.hp - sdmg);
+                    tf.statuses.daze = { t: 0.8 }; tf.hasStatus = true;
+                  }
+                }
+              }
               this.renderer.addPopup(m.x, 1.5, m.z, `🐾 CỔ TÙNG QUY THUẪN +${sh}`, '#52e898', 1.05);
             } else if (pid === 'jiuwei') {
-              c.petCd = 6.5;
+              c.petCd = 6.5 * petCdMul;
+              if (plv >= 10) this.state.qi = Math.min(this.state.qiMax || 100, (this.state.qi || 0) + 6);
               const hPct = 0.05 + plv * 0.01;
               for (const ally of [m, ...(c.mates || [])]) {
                 if (ally && !ally.dead) {
@@ -5408,18 +5639,27 @@ class MurimEngine {
             }
           }
         }
-        // 2. Bát Quái Hộ Thân Kính: periodic golden energy shield
+        // 2. Thái Hư Kim Chung: periodic golden energy shield + Lv.5 qi + Lv.10 quake
         if (art.mirror && art.mirror.lv > 0 && art.mirror.eq) {
           c.artCds.mirror -= dt;
           if (c.artCds.mirror <= 0) {
             c.artCds.mirror = 8.5;
             const sh = Math.round(m.maxHp * (0.14 + art.mirror.lv * 0.04));
             m.shieldHp = Math.max(m.shieldHp || 0, sh);
+            if (art.mirror.lv >= 5) this.state.qi = Math.min(this.state.qiMax || 100, (this.state.qi || 0) + 5);
+            if (art.mirror.lv >= 10) {
+              for (const tf of livingFoes) {
+                if (Math.hypot(tf.x - m.x, tf.z - m.z) <= 3.8) {
+                  tf.statuses.daze = { t: 0.8 }; tf.hasStatus = true;
+                  this.dealDamage(m, tf, 1.5, 0.1, false, 'artifact');
+                }
+              }
+            }
             this.renderer.pushVfx3D({ mesh: 'ring', style: 1, x: m.x, y: 0.1, z: m.z, s0: 0.4, s1: 2.5, color: '#ffd966', dur: 0.45 });
             this.renderer.addPopup(m.x, 1.0, m.z, `KIM CHUNG HỘ THUẪN +${sh}`, '#ffd966', 1.08);
           }
         }
-        // 3. Cửu Tiêu Lôi Châu: 3D branching lightning strikes
+        // 3. Tử Tiêu Lôi Đăng: 3D lightning + Lv.5 armor break + Lv.10 CDR
         if (art.orb && art.orb.lv > 0 && art.orb.eq && livingFoes.length > 0) {
           c.artCds.orb -= dt;
           if (c.artCds.orb <= 0) {
@@ -5428,17 +5668,22 @@ class MurimEngine {
             for (const tf of targets) {
               this.renderer.spawnLightningBolt(tf.x, tf.z, '#b584ff', 1);
               tf.statuses.daze = { t: 0.85 };
+              if (art.orb.lv >= 5) tf.statuses.break = { t: 3.5, stacks: 1 };
               tf.hasStatus = true;
               this.dealDamage(m, tf, 1.65 + art.orb.lv * 0.35, 0.18, true, 'artifact');
             }
+            if (art.orb.lv >= 10 && m.skillCds) {
+              for (let s = 0; s < 4; s++) if (m.skillCds[s] > 0) m.skillCds[s] = Math.max(0, m.skillCds[s] - 0.5);
+            }
           }
         }
-        // 4. Chu Tước Luyện Đan Lô: team heal + crimson fire ring
+        // 4. Hồng Liên Nghiệp Hỏa: team heal + Lv.5 bleed + Lv.10 team ATK fury
         if (art.furnace && art.furnace.lv > 0 && art.furnace.eq) {
           c.artCds.furnace -= dt;
           if (c.artCds.furnace <= 0) {
             c.artCds.furnace = 7.0;
             const healPct = 0.07 + art.furnace.lv * 0.02;
+            if (art.furnace.lv >= 10) c.teamAtkBuffT = Math.max(c.teamAtkBuffT || 0, 4.0);
             for (const ally of [m, ...(c.mates || [])]) {
               if (ally && !ally.dead) {
                 const h = Math.round(ally.maxHp * healPct);
@@ -5449,6 +5694,7 @@ class MurimEngine {
             this.renderer.pushVfx3D({ mesh: 'ring', style: 1, x: m.x, y: 0.1, z: m.z, s0: 0.6, s1: 4.5, color: '#ff642e', dur: 0.5 });
             for (const tf of livingFoes) {
               if (Math.hypot(tf.x - m.x, tf.z - m.z) <= 4.6) {
+                if (art.furnace.lv >= 5) { tf.statuses.bleed = { t: 4.0, stacks: Math.min(5, ((tf.statuses.bleed && tf.statuses.bleed.stacks) || 0) + 1) }; tf.hasStatus = true; }
                 this.dealDamage(m, tf, 1.2 + art.furnace.lv * 0.25, 0, false, 'artifact');
               }
             }

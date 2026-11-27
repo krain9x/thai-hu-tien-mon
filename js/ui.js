@@ -1153,25 +1153,35 @@
       return;
     }
 
-    // Tab 1: HỆ THỐNG RIÊNG — NGỰ KIẾM TRẬN (PHI BINH SAU LƯNG 0 → 9 CÂY!)
+    // Tab 1: HỆ THỐNG RIÊNG — NGỰ KIẾM TRẬN (PHI BINH SAU LƯNG 0 → 9 CÂY + TẾ LUYỆN TRẬN NHÃN!)
     if (activeTab === 1) {
-      const swSt = st.swordArray || { lv: 0, active: true };
+      const swSt = st.swordArray || { lv: 0, active: true, refine: 0 };
       const curLv = Math.max(0, Math.min(9, swSt.lv || 0));
+      const rfLv = Math.max(0, Math.min(10, swSt.refine || 0));
       const tiers = engine.getSwordArrayTiers();
       const curT = tiers[curLv];
       const nextT = curLv < 9 ? tiers[curLv + 1] : null;
+      const reqSw = nextT && engine.getSwordArrayReq ? engine.getSwordArrayReq(curLv + 1) : { unlocked: true, checks: [] };
+      const refCost = engine.getSwordRefineCost ? engine.getSwordRefineCost() : { coin: 1200, core: 10, essence: 8, chaosShard: 0 };
+      const canRef = curLv > 0 && rfLv < 10 && st.coin >= refCost.coin && (st.core || 0) >= refCost.core && (st.essence || 0) >= refCost.essence && (st.chaosShard || 0) >= (refCost.chaosShard || 0);
       const wVis = engine.getEquippedWeaponVisual();
-      const canUp = nextT && st.coin >= nextT.cost.coin && (st.herb || 0) >= nextT.cost.herb && (st.core || 0) >= nextT.cost.core;
+      const canUp = nextT && reqSw.unlocked
+        && st.coin >= nextT.cost.coin && (st.herb || 0) >= nextT.cost.herb && (st.core || 0) >= nextT.cost.core
+        && (st.essence || 0) >= (nextT.cost.essence || 0) && (st.chaosShard || 0) >= (nextT.cost.chaosShard || 0)
+        && (st.pill || 0) >= (nextT.cost.pill || 0);
 
       body.innerHTML = `
         <div class="panel-col-scroll">
           <div class="tm-mat-strip">
-            <span><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> Linh Thạch: <b>${fmt(st.coin)}</b></span>
-            <span><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> Linh Thảo: <b>${fmt(st.herb || 0)}</b></span>
-            <span><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> Yêu Đan: <b>${fmt(st.core || 0)}</b></span>
+            <span><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> <b>${fmt(st.coin)}</b></span>
+            <span><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> <b>${fmt(st.herb || 0)}</b></span>
+            <span><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> <b>${fmt(st.core || 0)}</b></span>
+            <span>💠 <b>${fmt(st.essence || 0)}</b></span>
+            <span>🌀 <b>${fmt(st.chaosShard || 0)}</b></span>
+            <span>💊 <b>${fmt(st.pill || 0)}</b></span>
           </div>
           <div class="tm-swarr-diagram">
-            <div class="tm-swarr-title">${curT.name} · ${curLv}/9 Phi Binh</div>
+            <div class="tm-swarr-title">${curT.name} · ${curLv}/9 Phi Binh ${rfLv > 0 ? `<span class="tag-pill gold">Trận Nhãn +${rfLv}</span>` : ''}</div>
             <div class="tm-swarr-slots">
               ${Array.from({ length: 9 }, (_, idx) => {
                 const on = idx < curLv;
@@ -1203,47 +1213,62 @@
                 <div>
                   <div class="item-name">Cấp ${t.lv} · ${t.name} <span class="tag-pill ${t.lv <= curLv ? 'jade' : ''}">${t.count} cây</span></div>
                   <div class="item-sub">+${t.atkPct}% Công · Phóng ${t.volley} thanh / ${t.cd.toFixed(2)}s (${Math.round(t.dmgMul * 100)}% Công)</div>
+                  ${t.awake ? `<div style="font-size:10.8px;color:#8a4f16;font-weight:700;">⚡ ${t.awake}</div>` : ''}
                 </div>
               </div>
               <div>${t.lv <= curLv ? '<span class="tag-pill gold">Đã Đạt</span>' : (t.lv === curLv + 1 ? '<span class="tag-pill jade">Kế Tiếp</span>' : '')}</div>
             </div>
           `).join('')}
         </div>
-        <div class="panel-detail-box">
+        <div class="panel-detail-box" style="overflow-y:auto;">
           <div>
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
               <div class="tm-art-ico big" style="border-color:#52fff0;"><img src="assets/img/art_sword.png" alt="Ngự Kiếm Trận" /></div>
               <div>
                 <h3 style="margin:0;font-family:var(--font-serif);">Ngự Kiếm Trận (${curLv}/9)</h3>
-                <div style="font-size:12px;color:var(--jade-dark);font-weight:900;">${curT.name}</div>
+                <div style="font-size:12px;color:var(--jade-dark);font-weight:900;">${curT.name}${rfLv > 0 ? ` · Trận Nhãn +${rfLv}/10` : ''}</div>
               </div>
             </div>
-            <p style="font-size:13px;line-height:1.5;color:var(--ink-mid);margin:0 0 12px;">
-              Hệ thống Phi Binh độc lập phía sau lưng Tông Chủ (lấy tâm ngay chính giữa sau đầu, kích cỡ chuẩn 1:1 vũ khí cầm tay).
-              Mỗi thanh Phi Binh sẽ tự tách khỏi trận bay cong chém địch rồi vòng về đội hình!
-            </p>
             <div class="tm-stat-box">
-              <div style="font-size:11.5px;color:var(--ink-soft);font-weight:800;">TRẠNG THÁI HIỆN TẠI</div>
-              <div style="font-size:13.5px;font-weight:900;color:var(--jade-dark);margin-top:4px;">
+              <div style="font-size:11.5px;color:var(--ink-soft);font-weight:800;">TRẠNG THÁI &amp; THẦN THÔNG</div>
+              <div style="font-size:13px;font-weight:900;color:var(--jade-dark);margin-top:3px;">
                 ${curLv === 0
-                  ? 'Chưa khai mở (0/9 thanh) — Hãy nâng lên Cấp 1 để triệu hoán thanh Phi Binh đầu tiên sau đầu!'
-                  : `Số lượng: ${curT.count} cây · +${curT.atkPct}% Công · Phóng ${curT.volley} thanh / ${curT.cd.toFixed(2)}s (${Math.round(curT.dmgMul * 100)}% Công)`}
+                  ? 'Chưa khai mở (0/9 thanh) — Nâng lên Cấp 1 để triệu hoán thanh Phi Binh đầu tiên sau đầu!'
+                  : `${curT.count} cây · +${curT.atkPct + rfLv * 3}% Công · Phi Kiếm ${Math.round(curT.dmgMul * (1 + rfLv * 0.08) * 100)}% (${curT.volley} thanh/${curT.cd.toFixed(2)}s)`}
+              </div>
+              <div style="font-size:11px;color:#8a4f16;margin-top:4px;line-height:1.4;">
+                • Cấp 3: Kiếm Ngân (+Bạo Kích) · Cấp 6: Vạn Kiếm Phá Giáp · Cấp 9: Cửu Kiếm Thiên Trảm 260% AoE
               </div>
             </div>
-            ${nextT ? `<div class="tm-cost-box">
-              <div style="font-size:11.5px;color:var(--ink-soft);font-weight:800;margin-bottom:6px;">NGUYÊN LIỆU ${curLv === 0 ? 'KHAI MỞ NHẤT KIẾM (1/9)' : `ĐỘT PHÁ CẤP ${nextT.lv} (${nextT.count}/9 CÂY)`}</div>
-              <div class="tm-cost-pills">
-                <span class="${st.coin >= nextT.cost.coin ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> ${fmt(nextT.cost.coin)} Linh Thạch</span>
-                <span class="${(st.herb || 0) >= nextT.cost.herb ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> ${nextT.cost.herb} Linh Thảo</span>
-                <span class="${(st.core || 0) >= nextT.cost.core ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> ${nextT.cost.core} Yêu Đan</span>
+            ${curLv > 0 ? `<div class="tm-stat-box" style="margin-top:6px;background:rgba(40,108,79,0.08);">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                <span style="font-size:11.5px;font-weight:900;color:#1b6b45;">💠 TẾ LUYỆN TRẬN NHÃN (+${rfLv}/10)</span>
+                ${rfLv < 10 ? `<button class="btn-wuxia jade" id="btn-ref-swarr" style="padding:4px 9px;font-size:11px;" ${canRef ? '' : 'disabled'}>Tôi Luyện +${rfLv + 1}</button>` : '<span class="tag-pill gold">Viên Mãn</span>'}
               </div>
-            </div>` : '<div class="tm-stat-box"><b>Đã viên mãn Cửu Kiếm Quy Tông Đại Trận (9/9 cây tối đa)!</b></div>'}
+              <div style="font-size:11.5px;color:var(--ink-mid);margin-top:3px;">Hiện cộng: +${rfLv * 8}% ST Phi Kiếm, +${(rfLv * 1.5).toFixed(1)}% Bạo Kích, +${rfLv * 3}% Công</div>
+              ${rfLv < 10 ? `<div style="font-size:11px;color:#555;margin-top:2px;">Cần: ${fmt(refCost.coin)} Linh Thạch · ${refCost.core} Yêu Đan · ${refCost.essence}💠${refCost.chaosShard ? ` · ${refCost.chaosShard}🌀` : ''}</div>` : ''}
+            </div>` : ''}
+            ${nextT && reqSw.checks && reqSw.checks.length ? `<div class="tm-stat-box" style="margin-top:6px;background:${reqSw.unlocked ? 'rgba(27,107,69,0.07)' : 'rgba(164,34,34,0.08)'};border:1px solid ${reqSw.unlocked ? '#1b6b4544' : '#a4222244'};padding:6px 8px;">
+              <div style="font-size:11px;font-weight:900;color:${reqSw.unlocked ? '#1b6b45' : '#a42222'};">${reqSw.unlocked ? '🔓 ĐỦ ĐIỀU KIỆN ĐỘT PHÁ' : '🔒 YÊU CẦU ĐỘT PHÁ CẤP ' + nextT.lv}</div>
+              ${reqSw.checks.map(c => `<div style="font-size:11.5px;color:${c.ok ? '#1b6b45' : '#9c1c1c'};">${c.ok ? '✓' : '✗'} ${c.text}</div>`).join('')}
+            </div>` : ''}
+            ${nextT ? `<div class="tm-cost-box" style="margin-top:6px;">
+              <div style="font-size:11px;color:var(--ink-soft);font-weight:800;margin-bottom:4px;">NGUYÊN LIỆU ${curLv === 0 ? 'KHAI MỞ NHẤT KIẾM (1/9)' : `ĐỘT PHÁ CẤP ${nextT.lv} (${nextT.count}/9 CÂY)`}</div>
+              <div class="tm-cost-pills">
+                <span class="${st.coin >= nextT.cost.coin ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> ${fmt(nextT.cost.coin)}</span>
+                <span class="${(st.herb || 0) >= nextT.cost.herb ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> ${nextT.cost.herb}</span>
+                <span class="${(st.core || 0) >= nextT.cost.core ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> ${nextT.cost.core}</span>
+                ${nextT.cost.essence ? `<span class="${(st.essence || 0) >= nextT.cost.essence ? 'ok' : 'no'}">💠 ${nextT.cost.essence}</span>` : ''}
+                ${nextT.cost.pill ? `<span class="${(st.pill || 0) >= nextT.cost.pill ? 'ok' : 'no'}">💊 ${nextT.cost.pill}</span>` : ''}
+                ${nextT.cost.chaosShard ? `<span class="${(st.chaosShard || 0) >= nextT.cost.chaosShard ? 'ok' : 'no'}">🌀 ${nextT.cost.chaosShard}</span>` : ''}
+              </div>
+            </div>` : '<div class="tm-stat-box" style="margin-top:6px;"><b>Đã viên mãn Cửu Kiếm Quy Tông Đại Trận (9/9 cây tối đa)!</b></div>'}
           </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
             ${nextT ? `<button class="btn-wuxia gold" id="btn-up-swarr" style="flex:1;" ${canUp ? '' : 'disabled'}>
-              ${curLv === 0 ? 'Khai Mở Nhất Kiếm (1/9)' : `Đột Phá Lên ${nextT.count}/9 Cây`}
+              ${!reqSw.unlocked ? 'Chưa Đủ Cảnh Giới' : (curLv === 0 ? 'Khai Mở Nhất Kiếm (1/9)' : `Đột Phá Lên ${nextT.count}/9 Cây`)}
             </button>` : ''}
-            ${curLv > 0 ? `<button class="btn-wuxia" id="btn-toggle-swarr">${swSt.active ? 'Thu Hồi Kiếm Trận' : 'Triệu Hoán Sau Lưng'}</button>` : ''}
+            ${curLv > 0 ? `<button class="btn-wuxia" id="btn-toggle-swarr">${swSt.active ? 'Thu Hồi' : 'Triệu Hoán'}</button>` : ''}
           </div>
         </div>
       `;
@@ -1251,6 +1276,8 @@
       body.querySelectorAll('[data-swform]').forEach(btn => {
         btn.onclick = () => engine.setSwordArrayFormation(btn.getAttribute('data-swform'));
       });
+      const refBtn = document.getElementById('btn-ref-swarr');
+      if (refBtn) refBtn.onclick = () => engine.refineSwordArray();
       const upBtn = document.getElementById('btn-up-swarr');
       if (upBtn) upBtn.onclick = () => engine.upgradeSwordArray();
       const togBtn = document.getElementById('btn-toggle-swarr');
@@ -1258,7 +1285,7 @@
       return;
     }
 
-    // Tab 3: HỆ THỐNG LINH THÚ HỘ MỆNH 3D (4 LOÀI × 3 BẬC TIẾN HÓA!)
+    // Tab 3: HỆ THỐNG LINH THÚ HỘ MỆNH 3D (4 PHẨM CẤP × KHẾ ƯỚC & ĐỘT PHÁ TIẾN HÓA!)
     if (activeTab === 3) {
       const petsDef = engine.getSpiritPetsDef();
       if (!selectedItem || !petsDef.some(p => p.id === selectedItem)) selectedItem = st.petActive || petsDef[0].id;
@@ -1267,15 +1294,22 @@
       const lv = pSt.lv || 0;
       const evoName = lv >= 10 ? 'Thánh Thú (Bậc 3)' : (lv >= 5 ? 'Thành Thể (Bậc 2)' : (lv > 0 ? 'Ấu Thể (Bậc 1)' : 'Chưa Khế Ước'));
       const isAct = st.petActive === sel.id;
+      const reqPet = engine.getPetReq ? engine.getPetReq(sel.id, lv) : { unlocked: true, checks: [] };
       const cost = sel.cost(lv);
-      const canFeed = lv < 15 && st.coin >= cost.coin && (st.herb || 0) >= cost.herb && (st.core || 0) >= cost.core;
+      const canFeed = lv < 15 && reqPet.unlocked
+        && st.coin >= cost.coin && (st.herb || 0) >= cost.herb && (st.core || 0) >= cost.core
+        && (st.essence || 0) >= (cost.essence || 0) && (st.chaosShard || 0) >= (cost.chaosShard || 0)
+        && (st.pill || 0) >= (cost.pill || 0);
 
       body.innerHTML = `
         <div class="panel-col-scroll">
           <div class="tm-mat-strip">
             <span><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> <b>${fmt(st.coin)}</b></span>
-            <span><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> Linh Thảo: <b>${fmt(st.herb || 0)}</b></span>
-            <span><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> Yêu Đan: <b>${fmt(st.core || 0)}</b></span>
+            <span><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> <b>${fmt(st.herb || 0)}</b></span>
+            <span><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> <b>${fmt(st.core || 0)}</b></span>
+            <span>💠 <b>${fmt(st.essence || 0)}</b></span>
+            <span>🌀 <b>${fmt(st.chaosShard || 0)}</b></span>
+            <span>💊 <b>${fmt(st.pill || 0)}</b></span>
           </div>
           ${petsDef.map(p => {
             const plv = (st.pets && st.pets[p.id] && st.pets[p.id].lv) || 0;
@@ -1293,33 +1327,40 @@
             </div>`;
           }).join('')}
         </div>
-        <div class="panel-detail-box">
+        <div class="panel-detail-box" style="overflow-y:auto;">
           <div>
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
               <div class="tm-art-ico big tm-pet-ico" style="border-color:${sel.color};box-shadow:0 0 16px ${sel.color}55;"><img src="assets/img/pet_${sel.id}.png?v=30" alt="${sel.name}" /></div>
               <div>
                 <h3 style="margin:0;font-family:var(--font-serif);">${sel.name}</h3>
                 <div style="font-size:12px;font-weight:900;color:var(--jade-dark);">${sel.grade || 'Linh Phẩm'} ${sel.stars || ''} · ${sel.elem} · ${evoName}</div>
               </div>
             </div>
-            <p style="font-size:13px;line-height:1.5;color:var(--ink-mid);margin:0 0 12px;">${sel.desc}</p>
+            <p style="font-size:12.5px;line-height:1.45;color:var(--ink-mid);margin:0 0 8px;">${sel.desc}</p>
             <div class="tm-stat-box">
-              <div style="font-size:11.5px;color:var(--ink-soft);font-weight:800;">NĂNG LỰC ${lv > 0 ? `HIỆN TẠI (Lv.${lv})` : 'KHI KHẾ ƯỚC (Lv.1)'}</div>
-              <div style="font-size:13.5px;font-weight:900;color:var(--jade-dark);margin-top:4px;">${sel.statTxt(Math.max(1, lv))}</div>
-              <div style="font-size:11.5px;color:#555;margin-top:5px;">🌟 Tiến hóa ngoại hình 3D tại <b>Lv.5 (Thành Thể + Vòng Hào Quang)</b> và <b>Lv.10 (Thánh Thú)</b>!</div>
+              <div style="font-size:11px;color:var(--ink-soft);font-weight:800;">NĂNG LỰC ${lv > 0 ? `HIỆN TẠI (Lv.${lv}/15)` : 'KHI KHẾ ƯỚC (Lv.1)'}</div>
+              <div style="font-size:13px;font-weight:900;color:var(--jade-dark);margin-top:3px;">${sel.statTxt(Math.max(1, lv))}</div>
+              <div style="font-size:11px;color:#555;margin-top:4px;">🌟 Đột phá <b>Lv.5 (Thành Thể: -20% CD)</b> · <b>Lv.10 (Thánh Thú: Thức Tỉnh Tuyệt Kỹ)</b>!</div>
             </div>
-            ${lv < 15 ? `<div class="tm-cost-box">
-              <div style="font-size:11.5px;color:var(--ink-soft);font-weight:800;margin-bottom:6px;">NGUYÊN LIỆU ${lv === 0 ? 'KHẾ ƯỚC LINH THÚ' : `BỒI DƯỠNG LÊN Lv.${lv + 1}`}</div>
+            ${lv < 15 && reqPet.checks && reqPet.checks.length ? `<div class="tm-stat-box" style="margin-top:6px;background:${reqPet.unlocked ? 'rgba(27,107,69,0.07)' : 'rgba(164,34,34,0.08)'};border:1px solid ${reqPet.unlocked ? '#1b6b4544' : '#a4222244'};padding:6px 8px;">
+              <div style="font-size:11px;font-weight:900;color:${reqPet.unlocked ? '#1b6b45' : '#a42222'};">${reqPet.unlocked ? '🔓 ĐỦ ĐIỀU KIỆN' : '🔒 ĐIỀU KIỆN CHƯA ĐẠT'}</div>
+              ${reqPet.checks.map(c => `<div style="font-size:11.5px;color:${c.ok ? '#1b6b45' : '#9c1c1c'};">${c.ok ? '✓' : '✗'} ${c.text}</div>`).join('')}
+            </div>` : ''}
+            ${lv < 15 ? `<div class="tm-cost-box" style="margin-top:6px;">
+              <div style="font-size:11px;color:var(--ink-soft);font-weight:800;margin-bottom:4px;">NGUYÊN LIỆU ${(lv === 4 || lv === 9) ? `ĐỘT PHÁ TIẾN HÓA Lv.${lv + 1}` : (lv === 0 ? 'KHẾ ƯỚC LINH THÚ' : `BỒI DƯỠNG Lv.${lv + 1}`)}</div>
               <div class="tm-cost-pills">
-                <span class="${st.coin >= cost.coin ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> ${fmt(cost.coin)} Linh Thạch</span>
-                <span class="${(st.herb || 0) >= cost.herb ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> ${cost.herb} Linh Thảo</span>
-                <span class="${(st.core || 0) >= cost.core ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> ${cost.core} Yêu Đan</span>
+                <span class="${st.coin >= cost.coin ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> ${fmt(cost.coin)}</span>
+                <span class="${(st.herb || 0) >= cost.herb ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> ${cost.herb}</span>
+                <span class="${(st.core || 0) >= cost.core ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> ${cost.core}</span>
+                ${cost.essence ? `<span class="${(st.essence || 0) >= cost.essence ? 'ok' : 'no'}">💠 ${cost.essence}</span>` : ''}
+                ${cost.pill ? `<span class="${(st.pill || 0) >= cost.pill ? 'ok' : 'no'}">💊 ${cost.pill}</span>` : ''}
+                ${cost.chaosShard ? `<span class="${(st.chaosShard || 0) >= cost.chaosShard ? 'ok' : 'no'}">🌀 ${cost.chaosShard}</span>` : ''}
               </div>
-            </div>` : '<div class="tm-stat-box"><b>Đã đạt cảnh giới Thánh Thú tối đa (Lv.15)!</b></div>'}
+            </div>` : '<div class="tm-stat-box" style="margin-top:6px;"><b>Đã đạt cảnh giới Thánh Thú tối đa (Lv.15)!</b></div>'}
           </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            ${lv < 15 ? `<button class="btn-wuxia gold" id="btn-feed-pet" style="flex:1;" ${canFeed ? '' : 'disabled'}>${lv === 0 ? 'Khế Ước & Triệu Hoán 3D' : `Bồi Dưỡng Lv.${lv + 1}`}</button>` : ''}
-            ${lv > 0 ? `<button class="btn-wuxia ${isAct ? '' : 'jade'}" id="btn-eq-pet">${isAct ? 'Thu Hồi Linh Thú' : 'Xuất Chiến Đồng Hành 3D'}</button>` : ''}
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+            ${lv < 15 ? `<button class="btn-wuxia gold" id="btn-feed-pet" style="flex:1;" ${canFeed ? '' : 'disabled'}>${!reqPet.unlocked ? 'Chưa Đủ Cảnh Giới' : (lv === 0 ? 'Khế Ước & Triệu Hoán' : ((lv === 4 || lv === 9) ? `Đột Phá Lv.${lv + 1}` : `Bồi Dưỡng Lv.${lv + 1}`))}</button>` : ''}
+            ${lv > 0 ? `<button class="btn-wuxia ${isAct ? '' : 'jade'}" id="btn-eq-pet">${isAct ? 'Thu Hồi' : 'Xuất Chiến 3D'}</button>` : ''}
           </div>
         </div>
       `;
@@ -1385,20 +1426,34 @@
       return;
     }
 
-    // Tab 2: 3 Pháp Bảo 3D Hộ Thân
+    // Tab 2: 3 Pháp Bảo 3D Hộ Thân (Có Cảnh Giới Khai Phong Lv.15 + Cộng Hưởng Tam Tài!)
     const defs = engine.getArtifactsDef();
     if (!selectedItem || !defs.some(d => d.id === selectedItem)) selectedItem = defs[0].id;
     const sel = defs.find(d => d.id === selectedItem) || defs[0];
     const selSt = (st.artifacts && st.artifacts[sel.id]) || { lv: 0, eq: false };
-    const cost = sel.cost(selSt.lv || 0);
-    const canAfford = st.coin >= cost.coin && (st.herb || 0) >= cost.herb && (st.core || 0) >= cost.core;
+    const artLv = selSt.lv || 0;
+    const maxArtLv = sel.maxLv || 15;
+    const artReso = engine.getArtifactResonance ? engine.getArtifactResonance() : { tier: 0, minLv: 0, name: 'Chưa Kích Hoạt', pct: 0 };
+    const reqArt = engine.getArtifactReq ? engine.getArtifactReq(sel.id, artLv) : { unlocked: true, checks: [] };
+    const cost = sel.cost(artLv);
+    const canAfford = artLv < maxArtLv && reqArt.unlocked
+      && st.coin >= cost.coin && (st.herb || 0) >= cost.herb && (st.core || 0) >= cost.core
+      && (st.essence || 0) >= (cost.essence || 0) && (st.chaosShard || 0) >= (cost.chaosShard || 0)
+      && (st.pill || 0) >= (cost.pill || 0);
 
     body.innerHTML = `
       <div class="panel-col-scroll">
         <div class="tm-mat-strip">
-          <span><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> Linh Thạch: <b>${fmt(st.coin)}</b></span>
-          <span><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> Linh Thảo: <b>${fmt(st.herb || 0)}</b></span>
-          <span><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> Yêu Đan: <b>${fmt(st.core || 0)}</b></span>
+          <span><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> <b>${fmt(st.coin)}</b></span>
+          <span><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> <b>${fmt(st.herb || 0)}</b></span>
+          <span><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> <b>${fmt(st.core || 0)}</b></span>
+          <span>💠 <b>${fmt(st.essence || 0)}</b></span>
+          <span>🌀 <b>${fmt(st.chaosShard || 0)}</b></span>
+          <span>💊 <b>${fmt(st.pill || 0)}</b></span>
+        </div>
+        <div class="tm-stat-box" style="margin-bottom:8px;background:rgba(128,45,26,0.08);border:1px solid rgba(180,120,40,0.35);padding:7px 9px;">
+          <div style="font-size:11.5px;font-weight:900;color:#8a4f16;">✨ Cộng Hưởng Tam Tài Bảo Khí: ${artReso.name} (Thấp nhất Lv.${artReso.minLv})</div>
+          <div style="font-size:11px;color:var(--ink-mid);margin-top:2px;">Cả 3 Pháp Bảo đạt Lv.3 (+8%) · Lv.6 (+16%) · Lv.10 (+28% Công/Máu/Thủ). Hiện tăng: <b>+${Math.round(artReso.pct * 100)}%</b></div>
         </div>
         ${defs.map(a => {
           const ast = (st.artifacts && st.artifacts[a.id]) || { lv: 0, eq: false };
@@ -1406,7 +1461,7 @@
             <div class="item-left">
               <div class="tm-art-ico" style="border-color:${a.color}"><img src="assets/img/${a.img}.png" alt="${a.name}" /></div>
               <div>
-                <div class="item-name">${a.name} ${ast.lv > 0 ? `<span class="tag-pill jade">Cấp ${ast.lv}</span>` : `<span class="tag-pill">Chưa Chế</span>`}</div>
+                <div class="item-name">${a.name} ${ast.lv > 0 ? `<span class="tag-pill jade">Lv.${ast.lv}/${a.maxLv || 15}</span>` : `<span class="tag-pill">Chưa Chế</span>`}</div>
                 <div class="item-sub">${a.tier} · ${ast.lv > 0 ? (ast.eq ? 'Đang Bay Quanh Thân 3D' : 'Đang Cất') : 'Cần luyện chế'}</div>
               </div>
             </div>
@@ -1416,34 +1471,42 @@
           </div>`;
         }).join('')}
       </div>
-      <div class="panel-detail-box">
+      <div class="panel-detail-box" style="overflow-y:auto;">
         <div>
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
             <div class="tm-art-ico big" style="border-color:${sel.color}"><img src="assets/img/${sel.img}.png" alt="${sel.name}" /></div>
             <div>
               <h3 style="margin:0;font-family:var(--font-serif);">${sel.name}</h3>
-              <div style="font-size:12px;color:var(--jade-dark);font-weight:800;">${sel.tier} · ${selSt.lv > 0 ? `Cấp ${selSt.lv}` : 'Bản Vẽ Linh Khí'}</div>
+              <div style="font-size:12px;color:var(--jade-dark);font-weight:800;">${sel.tier} · ${artLv > 0 ? `Cấp ${artLv}/${maxArtLv}` : 'Bản Vẽ Linh Khí'}</div>
             </div>
           </div>
-          <p style="font-size:13px;line-height:1.5;color:var(--ink-mid);margin:0 0 12px;">${sel.desc}</p>
+          <p style="font-size:12.5px;line-height:1.45;color:var(--ink-mid);margin:0 0 8px;">${sel.desc}</p>
           <div class="tm-stat-box">
-            <div style="font-size:11.5px;color:var(--ink-soft);font-weight:800;">HIỆU ỨNG ${selSt.lv > 0 ? `HIỆN TẠI (CẤP ${selSt.lv})` : 'KHI CHẾ TẠO (CẤP 1)'}</div>
-            <div style="font-size:13.5px;font-weight:900;color:var(--jade-dark);margin-top:3px;">${sel.statTxt(Math.max(1, selSt.lv || 0))}</div>
+            <div style="font-size:11px;color:var(--ink-soft);font-weight:800;">HIỆU ỨNG ${artLv > 0 ? `HIỆN TẠI (Lv.${artLv})` : 'KHI CHẾ TẠO (Lv.1)'}</div>
+            <div style="font-size:13px;font-weight:900;color:var(--jade-dark);margin-top:3px;">${sel.statTxt(Math.max(1, artLv))}</div>
+            ${sel.awakeTxt ? `<div style="font-size:11px;color:#8a4f16;margin-top:4px;font-weight:700;">⚡ Thức Tỉnh: ${sel.awakeTxt}</div>` : ''}
           </div>
-          <div class="tm-cost-box">
-            <div style="font-size:11.5px;color:var(--ink-soft);font-weight:800;margin-bottom:6px;">NGUYÊN LIỆU ${selSt.lv > 0 ? 'TẾ LUYỆN LÊN CẤP' : 'CHẾ TẠO PHÁP BẢO'}</div>
+          ${artLv < maxArtLv && reqArt.checks && reqArt.checks.length ? `<div class="tm-stat-box" style="margin-top:6px;background:${reqArt.unlocked ? 'rgba(27,107,69,0.07)' : 'rgba(164,34,34,0.08)'};border:1px solid ${reqArt.unlocked ? '#1b6b4544' : '#a4222244'};padding:6px 8px;">
+            <div style="font-size:11px;font-weight:900;color:${reqArt.unlocked ? '#1b6b45' : '#a42222'};">${reqArt.unlocked ? '🔓 ĐỦ ĐIỀU KIỆN ĐỘT PHÁ' : '🔒 YÊU CẦU TẾ LUYỆN'}</div>
+            ${reqArt.checks.map(c => `<div style="font-size:11.5px;color:${c.ok ? '#1b6b45' : '#9c1c1c'};">${c.ok ? '✓' : '✗'} ${c.text}</div>`).join('')}
+          </div>` : ''}
+          ${artLv < maxArtLv ? `<div class="tm-cost-box" style="margin-top:6px;">
+            <div style="font-size:11px;color:var(--ink-soft);font-weight:800;margin-bottom:4px;">NGUYÊN LIỆU ${artLv > 0 ? ((artLv === 4 || artLv === 9) ? `ĐỘT PHÁ BẬC LÊN Lv.${artLv + 1}` : `TẾ LUYỆN LÊN Lv.${artLv + 1}`) : 'CHẾ TẠO PHÁP BẢO'}</div>
             <div class="tm-cost-pills">
-              <span class="${st.coin >= cost.coin ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> ${fmt(cost.coin)} Linh Thạch</span>
-              <span class="${(st.herb || 0) >= cost.herb ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> ${cost.herb} Linh Thảo</span>
-              <span class="${(st.core || 0) >= cost.core ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> ${cost.core} Yêu Đan</span>
+              <span class="${st.coin >= cost.coin ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/coin.png" alt="" /> ${fmt(cost.coin)}</span>
+              <span class="${(st.herb || 0) >= cost.herb ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_herb.png" alt="" /> ${cost.herb}</span>
+              <span class="${(st.core || 0) >= cost.core ? 'ok' : 'no'}"><img class="tm-mini-ico" src="assets/img/res_core.png" alt="" /> ${cost.core}</span>
+              ${cost.essence ? `<span class="${(st.essence || 0) >= cost.essence ? 'ok' : 'no'}">💠 ${cost.essence}</span>` : ''}
+              ${cost.pill ? `<span class="${(st.pill || 0) >= cost.pill ? 'ok' : 'no'}">💊 ${cost.pill}</span>` : ''}
+              ${cost.chaosShard ? `<span class="${(st.chaosShard || 0) >= cost.chaosShard ? 'ok' : 'no'}">🌀 ${cost.chaosShard}</span>` : ''}
             </div>
-          </div>
+          </div>` : '<div class="tm-stat-box" style="margin-top:6px;"><b>Pháp Bảo đã đạt cảnh giới Khai Phong tối đa (Lv.15)!</b></div>'}
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn-wuxia jade" id="btn-craft-art" style="flex:1;" ${canAfford ? '' : 'disabled'}>
-            ${selSt.lv > 0 ? `Tế Luyện Lên Cấp ${selSt.lv + 1}` : 'Khai Lò Chế Tạo Pháp Bảo'}
-          </button>
-          ${selSt.lv > 0 ? `<button class="btn-wuxia" id="btn-eq-art">${selSt.eq ? 'Thu Hồi Pháp Bảo' : 'Triệu Hoán Bay 3D'}</button>` : ''}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+          ${artLv < maxArtLv ? `<button class="btn-wuxia jade" id="btn-craft-art" style="flex:1;" ${canAfford ? '' : 'disabled'}>
+            ${!reqArt.unlocked ? 'Chưa Đủ Cảnh Giới' : (artLv > 0 ? ((artLv === 4 || artLv === 9) ? `Đột Phá Lên Lv.${artLv + 1}` : `Tế Luyện Lv.${artLv + 1}`) : 'Khai Lò Chế Tạo Pháp Bảo')}
+          </button>` : ''}
+          ${artLv > 0 ? `<button class="btn-wuxia" id="btn-eq-art">${selSt.eq ? 'Thu Hồi' : 'Triệu Hoán Bay 3D'}</button>` : ''}
         </div>
       </div>
     `;
