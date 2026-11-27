@@ -267,14 +267,38 @@ class MurimRenderer3D {
   setupTownDrag() {
     let dragging = false;
     let lastX = 0, lastY = 0;
+    const activePts = new Map();
+    let prevPinchDist = 0;
+
     this.fxCanvas.addEventListener('pointerdown', e => {
       if (this.mode !== 'town') return;
-      dragging = true;
-      lastX = e.clientX;
-      lastY = e.clientY;
+      activePts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (activePts.size === 1) {
+        dragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+      } else if (activePts.size === 2) {
+        dragging = false;
+        const pts = Array.from(activePts.values());
+        prevPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+      }
     });
     window.addEventListener('pointermove', e => {
-      if (!dragging || this.mode !== 'town') return;
+      if (this.mode !== 'town') return;
+      if (activePts.has(e.pointerId)) {
+        activePts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      }
+      if (activePts.size === 2) {
+        const pts = Array.from(activePts.values());
+        const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+        if (prevPinchDist > 5 && dist > 5) {
+          const delta = (prevPinchDist - dist) * 0.0045;
+          this.townZoom = Math.max(0.62, Math.min(1.55, this.townZoom + delta));
+        }
+        prevPinchDist = dist;
+        return;
+      }
+      if (!dragging) return;
       const dx = e.clientX - lastX;
       const dy = e.clientY - lastY;
       lastX = e.clientX;
@@ -285,7 +309,13 @@ class MurimRenderer3D {
       this.townPan.x = Math.max(-18, Math.min(18, this.townPan.x - dx * cy * scale + dy * sy * scale * 1.2));
       this.townPan.z = Math.max(-14, Math.min(18, this.townPan.z + dx * sy * scale + dy * cy * scale * 1.2));
     });
-    window.addEventListener('pointerup', () => { dragging = false; });
+    const endPt = (e) => {
+      activePts.delete(e.pointerId);
+      if (activePts.size < 2) prevPinchDist = 0;
+      if (activePts.size === 0) dragging = false;
+    };
+    window.addEventListener('pointerup', endPt);
+    window.addEventListener('pointercancel', endPt);
     this.fxCanvas.addEventListener('wheel', e => {
       if (this.mode !== 'town') return;
       this.townZoom = Math.max(0.62, Math.min(1.55, this.townZoom + (e.deltaY > 0 ? 0.09 : -0.09)));

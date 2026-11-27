@@ -97,6 +97,7 @@ button, .fh-stage-plate, .fh-sect-name, .fh-power-val, .fh-kills-txt, .fh-res-pi
   width: 100%;
   height: 100%;
   display: block;
+  touch-action: none;
 }
 
 /* Authentic APK b_plate.png Hanji Cream Sticker Plate with Charcoal Border */
@@ -2139,92 +2140,7 @@ button, .fh-stage-plate, .fh-sect-name, .fh-power-val, .fh-kills-txt, .fh-res-pi
   .hanji-panel { width: min(96vw, 880px); height: min(88vh, 620px); }
 }
 
-@media (max-width: 768px) {
-  button, a, input, select { touch-action: manipulation; }
-  input, select, textarea { font-size: 16px !important; }
-  .fh-top-left { left: 4px; top: 4px; transform: scale(0.62); transform-origin: top left; max-width: 46vw; }
-  .fh-name-plate { display: none; }
-  .fh-guide-card { max-width: 210px; }
-  .fh-top-right { right: 4px; top: 4px; transform: scale(0.68); transform-origin: top right; max-width: 58vw; }
-  .fh-currency-row { flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
-  .fh-res-pill.compact { display: none; }
-  .fh-online-pill { max-width: 138px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .fh-content-cards { flex-direction: column; gap: 4px; align-items: flex-end; margin-top: 4px; }
-  .fh-cont-card { width: 46px; height: 48px; padding: 3px; }
-  .fh-cont-card img { width: 22px; height: 22px; }
-  .fh-cont-card span { font-size: 9px; }
-  .fh-top-center {
-    top: 86px;
-    left: 50%;
-    transform: translateX(-50%) scale(0.75);
-    transform-origin: top center;
-    max-width: 74vw;
-  }
-  .fh-boss-box { min-width: 245px; max-width: 80vw; }
-  #live-chat-dock {
-    left: 6px;
-    bottom: 164px;
-    width: auto;
-    max-width: 72vw;
-    z-index: 48;
-  }
-  .lc-head { padding: 3px 6px; gap: 6px; white-space: nowrap; }
-  .lc-tab, .lc-toggle { white-space: nowrap; font-size: 10.5px; padding: 2px 6px; }
-  .lc-msgs { height: 84px; font-size: 11px; width: 245px; }
-  .fh-bottom-right {
-    right: 6px;
-    bottom: 66px;
-    transform: scale(0.76);
-    transform-origin: bottom right;
-  }
-  .fh-bottom-dock {
-    left: 6px;
-    right: 6px;
-    bottom: 6px;
-    max-width: none;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    justify-content: flex-start;
-    gap: 4px;
-    padding: 4px 6px;
-  }
-  .fh-menu-btn { min-width: 50px; flex-shrink: 0; padding: 4px 5px; }
-  .hanji-panel { width: 97vw; height: 92dvh; max-height: 92dvh; padding: 10px 11px; border-radius: 14px; }
-  .panel-header { position: relative; flex-direction: column; align-items: stretch; gap: 6px; padding-right: 40px; }
-  .panel-title { font-size: 15px; line-height: 1.25; white-space: normal; }
-  .btn-close-panel { position: absolute; top: 0; right: 0; }
-  .panel-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 3px;
-    max-width: 100%;
-  }
-  .panel-tab { white-space: nowrap; padding: 5px 10px; font-size: 11.5px; flex-shrink: 0; }
-  .panel-body {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    gap: 10px;
-  }
-  .panel-col-scroll, .panel-detail-box { overflow-y: visible; max-height: none; }
-  .tm-eq-slots-bar { grid-template-columns: repeat(2, 1fr) !important; }
-  .tm-swform-row { grid-template-columns: 1fr; }
-  .auth-card, .insp-card { width: 95vw !important; max-height: 90dvh; padding: 12px; }
-  .insp-gear-grid { grid-template-columns: 1fr; }
-  #pk-invite-banner { left: 8px; right: 8px; width: auto; top: 106px; transform: none; }
-}
-
-@media (max-height: 460px) and (orientation: landscape) {
-  .fh-top-left { transform: scale(0.72); transform-origin: top left; }
-  .fh-top-right { transform: scale(0.72); transform-origin: top right; }
-  .fh-top-center { top: 4px; transform: translateX(-50%) scale(0.72); transform-origin: top center; }
-  .fh-bottom-dock { left: 6px; right: auto; max-width: 52vw; bottom: 6px; transform: scale(0.84); transform-origin: bottom left; }
-  .fh-bottom-right { right: 6px; bottom: 6px; transform: scale(0.74); transform-origin: bottom right; }
-  #live-chat-dock { bottom: 66px; width: 230px; }
-  .hanji-panel { height: 94dvh; max-height: 94dvh; }
-}
-
+/* Mobile rules moved cleanly to unified Smartphone Responsive section at end of stylesheet */
 
 /* ==================== V9 AESTHETIC POLISH: BOSS 50% MARKER, RARITY GLOW, GOLD FILIGREE MODALS ==================== */
 .fh-boss-box {
@@ -3004,19 +2920,228 @@ button, .fh-stage-plate, .fh-sect-name, .fh-power-val, .fh-kills-txt, .fh-res-pi
   padding: 11px 13px;
   margin-bottom: 8px;
 }
+/* ==================== V49 NATIVE SMARTPHONE HUD, TOWN 3D & MODAL UX ==================== */
 @media (max-width: 768px) {
-  #live-chat-dock {
+  button, a, input, select { touch-action: manipulation; }
+  input, select, textarea { font-size: 16px !important; }
+
+  /* Hide noisy horizontal scrollbars on mobile tab/dock rails */
+  .fh-bottom-dock::-webkit-scrollbar,
+  .panel-tabs::-webkit-scrollbar { display: none; }
+  .fh-bottom-dock, .panel-tabs { scrollbar-width: none; }
+
+  /* TOP-LEFT: Sharp native sizing (no blurry CSS scale!) */
+  .fh-top-left {
     left: 6px;
-    bottom: 184px;
+    top: max(6px, env(safe-area-inset-top));
+    gap: 5px;
+    max-width: 46vw;
+  }
+  .fh-master-cluster { gap: 6px; }
+  .fh-master-ring { width: 52px; height: 52px; }
+  .fh-master-face { inset: 4px; width: 44px; height: 44px; }
+  .fh-level-badge { font-size: 8.5px; padding: 1px 6px; bottom: -3px; }
+  .fh-master-bars { width: 102px; gap: 3px; }
+  .fh-name-plate { display: none !important; }
+  .fh-hp-track { height: 8px; }
+  .fh-qi-track { height: 11px; }
+  .fh-qi-lbl { font-size: 8.5px; }
+  .fh-power-plate { padding: 2px 7px; border-radius: 8px; }
+  .fh-power-lbl { font-size: 9px; }
+  .fh-power-val { font-size: 11px; }
+  .fh-mates-row { gap: 5px; }
+  .fh-mate-slot { width: 30px; gap: 2px; }
+  .fh-mate-ring { width: 30px; height: 30px; }
+  .fh-mate-ring img.face { inset: 2px; width: 26px; height: 26px; }
+  .fh-mate-ring .empty-plus { inset: 2px; font-size: 13px; }
+  .fh-mate-hp { width: 28px; height: 4px; }
+  .fh-guide-card {
+    padding: 4px 8px;
+    border-radius: 9px;
+    max-width: 190px;
+    gap: 1px;
+    margin-top: 26px;
+  }
+  .fh-guide-top { gap: 4px; }
+  .fh-guide-tag { font-size: 8.5px; padding: 1px 5px; }
+  .fh-guide-reward { font-size: 9px; }
+  .fh-guide-desc { font-size: 10px; line-height: 1.2; }
+
+  /* TOP-RIGHT: Compact crisp Currency + Online + Vertical Quick Shortcuts */
+  .fh-top-right {
+    right: 6px;
+    top: max(6px, env(safe-area-inset-top));
+    gap: 5px;
+    align-items: flex-end;
+    max-width: 54vw;
+  }
+  .fh-currency-row { flex-wrap: wrap; justify-content: flex-end; gap: 5px; }
+  .fh-res-pill.compact { display: none !important; }
+  .fh-res-pill {
+    min-width: 56px;
+    height: 24px;
+    padding: 2px 7px 2px 19px;
+    border-radius: 9px;
+    gap: 3px;
+  }
+  .fh-res-pill span { font-size: 11px; }
+  .fh-res-ico { left: -4px; width: 20px; height: 20px; }
+  .fh-online-pill {
+    padding: 3px 8px;
+    font-size: 10.5px;
+    max-width: 132px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .fh-mail-btn { width: 30px; height: 26px; font-size: 13px; border-radius: 8px; }
+  .fh-burger-btn { width: 28px; height: 26px; padding: 3px; border-radius: 8px; }
+  .fh-content-cards { flex-direction: column; gap: 4px; align-items: flex-end; margin-top: 2px; }
+  .fh-cont-card { width: 46px; height: 46px; padding: 3px; border-radius: 10px; }
+  .fh-cont-card img { width: 21px; height: 21px; }
+  .fh-cont-card span { font-size: 8.8px; }
+
+  /* TOP-CENTER: Cleanly below Top-Left/Right currency row */
+  .fh-top-center {
+    top: calc(70px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
     width: auto;
     max-width: 72vw;
+    gap: 4px;
+  }
+  .fh-stage-plate { padding: 3px 10px; border-radius: 10px; }
+  #hud-stage-txt { font-size: 11px; white-space: nowrap; }
+  .fh-kills-bar-wrap { max-width: 66vw; }
+  .fh-kills-track { height: 15px; min-width: 120px; }
+  .fh-kills-txt { font-size: 10px; }
+  .fh-boss-box { min-width: 210px; max-width: 72vw; padding: 4px 8px; }
+  .fh-boss-top { font-size: 10.5px; }
+
+  /* BOTTOM AREA: Thumb-friendly Skill Bar + Toggles + Scrollable Bottom Dock */
+  .fh-bottom-dock {
+    left: 6px;
+    right: 6px;
+    bottom: max(6px, env(safe-area-inset-bottom));
+    max-width: none;
+    height: 58px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    justify-content: flex-start;
+    gap: 4px;
+    padding: 4px 6px;
+    border-radius: 14px;
+    box-shadow: inset -14px 0 12px -10px rgba(72, 240, 200, 0.35), 0 6px 18px rgba(0, 0, 0, 0.5);
+  }
+  .fh-menu-btn { min-width: 54px; width: 54px; height: 48px; flex-shrink: 0; padding: 2px; scroll-snap-align: start; }
+  .fh-menu-btn img { width: 28px; height: 28px; }
+  .fh-menu-btn span { font-size: 9.5px; }
+
+  .fh-bottom-right {
+    right: 6px;
+    bottom: calc(68px + env(safe-area-inset-bottom));
+    gap: 4px;
+    max-width: 96vw;
+  }
+  .fh-kit-chip { display: none !important; }
+  .fh-pills-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 94vw;
+    gap: 4px;
+  }
+  .fh-mini-pill {
+    padding: 3px 7px;
+    font-size: 10px;
+    min-height: 25px;
+    border-radius: 999px;
+  }
+  .fh-mini-pill img { width: 12px; height: 12px; }
+  .fh-skills-row { gap: 5px; }
+  .skill-slot-btn { width: 46px; height: 46px; border-radius: 11px; border-width: 2px; }
+  .skill-slot-btn.ult-slot { width: 52px; height: 52px; border-radius: 13px; border-width: 2.5px; }
+  .skill-key-hint { font-size: 9px; padding: 0 3px; }
+
+  #live-chat-dock {
+    left: 6px;
+    bottom: calc(214px + env(safe-area-inset-bottom));
+    width: auto;
+    max-width: 74vw;
     z-index: 48;
   }
-  .fh-kit-chip { display: none; }
-  .lc-head { padding: 3px 6px; gap: 5px; white-space: nowrap; }
-  .lc-tab, .lc-toggle { white-space: nowrap; font-size: 10.5px; padding: 2px 6px; }
-  .lc-msgs { width: 245px; height: 80px; }
-  /* Fix iOS Safari / Home Screen PWA distorted Story portraits & cropped FrontDoor KeyArt */
+  .lc-head { padding: 4px 7px; gap: 6px; white-space: nowrap; }
+  .lc-tab, .lc-toggle { white-space: nowrap; font-size: 10.5px; padding: 3px 7px; }
+  .lc-msgs { width: min(260px, 72vw); height: 84px; }
+
+  /* TOWN 3D (SƠN MÔN) MOBILE HUD */
+  .th-top-left {
+    left: 6px;
+    top: max(6px, env(safe-area-inset-top));
+    flex-wrap: wrap;
+    max-width: 58vw;
+    gap: 4px;
+  }
+  .th-emblem-wrap { width: 42px; height: 42px; flex-shrink: 0; }
+  .th-sect-band { padding: 3px 8px; border-radius: 9px; }
+  .th-sect-name { font-size: 11.5px; }
+  .th-sect-lv { font-size: 9.5px; }
+  .th-top-right {
+    right: 6px;
+    top: max(6px, env(safe-area-inset-top));
+    gap: 4px;
+    max-width: 44vw;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .th-close-btn { width: 34px; height: 34px; border-radius: 10px; }
+  .th-bottom-right {
+    right: 8px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    gap: 6px;
+    transform: scale(0.84);
+    transform-origin: bottom right;
+  }
+  .th-building-card {
+    left: 8px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    max-width: 56vw;
+    padding: 6px 8px;
+  }
+  .town-plaza-chip, .town-disc-chip { font-size: 10px; padding: 3px 7px; }
+
+  /* MODALS & GRIDS ON SMARTPHONE */
+  .hanji-panel { width: 97vw; height: 92dvh; max-height: 92dvh; padding: 10px 11px; border-radius: 14px; }
+  .panel-header { position: relative; flex-direction: column; align-items: stretch; gap: 6px; padding-right: 40px; }
+  .panel-title { font-size: 15px; line-height: 1.25; white-space: normal; }
+  .btn-close-panel { position: absolute; top: 0; right: 0; width: 34px; height: 34px; }
+  .panel-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 3px;
+    max-width: 100%;
+    gap: 5px;
+  }
+  .panel-tab { white-space: nowrap; padding: 6px 11px; font-size: 12px; flex-shrink: 0; }
+  .panel-body {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 10px;
+  }
+  .panel-col-scroll, .panel-detail-box { overflow-y: visible; max-height: none; }
+  .item-row-card { flex-wrap: wrap; gap: 8px; }
+  .btn-wuxia { min-height: 34px; padding: 6px 11px; font-size: 12px; }
+  .tm-eq-slots-bar { grid-template-columns: repeat(2, 1fr) !important; }
+  .tm-swform-row, .tower-milestone-grid, .topup-grid, .insp-gear-grid { grid-template-columns: 1fr !important; }
+  .disciple-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .tm-pill-bag-grid { grid-template-columns: 1fr !important; }
+  .tm-cauldron-box { padding: 12px 10px; }
+  .auth-card, .insp-card { width: 95vw !important; max-height: 90dvh; padding: 12px; }
+  #pk-invite-banner { left: 8px; right: 8px; width: auto; top: 106px; transform: none; }
+
+  /* STORY & FRONT DOOR MOBILE */
   .story-stage {
     flex-direction: column;
     align-items: center;
@@ -3031,11 +3156,7 @@ button, .fh-stage-plate, .fh-sect-name, .fh-power-val, .fh-kills-txt, .fh-res-pi
     object-fit: contain;
     flex-shrink: 0;
   }
-  .story-dialog-card {
-    width: 100%;
-    min-height: 110px;
-    padding: 13px 15px;
-  }
+  .story-dialog-card { width: 100%; min-height: 110px; padding: 13px 15px; }
   #front-door {
     padding: max(18px, env(safe-area-inset-top)) 16px max(22px, env(safe-area-inset-bottom));
     background-size: contain !important;
@@ -3046,8 +3167,17 @@ button, .fh-stage-plate, .fh-sect-name, .fh-power-val, .fh-kills-txt, .fh-res-pi
   .fd-logo-img { width: min(210px, 56vw); height: auto; object-fit: contain; }
   .fd-start-btn { padding: 11px 22px; font-size: 14.5px; }
 }
+
 @media (max-height: 460px) and (orientation: landscape) {
-  #live-chat-dock { bottom: 66px; width: 220px; }
+  .fh-top-left { transform: scale(0.74); transform-origin: top left; top: 4px; }
+  .fh-top-right { transform: scale(0.74); transform-origin: top right; top: 4px; }
+  .fh-res-pill.compact, .fh-kit-chip { display: none !important; }
+  .fh-top-center { top: 42px; transform: translateX(-50%) scale(0.76); transform-origin: top center; }
+  .fh-bottom-dock { left: 6px; right: auto; max-width: 52vw; bottom: 6px; height: 52px; }
+  .fh-bottom-right { right: 6px; bottom: 6px; transform: scale(0.76); transform-origin: bottom right; }
+  #live-chat-dock { bottom: 64px; width: 220px; }
+  .hanji-panel { height: 94dvh; max-height: 94dvh; }
 }
+
 
 
